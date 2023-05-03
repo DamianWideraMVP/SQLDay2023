@@ -1,6 +1,9 @@
 {
 	"name": "Authorization self",
 	"properties": {
+		"folder": {
+			"name": "utils"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"sessionProperties": {
