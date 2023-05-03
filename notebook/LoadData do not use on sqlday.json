@@ -1,0 +1,375 @@
+{
+	"name": "LoadData do not use on sqlday",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "smallpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "29183036-32ab-46b5-a0cc-d6c3e842e048"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+				"name": "smallpool",
+				"type": "Spark",
+				"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"pip install zipfile36"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\r\n",
+					"import requests\r\n",
+					"import pandas as pd\r\n",
+					"import zipfile\r\n",
+					"import io\r\n",
+					"from datetime import datetime, timedelta"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"sas_token = f'sp=racwdlm&st=2023-04-22T21:20:01Z&se=2023-05-31T05:20:01Z&spr=https&sv=2021-12-02&sr=c&sig=7Hb04rR6uzijvOjHdc70Xt9vyt4iEPx5i3AnoE20f%2Fg%3D'\r\n",
+					"account = 'https://sqlday2023.blob.core.windows.net'\r\n",
+					"url_base = 'http://data.gdeltproject.org/events/'\r\n",
+					"container = 'data'\r\n",
+					"unizpped_container = 'data/unizpped'\r\n",
+					"file_extension = 'csv'"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def get_blob_service_client_sas( account, sas_token):\r\n",
+					"    account_url = account\r\n",
+					"    credential = sas_token\r\n",
+					"    blob_service_client = BlobServiceClient(account_url, credential=credential)\r\n",
+					"\r\n",
+					"    return blob_service_client"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def send_data_to_blob (container_client: ContainerClient, fileName:str):\n",
+					"    url = url_base+fileName\n",
+					"\n",
+					"\n",
+					"    print (f'url: {url}')\n",
+					"\n",
+					"    file = fileName.split('.')[0]\n",
+					"    file_to_save = file +'.'+file_extension\n",
+					"\n",
+					"    r = requests.get(url, allow_redirects=True)\n",
+					"    zipDocument = zipfile.ZipFile(io.BytesIO(r.content))  \n",
+					"    \n",
+					"    listOfFileNames = zipDocument.namelist()\n",
+					"\n",
+					"    for file in listOfFileNames:\n",
+					"        tmp = zipDocument.extract(file)\n",
+					"        print (f'file: {file}, p={tmp}')\n",
+					"\n",
+					"        f = open (tmp,\"r\")\n",
+					"        content = f.read()\n",
+					"\n",
+					"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _create_nested_container_client(blob_service_client: BlobServiceClient, container_name: str, subfolder: str):\n",
+					"    new_name_for_container = container_name + \"/\" + subfolder[0:6]\n",
+					"    return blob_service_client.get_container_client(container=new_name_for_container)\n",
+					"    \n",
+					"    "
+				],
+				"execution_count": 6
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def upload_blob_file_1979_2005(blob_service_client: BlobServiceClient, container_name):\r\n",
+					"    container_client = blob_service_client.get_container_client(container=container_name)\r\n",
+					"\r\n",
+					"    for dt in range(1979,2006,1):\r\n",
+					"        dt_str = str(dt)+'.zip'\r\n",
+					"        send_data_to_blob(container_client,dt_str)\r\n",
+					""
+				],
+				"execution_count": 36
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def upload_blob_file_200601_201303(blob_service_client: BlobServiceClient, container_name: str):\n",
+					"\n",
+					"    for dt in pd.period_range(start='2006-01-01', end='2013-03-01', freq='M'):\n",
+					"        dt_str = str(dt).replace(\"-\",\"\")+'.zip'\n",
+					"\n",
+					"        container_client = _create_nested_container_client(blob_service_client, container_name, dt_str)\n",
+					"        \n",
+					"        send_data_to_blob(container_client,dt_str)"
+				],
+				"execution_count": 46
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def upload_blob_file_20130401_20230331(blob_service_client: BlobServiceClient, container_name):\n",
+					"    container_client = blob_service_client.get_container_client(container=container_name) \n",
+					"\n",
+					"    for dt in pd.period_range(start='2014-02-01', end='2023-03-31', freq='D'):\n",
+					"        dt_str = str(dt).replace(\"-\",\"\")+'.export.CSV.zip'\n",
+					"\n",
+					"        container_client = _create_nested_container_client(blob_service_client, container_name, dt_str)\n",
+					"        \n",
+					"        send_data_to_blob(container_client,dt_str)"
+				],
+				"execution_count": 83
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def upload_blob_file_for_dates(blob_service_client: BlobServiceClient, container_name: str, date_start:str, date_end:str):\n",
+					"    '''date_start and date_end in format YYYY-MM-DD'''\n",
+					"\n",
+					"    for dt in pd.period_range(start=date_start, end=date_end, freq='D'):\n",
+					"        dt_str = str(dt).replace(\"-\",\"\")+'.export.CSV.zip'\n",
+					"\n",
+					"        container_client = _create_nested_container_client(blob_service_client, container_name, dt_str)\n",
+					"        \n",
+					"        send_data_to_blob(container_client,dt_str)"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def upload_last_X_days(blob_service_client: BlobServiceClient, container_name: str, days: int):\n",
+					"    end_date = (datetime.today() - timedelta(days=1)).strftime(\"%Y-%m-%d\")\n",
+					"    start_date = (datetime.today() - timedelta(days=days)).strftime(\"%Y-%m-%d\")\n",
+					"\n",
+					"    upload_blob_file_for_dates(blob_service_client, container_name,start_date,end_date )\n",
+					"\n",
+					"\n",
+					""
+				],
+				"execution_count": 10
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"bsc = get_blob_service_client_sas(account,sas_token)"
+				],
+				"execution_count": 12
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"upload_blob_file_for_dates(bsc,unizpped_container, '2023-04-20','2023-04-29')"
+				],
+				"execution_count": 116
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"upload_last_X_days(bsc,unizpped_container,7)"
+				],
+				"execution_count": 13
+			}
+		]
+	}
+}

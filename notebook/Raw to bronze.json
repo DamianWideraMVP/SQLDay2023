@@ -1,0 +1,64 @@
+{
+	"name": "Raw to bronze",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "smallpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "7746c4f4-8a84-4a70-90e0-306f2ced3791"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+				"name": "smallpool",
+				"type": "Spark",
+				"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net",
+					"authHeader": null
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"extraHeader": null
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				]
+			}
+		]
+	}
+}
