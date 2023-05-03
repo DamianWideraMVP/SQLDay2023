@@ -1,6 +1,9 @@
 {
 	"name": "Raw  data ingestion",
 	"properties": {
+		"folder": {
+			"name": "01 Load raw data"
+		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
 		"bigDataPool": {
@@ -18,14 +21,11 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "372c747e-e429-44cd-8bb0-341698fef1d7"
+				"spark.autotune.trackingId": "d846939d-439c-436c-8281-afc3b7d6d005"
 			}
 		},
 		"metadata": {
 			"saveOutput": true,
-			"synapse_widget": {
-				"version": "0.1"
-			},
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
@@ -41,14 +41,13 @@
 				"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
 				"auth": {
 					"type": "AAD",
-					"authResource": "https://dev.azuresynapse.net",
-					"authHeader": null
+					"authResource": "https://dev.azuresynapse.net"
 				},
 				"sparkVersion": "3.3",
 				"nodeCount": 3,
 				"cores": 4,
 				"memory": 28,
-				"extraHeader": null
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},
