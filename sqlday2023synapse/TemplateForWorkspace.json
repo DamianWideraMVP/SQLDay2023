@@ -1076,6 +1076,96 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Authorization external')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "bfd6b0cc-4079-4a6a-aef5-7cc2afa8faed"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Authorization self')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "fda98a33-a572-4a7b-a054-23e13c649d05"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/LoadData do not use on sqlday')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -1489,14 +1579,11 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "372c747e-e429-44cd-8bb0-341698fef1d7"
+						"spark.autotune.trackingId": "876bda98-0d49-4fdc-8f87-71e1c54c8e81"
 					}
 				},
 				"metadata": {
 					"saveOutput": true,
-					"synapse_widget": {
-						"version": "0.1"
-					},
 					"enableDebugMode": false,
 					"kernelspec": {
 						"name": "synapse_pyspark",
@@ -1512,14 +1599,13 @@
 						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
 						"auth": {
 							"type": "AAD",
-							"authResource": "https://dev.azuresynapse.net",
-							"authHeader": null
+							"authResource": "https://dev.azuresynapse.net"
 						},
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": null
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -1545,6 +1631,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\r\n",
 							"import requests\r\n",
@@ -1804,7 +1891,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "da11e7a8-da6f-4c4e-ac03-79fb91341139"
+						"spark.autotune.trackingId": "b89e20fa-0ae5-4a4f-b714-3a9ac53301ae"
 					}
 				},
 				"metadata": {
@@ -1829,17 +1916,20 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
-							""
+							"#(bronze)sas_token = f'sp=racwdlmeop&st=2023-05-03T11:20:20Z&se=2023-05-31T19:20:20Z&spr=https&sv=2021-12-02&sr=c&sig=SITj%2FKFPa%2FTLJgawl6TeqABXjTpimz9WcH62TPyxKss%3D'\n",
+							"sas_token = f'sp=racwdlmeop&st=2023-05-03T21:02:46Z&se=2023-05-31T05:02:46Z&spr=https&sv=2021-12-02&sr=c&sig=8CY7pN26Rsto5wDJoYUM4RzofvxNaozEwpZWARTqVs0%3D'\n",
+							"account = 'https://sqlday2023.blob.core.windows.net'\n",
+							"url_base = 'http://data.gdeltproject.org/events/'\n",
+							"unizpped_container = 'raw'\n",
+							"file_extension = 'csv'"
 						],
 						"outputs": [],
 						"execution_count": null
