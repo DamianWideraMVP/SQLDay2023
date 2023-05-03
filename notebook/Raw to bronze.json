@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b89e20fa-0ae5-4a4f-b714-3a9ac53301ae"
+				"spark.autotune.trackingId": "e74cac80-2e5e-4615-83cd-221547835bbc"
 			}
 		},
 		"metadata": {
@@ -46,7 +46,8 @@
 				"sparkVersion": "3.3",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -54,11 +55,15 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"#(bronze)sas_token = f'sp=racwdlmeop&st=2023-05-03T11:20:20Z&se=2023-05-31T19:20:20Z&spr=https&sv=2021-12-02&sr=c&sig=SITj%2FKFPa%2FTLJgawl6TeqABXjTpimz9WcH62TPyxKss%3D'\n",
-					"sas_token = f'sp=racwdlmeop&st=2023-05-03T21:02:46Z&se=2023-05-31T05:02:46Z&spr=https&sv=2021-12-02&sr=c&sig=8CY7pN26Rsto5wDJoYUM4RzofvxNaozEwpZWARTqVs0%3D'\n",
 					"account = 'https://sqlday2023.blob.core.windows.net'\n",
 					"url_base = 'http://data.gdeltproject.org/events/'\n",
-					"unizpped_container = 'raw'\n",
+					"\n",
+					"bronze_sas_token = f'sp=racwdlmeop&st=2023-05-03T11:20:20Z&se=2023-05-31T19:20:20Z&spr=https&sv=2021-12-02&sr=c&sig=SITj%2FKFPa%2FTLJgawl6TeqABXjTpimz9WcH62TPyxKss%3D'\n",
+					"raw_sas_token = f'sp=racwdlmeop&st=2023-05-03T21:02:46Z&se=2023-05-31T05:02:46Z&spr=https&sv=2021-12-02&sr=c&sig=8CY7pN26Rsto5wDJoYUM4RzofvxNaozEwpZWARTqVs0%3D'\n",
+					"\n",
+					"raw_container = 'raw'\n",
+					"bronze_container = 'bronze'\n",
+					"\n",
 					"file_extension = 'csv'"
 				],
 				"execution_count": null
