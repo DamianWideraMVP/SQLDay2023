@@ -1,0 +1,35 @@
+{
+	"name": "dst_gdelt",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lsDataLakeSilver",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"DYear": {
+				"type": "string",
+				"defaultValue": "2013"
+			},
+			"DMonth": {
+				"type": "string",
+				"defaultValue": "04"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "gdelt_events.parquet",
+				"folderPath": {
+					"value": "@concat('gdeltevents/', dataset().DYear, '/', dataset().DMonth)",
+					"type": "Expression"
+				},
+				"fileSystem": "bronze"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

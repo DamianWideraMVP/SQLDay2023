@@ -1,0 +1,9 @@
+{
+	"name": "sqlday2023adf",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "36bd0bfc-fba0-4b6d-b7a3-0f5882508de8",
+		"tenantId": "2ea1149a-d71b-4665-bb20-b7f6bee1f640"
+	}
+}
