@@ -1,0 +1,901 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "sqlday2023adf"
+		},
+		"lsDataLakeSilver_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sqlday2023.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/lsDataLakeSilver')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('lsDataLakeSilver_properties_typeProperties_url')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dst_gdelt')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsDataLakeSilver",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"DYear": {
+						"type": "string",
+						"defaultValue": "2013"
+					},
+					"DMonth": {
+						"type": "string",
+						"defaultValue": "04"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "gdelt_events.parquet",
+						"folderPath": {
+							"value": "@concat('gdeltevents/', dataset().DYear, '/', dataset().DMonth)",
+							"type": "Expression"
+						},
+						"fileSystem": "bronze"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsDataLakeSilver')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/src_gdelt')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsDataLakeSilver",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "20130401.export.CSV",
+						"folderPath": "201304",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": "\t",
+					"escapeChar": "\\",
+					"quoteChar": ""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsDataLakeSilver')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/01 copy history to silver')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy GDELT to Silver",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": {
+										"value": "@concat(pipeline().parameters.UYear, pipeline().parameters.UMonth)",
+										"type": "Expression"
+									},
+									"wildcardFileName": "*",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "MergeFiles"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 1
+										},
+										"sink": {
+											"name": "GlobalEventID"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 2
+										},
+										"sink": {
+											"name": "Day"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 3
+										},
+										"sink": {
+											"name": "MonthYear"
+										}
+									},
+									{
+										"source": {
+											"type": "Int16",
+											"ordinal": 4
+										},
+										"sink": {
+											"name": "Year"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 5
+										},
+										"sink": {
+											"name": "FractionDate"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 6
+										},
+										"sink": {
+											"name": "Actor1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 7
+										},
+										"sink": {
+											"name": "Actor1Name"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 8
+										},
+										"sink": {
+											"name": "Actor1CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 9
+										},
+										"sink": {
+											"name": "Actor1KnownGroupCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 10
+										},
+										"sink": {
+											"name": "Actor1EthnicCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 11
+										},
+										"sink": {
+											"name": "Actor1Religion1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 12
+										},
+										"sink": {
+											"name": "Actor1Religion2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 13
+										},
+										"sink": {
+											"name": "Actor1Type1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 14
+										},
+										"sink": {
+											"name": "Actor1Type2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 15
+										},
+										"sink": {
+											"name": "Actor1Type3Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 16
+										},
+										"sink": {
+											"name": "Actor2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 17
+										},
+										"sink": {
+											"name": "Actor2Name"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 18
+										},
+										"sink": {
+											"name": "Actor2CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 19
+										},
+										"sink": {
+											"name": "Actor2KnownGroupCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 20
+										},
+										"sink": {
+											"name": "Actor2EthnicCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 21
+										},
+										"sink": {
+											"name": "Actor2Religion1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 22
+										},
+										"sink": {
+											"name": "Actor2Religion2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 23
+										},
+										"sink": {
+											"name": "Actor2Type1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 24
+										},
+										"sink": {
+											"name": "Actor2Type2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 25
+										},
+										"sink": {
+											"name": "Actor2Type3Code"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 26
+										},
+										"sink": {
+											"name": "IsRootEvent"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 27
+										},
+										"sink": {
+											"name": "EventCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 28
+										},
+										"sink": {
+											"name": "EventBaseCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 29
+										},
+										"sink": {
+											"name": "EventRootCode"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 30
+										},
+										"sink": {
+											"name": "QuadClass"
+										}
+									},
+									{
+										"source": {
+											"type": "Double",
+											"ordinal": 31
+										},
+										"sink": {
+											"name": "GoldsteinScale"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 32
+										},
+										"sink": {
+											"name": "NumMentions"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 33
+										},
+										"sink": {
+											"name": "NumSources"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 34
+										},
+										"sink": {
+											"name": "NumArticles"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 35
+										},
+										"sink": {
+											"name": "AvgTone"
+										}
+									},
+									{
+										"source": {
+											"type": "Int16",
+											"ordinal": 36
+										},
+										"sink": {
+											"name": "Actor1Geo_Type"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 37
+										},
+										"sink": {
+											"name": "Actor1Geo_Fullname"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 38
+										},
+										"sink": {
+											"name": "Actor1Geo_CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 39
+										},
+										"sink": {
+											"name": "Actor1Geo_ADM1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 40
+										},
+										"sink": {
+											"name": "Actor1Geo_Lat"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 41
+										},
+										"sink": {
+											"name": "Actor1Geo_Long"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 42
+										},
+										"sink": {
+											"name": "Actor1Geo_FeatureID"
+										}
+									},
+									{
+										"source": {
+											"type": "Int16",
+											"ordinal": 43
+										},
+										"sink": {
+											"name": "Actor2Geo_Type"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 44
+										},
+										"sink": {
+											"name": "Actor2Geo_Fullname"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 45
+										},
+										"sink": {
+											"name": "Actor2Geo_CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 46
+										},
+										"sink": {
+											"name": "Actor2Geo_ADM1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 47
+										},
+										"sink": {
+											"name": "Actor2Geo_Lat"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 48
+										},
+										"sink": {
+											"name": "Actor2Geo_Long"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 49
+										},
+										"sink": {
+											"name": "Actor2Geo_FeatureID"
+										}
+									},
+									{
+										"source": {
+											"type": "Int16",
+											"ordinal": 50
+										},
+										"sink": {
+											"name": "ActionGeo_Type"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 51
+										},
+										"sink": {
+											"name": "ActionGeo_Fullname"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 52
+										},
+										"sink": {
+											"name": "ActionGeo_CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 53
+										},
+										"sink": {
+											"name": "ActionGeo_ADM1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 54
+										},
+										"sink": {
+											"name": "ActionGeo_Lat"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 55
+										},
+										"sink": {
+											"name": "ActionGeo_Long"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 56
+										},
+										"sink": {
+											"name": "ActionGeo_FeatureID"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 57
+										},
+										"sink": {
+											"name": "DATEADDED"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 58
+										},
+										"sink": {
+											"name": "SOURCEURL"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "src_gdelt",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "dst_gdelt",
+								"type": "DatasetReference",
+								"parameters": {
+									"DYear": {
+										"value": "@pipeline().parameters.UYear",
+										"type": "Expression"
+									},
+									"DMonth": {
+										"value": "@pipeline().parameters.UMonth",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"UYear": {
+						"type": "string",
+						"defaultValue": "2013"
+					},
+					"UMonth": {
+						"type": "string",
+						"defaultValue": "04"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-04T00:05:41Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/src_gdelt')]",
+				"[concat(variables('factoryId'), '/datasets/dst_gdelt')]"
+			]
+		}
+	]
+}
