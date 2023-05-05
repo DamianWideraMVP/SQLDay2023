@@ -398,7 +398,7 @@
 							},
 							{
 								"source": {
-									"type": "Single",
+									"type": "String",
 									"ordinal": 40
 								},
 								"sink": {
@@ -461,7 +461,7 @@
 							},
 							{
 								"source": {
-									"type": "Single",
+									"type": "String",
 									"ordinal": 47
 								},
 								"sink": {
@@ -524,7 +524,7 @@
 							},
 							{
 								"source": {
-									"type": "Single",
+									"type": "String",
 									"ordinal": 54
 								},
 								"sink": {
@@ -597,6 +597,166 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "FileList4Src",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Copy GDELT to Silver",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "src_dir_file",
+						"type": "DatasetReference",
+						"parameters": {
+							"DYear": {
+								"value": "@pipeline().parameters.UYear",
+								"type": "Expression"
+							},
+							"DMonth": {
+								"value": "@pipeline().parameters.UMonth",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "CopyFilez",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FileList4Src",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FileList4Src').output.childItems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "CopySingleFile",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFileName": {
+											"value": "@{item().name}",
+											"type": "Expression"
+										},
+										"deleteFilesAfterCompletion": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "src_dir_file",
+									"type": "DatasetReference",
+									"parameters": {
+										"DYear": "2013",
+										"DMonth": "05"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "dst_dir_file",
+									"type": "DatasetReference"
+								}
+							]
+						},
+						{
+							"name": "DeleteSingleFile",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "CopySingleFile",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "src_dir_file",
+									"type": "DatasetReference",
+									"parameters": {
+										"DYear": "2013",
+										"DMonth": "05"
+									}
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": {
+										"value": "@{item().name}",
+										"type": "Expression"
+									},
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {

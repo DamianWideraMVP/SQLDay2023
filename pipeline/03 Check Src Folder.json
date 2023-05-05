@@ -1,0 +1,117 @@
+{
+	"name": "03 Check Src Folder",
+	"properties": {
+		"activities": [
+			{
+				"name": "FileList",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "src_dir_file",
+						"type": "DatasetReference",
+						"parameters": {
+							"DYear": {
+								"value": "@pipeline().parameters.U3Year",
+								"type": "Expression"
+							},
+							"DMonth": {
+								"value": "@pipeline().parameters.U3Month",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "IfFileExists",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "FileList",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(length(activity('FileList').output.childItems), 0)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Exec01CopyHistory",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "01 copy history to silver",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"UYear": {
+										"value": "@pipeline().parameters.U3Year",
+										"type": "Expression"
+									},
+									"UMonth": {
+										"value": "@pipeline().parameters.U3Month",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "FileList",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"parameters": {
+			"U3Year": {
+				"type": "string",
+				"defaultValue": "2013"
+			},
+			"U3Month": {
+				"type": "string",
+				"defaultValue": "05"
+			}
+		},
+		"annotations": []
+	}
+}
