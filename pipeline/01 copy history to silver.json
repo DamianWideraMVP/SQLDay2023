@@ -743,7 +743,7 @@
 										"DMonth": "05"
 									}
 								},
-								"enableLogging": true,
+								"enableLogging": false,
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
