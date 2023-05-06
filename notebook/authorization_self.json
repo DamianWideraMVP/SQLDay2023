@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "cd7c2459-5874-4fcf-a27b-9f77d9980dfe"
+				"spark.autotune.trackingId": "a84c2dec-5ec4-4713-bc9d-21ba2002ffab"
 			}
 		},
 		"metadata": {
@@ -259,7 +259,7 @@
 					}
 				},
 				"source": [
-					"account ,sas_key,container = get_configuration()"
+					"account ,sas_token, container = get_configuration()"
 				],
 				"execution_count": null
 			},
