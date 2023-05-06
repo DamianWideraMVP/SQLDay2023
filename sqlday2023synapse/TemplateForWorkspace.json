@@ -1854,7 +1854,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e0e40f31-68c2-4baa-959e-f6db1617e568"
+						"spark.autotune.trackingId": "c3a66397-6269-4ccd-8925-212ad8114b01"
 					}
 				},
 				"metadata": {
@@ -2176,7 +2176,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4c7f1453-1219-47cd-805e-c5df783b73f2"
+						"spark.autotune.trackingId": "96e2b75c-eb3d-4440-8f8d-ab55d8ada18b"
 					}
 				},
 				"metadata": {
@@ -2278,6 +2278,27 @@
 						"source": [
 							"def get_configuration():\n",
 							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"account = PARAMETERS.DATALAKE\n",
+							"sas_key = PARAMETERS.SASKEY\n",
+							"container = PARAMETERS.CONTAINER"
 						],
 						"outputs": [],
 						"execution_count": null
