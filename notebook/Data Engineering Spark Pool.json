@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a38043bf-13a1-4dd8-bfc0-25117f28d47b"
+				"spark.autotune.trackingId": "5cf508c7-98f3-42bb-a3dd-80ed20099321"
 			}
 		},
 		"metadata": {
@@ -156,9 +156,9 @@
 				"source": [
 					"account_for_abfss,  path_to_orders = _prepare_paths_for_data_processing(account, bronze_container, \"orders\")\n",
 					"account_for_abfss,  path_to_customer = _prepare_paths_for_data_processing(account, bronze_container, \"customer\")\n",
-					""
+					"account_for_abfss_silver,  path_to_customer_silver = _prepare_paths_for_data_processing(account, silver_container, \"customer\")"
 				],
-				"execution_count": 21
+				"execution_count": 31
 			},
 			{
 				"cell_type": "code",
@@ -174,9 +174,9 @@
 					}
 				},
 				"source": [
-					"account_for_abfss,  path_to_orders, path_to_customer"
+					"account_for_abfss,  path_to_orders, path_to_customer, account_for_abfss_silver, path_to_customer_silver"
 				],
-				"execution_count": 22
+				"execution_count": 32
 			},
 			{
 				"cell_type": "code",
@@ -287,7 +287,7 @@
 					}
 				},
 				"source": [
-					""
+					"df_customer.write.format(\"delta\").mode(\"overwrite\").save(\"/mnt/Blob/Customer/delta\")"
 				],
 				"execution_count": null
 			},
