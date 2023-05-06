@@ -1,5 +1,5 @@
 {
-	"name": "authorization_external",
+	"name": "laod_raw_authorization_external",
 	"properties": {
 		"folder": {
 			"name": "utils"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c27c28c6-f19a-4220-a92e-e22d584051a9"
+				"spark.autotune.trackingId": "cccd3819-fe86-461f-9743-604d5b7793e9"
 			}
 		},
 		"metadata": {
@@ -45,7 +45,8 @@
 				"sparkVersion": "3.3",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},

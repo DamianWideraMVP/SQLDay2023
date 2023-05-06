@@ -1,5 +1,5 @@
 {
-	"name": "authorization_self",
+	"name": "load_raw_authorization_sas",
 	"properties": {
 		"folder": {
 			"name": "utils"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d5cbffc7-9641-432a-ae1a-3427361f2049"
+				"spark.autotune.trackingId": "873eb561-c608-4448-b5c7-bc670818e805"
 			}
 		},
 		"metadata": {
