@@ -1,5 +1,5 @@
 {
-	"name": "configuration_parameters_akv",
+	"name": "configuration_parameters_local_akv",
 	"properties": {
 		"folder": {
 			"name": "utils/configuration"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "870adc6f-185c-4f66-b4d7-e38837565769"
+				"spark.autotune.trackingId": "ed968e77-8014-40a0-a5bd-c20ba0b8d609"
 			}
 		},
 		"metadata": {
@@ -55,7 +55,14 @@
 				"cell_type": "code",
 				"source": [
 					"from dataclasses import dataclass\n",
-					"from notebookutils import mssparkutils"
+					"\n",
+					"@dataclass\n",
+					"class configuration_parameters_local:\n",
+					"    DATALAKE: str\n",
+					"    CONTAINER: str\n",
+					"    SASKEY: str\n",
+					"    URL: str\n",
+					""
 				],
 				"execution_count": 3
 			},
@@ -73,35 +80,14 @@
 					}
 				},
 				"source": [
-					"@dataclass\n",
-					"class configuration_parameters_akv:\n",
-					"    DATALAKE: str\n",
-					"    CONTAINER: str\n",
-					"    SASKEY: str"
-				],
-				"execution_count": 4
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"PARAMETERS = configuration_parameters_akv (\n",
-					"DATALAKE=\"https://itechdayadla.dfs.core.windows.net\",\n",
-					"CONTAINER=\"demolearn\",\n",
-					"SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','DemoLearnKey','SQLDay_AKV')\n",
+					"PARAMETERS = configuration_parameters_local (\n",
+					"DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
+					"CONTAINER=\"raw\",\n",
+					"SASKEY=SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayRaw','SQLDay_AKV')\n",
+					"URL= 'http://data.gdeltproject.org/events/'\n",
 					")"
 				],
-				"execution_count": 7
+				"execution_count": 2
 			}
 		]
 	}
