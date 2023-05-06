@@ -1854,7 +1854,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "40d64b44-e644-46e1-9ca7-a7e9d09455d4"
+						"spark.autotune.trackingId": "a7b35c68-f42f-49f6-bfad-260d0d7e9378"
 					}
 				},
 				"metadata": {
@@ -1901,7 +1901,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 18
 					},
 					{
 						"cell_type": "code",
@@ -1909,7 +1909,7 @@
 							"mssparkutils.notebook.run(\"utils/authorization_self\", 10)"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -2176,7 +2176,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "0f7c3914-bb0e-4ca1-8a4d-b325b568e88c"
+						"spark.autotune.trackingId": "c91b49f6-44cc-42da-aac1-27c4b8b76975"
 					}
 				},
 				"metadata": {
@@ -2423,7 +2423,7 @@
 							}
 						},
 						"source": [
-							"account ,sas_key,container = get_configuration()"
+							"account ,sas_token, container = get_configuration()"
 						],
 						"outputs": [],
 						"execution_count": null
