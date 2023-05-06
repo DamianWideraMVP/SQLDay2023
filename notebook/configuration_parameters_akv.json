@@ -1,5 +1,5 @@
 {
-	"name": "configuration_parameters",
+	"name": "configuration_parameters_akv",
 	"properties": {
 		"folder": {
 			"name": "utils"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "59baeda8-dcbd-4ef5-8411-a78f91ad1de0"
+				"spark.autotune.trackingId": "1532ccc8-a01f-4e72-b229-93d207cf4380"
 			}
 		},
 		"metadata": {
@@ -28,7 +28,7 @@
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "Synapse PySpark"
+				"display_name": "python"
 			},
 			"language_info": {
 				"name": "python"
@@ -54,38 +54,10 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"from dataclasses import dataclass\n",
 					"\n",
-					"@dataclass\n",
-					"class configuration_parameters:\n",
-					"    DATALAKE: str\n",
-					"    CONTAINER: str\n",
-					"    SASKEY: str\n",
 					""
 				],
-				"execution_count": 3
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"PARAMETERS = configuration_parameters (\n",
-					"DATALAKE=\"https://itechdayadla.dfs.core.windows.net\",\n",
-					"CONTAINER=\"demolearn\",\n",
-					"SASKEY=r\"?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupyx&se=2023-05-31T09:27:54Z&st=2023-05-06T01:27:54Z&spr=https&sig=kvedG7707y8H%2FE8ZNsrEIOl7L2AhS3X0QEqtXi0GoJg%3D\"\n",
-					")"
-				],
-				"execution_count": 4
+				"execution_count": null
 			}
 		]
 	}
