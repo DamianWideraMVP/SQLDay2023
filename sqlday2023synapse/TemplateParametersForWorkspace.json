@@ -5,8 +5,20 @@
 		"workspaceName": {
 			"value": "sqlday2023synapse"
 		},
+		"DemoLearn_AccountKey_accountKey": {
+			"value": ""
+		},
 		"sqlday2023synapse-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:sqlday2023synapse.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"DemoLearn_AKV_properties_typeProperties_url": {
+			"value": "https://itechdayadla.dfs.core.windows.net"
+		},
+		"DemoLearn_AccountKey_properties_typeProperties_url": {
+			"value": "https://itechdayadla.dfs.core.windows.net"
+		},
+		"SQLDay_AKV_properties_typeProperties_baseUrl": {
+			"value": "https://sqlday2023akv.vault.azure.net/"
 		},
 		"sqlday2023synapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://sqlday2023.dfs.core.windows.net"
