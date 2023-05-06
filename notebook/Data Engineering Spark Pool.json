@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e66092e1-a517-4a13-8389-bfb07aafdc79"
+				"spark.autotune.trackingId": "a38043bf-13a1-4dd8-bfc0-25117f28d47b"
 			}
 		},
 		"metadata": {
@@ -232,6 +232,110 @@
 					"df_customer = spark.read.load(path_to_customer, format='parquet')"
 				],
 				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(df_customer.limit(10))"
+				],
+				"execution_count": 29
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"db = \"SilverDatabase\"\n",
+					" \n",
+					"spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db}\")\n",
+					"spark.sql(f\"USE {db}\")"
+				],
+				"execution_count": 30
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql.types import *\n",
+					"from pyspark.sql.functions import col\n",
+					"from pyspark.sql.functions import col,sum,avg,max\n",
+					"\n",
+					"\n",
+					"\n",
+					"order_schema = StructType([\n",
+					"    StructField(\"O_ORDERKEY\", IntegerType()),\n",
+					"    StructField(\"O_CUSTKEY\", StringType()),\n",
+					"    StructField(\"O_ORDERSTATUS\", StringType()),\n",
+					"    StructField(\"O_TOTALPRICE\", DoubleType()),\n",
+					"    StructField(\"O_ORDERDATE\", DateType()),\n",
+					"    StructField(\"O_ORDERPRIORITY\", StringType()),\n",
+					"    StructField(\"O_CLERK\", StringType()),\n",
+					"    StructField(\"O_SHIPPRIORITY\", IntegerType()),\n",
+					"    StructField(\"O_COMMENT\", StringType())\n",
+					"])\n",
+					"\n",
+					"\n",
+					"cust_schema = StructType([\n",
+					"    StructField(\"C_CUSTKEY\", IntegerType()),\n",
+					"    StructField(\"C_NAME\", StringType()),\n",
+					"    StructField(\"C_ADDRESS\", StringType()),\n",
+					"    StructField(\"C_NATIONKEY\", ShortType()),\n",
+					"    StructField(\"C_PHONE\", StringType()),\n",
+					"    StructField(\"C_ACCTBAL\", DoubleType()),\n",
+					"    StructField(\"C_MKTSEGMENT\", StringType()),\n",
+					"    StructField(\"C_COMMENT\", StringType())\n",
+					"])"
+				],
+				"execution_count": null
 			}
 		]
 	}
