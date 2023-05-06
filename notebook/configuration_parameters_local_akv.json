@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a9a4b8c8-8cb9-4a49-961c-36e0fb072963"
+				"spark.autotune.trackingId": "4d38f5c3-5e48-4942-9d14-077f52df705e"
 			}
 		},
 		"metadata": {
@@ -51,6 +51,30 @@
 			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from pyspark.sql import SparkSession\n",
+					"\n",
+					"\n",
+					"spark = SparkSession \\\n",
+					".builder \\\n",
+					".appName(\"SQLDay 2023\") \\\n",
+					".getOrCreate()"
+				],
+				"execution_count": null
+			},
 			{
 				"cell_type": "code",
 				"source": [
