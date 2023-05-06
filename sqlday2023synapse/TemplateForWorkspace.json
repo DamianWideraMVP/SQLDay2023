@@ -2014,7 +2014,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "3dcb84cb-9a59-412a-9b7a-b2ce8f9dd056"
+						"spark.autotune.trackingId": "be831854-be50-4f54-bd56-7f69ab9efd05"
 					}
 				},
 				"metadata": {
@@ -2101,7 +2101,7 @@
 							"PARAMETERS = configuration_parameters (\n",
 							"SRC_DATALAKE=\"https://itechdayadla.blob.core.windows.net\",\n",
 							"SRC_CONTAINER=\"demolearn\",\n",
-							"SRC_SASKEY=f\"?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupyx&se=2023-05-31T09:27:54Z&st=2023-05-06T01:27:54Z&spr=https&sig=kvedG7707y8H%2FE8ZNsrEIOl7L2AhS3X0QEqtXi0GoJg%3D\",\n",
+							"SRC_SASKEY=f\"?sp=racwdlmeop&st=2023-05-06T21:33:20Z&se=2023-05-31T05:33:20Z&spr=https&sv=2022-11-02&sr=c&sig=3ZNou11hnKV3laQd1YN5kxti0Ek%2FE4EK3hynf4H2Q2U%3D\",\n",
 							"RAW_DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
 							"RAW_CONTAINER=\"raw\",\n",
 							"RAW_SASKEY=f\"?sp=racwdlmeop&st=2023-05-03T21:02:46Z&se=2023-05-31T05:02:46Z&spr=https&sv=2021-12-02&sr=c&sig=8CY7pN26Rsto5wDJoYUM4RzofvxNaozEwpZWARTqVs0%3D\"\n",
@@ -2836,7 +2836,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "77ced635-9526-4f6f-835b-46746eb854bf"
+						"spark.autotune.trackingId": "3e511a5f-67bd-46c8-9afb-b95757b77d7a"
 					}
 				},
 				"metadata": {
@@ -2883,13 +2883,13 @@
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 							"import requests\n",
-							"import io\n",
+							"import os\n",
 							"from datetime import datetime, timedelta\n",
 							"\n",
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 39
 					},
 					{
 						"cell_type": "code",
@@ -2899,7 +2899,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 29
 					},
 					{
 						"cell_type": "code",
@@ -2919,7 +2919,7 @@
 							"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SRC_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": 30
 					},
 					{
 						"cell_type": "code",
@@ -2935,7 +2935,7 @@
 							}
 						},
 						"source": [
-							"def get_blob_service_client( account: str, sas_token: str) -> BlobServiceClient:\n",
+							"def _get_blob_service_client( account: str, sas_token: str) -> BlobServiceClient:\n",
 							"    account_url = account\n",
 							"    credential = sas_token\n",
 							"    blob_service_client = BlobServiceClient(account_url, credential=credential)\n",
@@ -2943,7 +2943,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 33
 					},
 					{
 						"cell_type": "code",
@@ -2968,7 +2968,7 @@
 							"    return container_client"
 						],
 						"outputs": [],
-						"execution_count": 27
+						"execution_count": 32
 					},
 					{
 						"cell_type": "code",
@@ -2987,7 +2987,7 @@
 							"src_account, src_container, src_sas_token, raw_account, raw_container, raw_sas_token = _get_configuration()"
 						],
 						"outputs": [],
-						"execution_count": 24
+						"execution_count": 34
 					},
 					{
 						"cell_type": "code",
@@ -3003,10 +3003,10 @@
 							}
 						},
 						"source": [
-							"source_bsc = get_blob_service_client (src_account, src_container)"
+							"source_bsc = _get_blob_service_client (src_account, src_container)"
 						],
 						"outputs": [],
-						"execution_count": 21
+						"execution_count": 35
 					},
 					{
 						"cell_type": "code",
@@ -3022,10 +3022,10 @@
 							}
 						},
 						"source": [
-							"raw_bsc = get_blob_service_client (raw_account, raw_container)"
+							"raw_bsc = _get_blob_service_client (raw_account, raw_container)"
 						],
 						"outputs": [],
-						"execution_count": 22
+						"execution_count": 36
 					},
 					{
 						"cell_type": "code",
@@ -3056,7 +3056,7 @@
 							"    return src_account_for_abfss, raw_account_for_abfss, path_to_blob_src, path_to_blob_raw"
 						],
 						"outputs": [],
-						"execution_count": 23
+						"execution_count": 37
 					},
 					{
 						"cell_type": "code",
@@ -3096,7 +3096,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 28
+						"execution_count": 40
 					}
 				]
 			},
