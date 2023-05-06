@@ -1602,7 +1602,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data"
+					"name": "01 Load raw data"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -1621,7 +1621,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "8442f67c-dce7-4f1b-bcd8-8f0fa131ef52"
+						"spark.autotune.trackingId": "14b61de7-f615-4218-aa96-005b6e4c91c9"
 					}
 				},
 				"metadata": {
@@ -1646,13 +1646,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\r\n",
 							"import requests\r\n",
@@ -1662,7 +1664,7 @@
 							"from datetime import datetime, timedelta"
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -1686,7 +1688,7 @@
 							"file_extension = 'csv'"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 16
 					},
 					{
 						"cell_type": "code",
@@ -1710,7 +1712,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
@@ -1750,7 +1752,7 @@
 							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 18
 					},
 					{
 						"cell_type": "code",
@@ -1773,7 +1775,7 @@
 							"    "
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -1800,7 +1802,7 @@
 							"        send_data_to_blob(container_client,dt_str)"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 20
 					},
 					{
 						"cell_type": "code",
@@ -1827,7 +1829,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
@@ -1846,7 +1848,7 @@
 							"bsc = get_blob_service_client_sas(account,sas_token)"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 23
 					},
 					{
 						"cell_type": "code",
@@ -1884,151 +1886,7 @@
 							"upload_last_X_days(bsc,unizpped_container,7)"
 						],
 						"outputs": [],
-						"execution_count": 11
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Raw ingestion AKV')]",
-			"type": "Microsoft.Synapse/workspaces/notebooks",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"folder": {
-					"name": "01_Load_raw_data"
-				},
-				"nbformat": 4,
-				"nbformat_minor": 2,
-				"bigDataPool": {
-					"referenceName": "smallpool",
-					"type": "BigDataPoolReference"
-				},
-				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 1,
-					"conf": {
-						"spark.dynamicAllocation.enabled": "true",
-						"spark.dynamicAllocation.minExecutors": "1",
-						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "f5380663-4ec0-4b04-97eb-912ce463cf24"
-					}
-				},
-				"metadata": {
-					"saveOutput": true,
-					"enableDebugMode": false,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "Synapse PySpark"
-					},
-					"language_info": {
-						"name": "python"
-					},
-					"a365ComputeOptions": {
-						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
-						"name": "smallpool",
-						"type": "Spark",
-						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
-						"auth": {
-							"type": "AAD",
-							"authResource": "https://dev.azuresynapse.net"
-						},
-						"sparkVersion": "3.3",
-						"nodeCount": 3,
-						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
-					},
-					"sessionKeepAliveTimeout": 30
-				},
-				"cells": [
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"from notebookutils import mssparkutils"
-						],
-						"outputs": [],
-						"execution_count": 8
-					},
-					{
-						"cell_type": "code",
-						"metadata": {},
-						"source": [
-							"mssparkutils.notebook.run(f\"01 Load raw data/utils/configuration/configuration_paramaters_local_akv\", 10)"
-						],
-						"outputs": [],
-						"execution_count": 10
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"akv_account = account"
-						],
-						"outputs": [],
-						"execution_count": 16
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"bsc = get_blob_service_client_sas(account,sas_token)"
-						],
-						"outputs": [],
-						"execution_count": 8
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"upload_last_X_days(bsc,container,7)"
-						],
-						"outputs": [],
-						"execution_count": null
+						"execution_count": 24
 					}
 				]
 			},
@@ -2040,7 +1898,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data/utils/configuration"
+					"name": "03 Azure Storage/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2140,7 +1998,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data/utils/configuration"
+					"name": "03 Azure Storage/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2236,7 +2094,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data/utils/configuration"
+					"name": "03 Azure Storage/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2349,7 +2207,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data/utils/configuration"
+					"name": "03 Azure Storage/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2447,7 +2305,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data/utils/configuration"
+					"name": "03 Azure Storage/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2567,7 +2425,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data/utils"
+					"name": "03 Azure Storage"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2585,7 +2443,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "61cd56b8-c86b-48d5-9e97-5b101b28190b"
+						"spark.autotune.trackingId": "405fe0b8-bba2-44b5-ad26-7101d7a391d3"
 					}
 				},
 				"metadata": {
@@ -2610,7 +2468,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -2886,7 +2745,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data/utils"
+					"name": "03 Azure Storage"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3044,7 +2903,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data/utils"
+					"name": "03 Azure Storage"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3062,7 +2921,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "873eb561-c608-4448-b5c7-bc670818e805"
+						"spark.autotune.trackingId": "6ebdfd55-52ff-4581-b24c-dd0a41216270"
 					}
 				},
 				"metadata": {
@@ -3087,7 +2946,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -3363,7 +3223,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01_Load_raw_data/utils"
+					"name": "03 Azure Storage"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
