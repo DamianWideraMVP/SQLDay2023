@@ -1175,7 +1175,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "df865ed9-efe7-4a2a-ab0d-37bb54bc40bb"
+						"spark.autotune.trackingId": "271c3b26-9457-4136-aa29-138248319c50"
 					}
 				},
 				"metadata": {
@@ -1194,7 +1194,7 @@
 					{
 						"cell_type": "code",
 						"source": [
-							""
+							"%run utils/configuration_parameters"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -2073,7 +2073,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b128519d-7fc1-435b-a647-2bd971a48017"
+						"spark.autotune.trackingId": "59baeda8-dcbd-4ef5-8411-a78f91ad1de0"
 					}
 				},
 				"metadata": {
@@ -2081,7 +2081,7 @@
 					"enableDebugMode": false,
 					"kernelspec": {
 						"name": "synapse_pyspark",
-						"display_name": "python"
+						"display_name": "Synapse PySpark"
 					},
 					"language_info": {
 						"name": "python"
@@ -2116,7 +2116,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -2135,8 +2135,77 @@
 							"PARAMETERS = configuration_parameters (\n",
 							"DATALAKE=\"https://itechdayadla.dfs.core.windows.net\",\n",
 							"CONTAINER=\"demolearn\",\n",
-							"SASKEY=\"?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupyx&se=2023-05-31T09:27:54Z&st=2023-05-06T01:27:54Z&spr=https&sig=kvedG7707y8H%2FE8ZNsrEIOl7L2AhS3X0QEqtXi0GoJg%3D\"\n",
+							"SASKEY=r\"?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupyx&se=2023-05-31T09:27:54Z&st=2023-05-06T01:27:54Z&spr=https&sig=kvedG7707y8H%2FE8ZNsrEIOl7L2AhS3X0QEqtXi0GoJg%3D\"\n",
 							")"
+						],
+						"outputs": [],
+						"execution_count": 4
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/configuration_parameters_akv')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "utils"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "6a4fdc06-d83a-4981-8a22-c729a7c58543"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "python"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": true
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"\n",
+							""
 						],
 						"outputs": [],
 						"execution_count": null
