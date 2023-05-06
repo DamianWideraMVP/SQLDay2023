@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8fa5ca93-f9c6-44c2-b1b2-8fd5207ad8fe"
+				"spark.autotune.trackingId": "5ebd74ea-9114-45a3-b264-75674789c478"
 			}
 		},
 		"metadata": {
@@ -77,7 +77,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"%run utils/configuration/configuration_parameters"
+					"%run \"03 Azure Storage/configuration/configuration_parameters\""
 				],
 				"execution_count": 1
 			},
