@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b6a62c6e-b2cf-4e6c-b139-175969f5a75e"
+				"spark.autotune.trackingId": "5f857358-656a-4270-ae37-09c302ca4221"
 			}
 		},
 		"metadata": {
@@ -62,7 +62,7 @@
 					"import io\r\n",
 					"from datetime import datetime, timedelta"
 				],
-				"execution_count": 4
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -85,7 +85,7 @@
 					"unizpped_container = 'raw'\r\n",
 					"file_extension = 'csv'"
 				],
-				"execution_count": 5
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
