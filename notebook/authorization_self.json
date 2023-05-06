@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a0bd2000-f3f4-43e7-81dd-3da9beac7fda"
+				"spark.autotune.trackingId": "56540dfe-c70f-4fea-9d51-6cc518c7be6f"
 			}
 		},
 		"metadata": {
@@ -101,6 +101,25 @@
 					""
 				],
 				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def get_configuration():\n",
+					"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER"
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
