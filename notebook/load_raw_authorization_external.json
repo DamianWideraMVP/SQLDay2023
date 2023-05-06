@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2ccf3c7f-61fd-4701-8b24-4c5c0e66d7d4"
+				"spark.autotune.trackingId": "14c811a5-adf5-42aa-b2b3-d47964e86d90"
 			}
 		},
 		"metadata": {
@@ -72,7 +72,7 @@
 					"\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 7
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -80,7 +80,7 @@
 					"%run \"03 Azure Storage/configuration/configuration_parameters\"\n",
 					""
 				],
-				"execution_count": 8
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -99,7 +99,7 @@
 					"def _get_configuration():\n",
 					"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SCR_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 				],
-				"execution_count": null
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
