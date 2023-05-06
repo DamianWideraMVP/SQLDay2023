@@ -2146,7 +2146,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b827b98c-b0df-4c34-93e8-3c9faa3580db"
+						"spark.autotune.trackingId": "23ceabfa-83e5-46f8-9f04-0765b4cace3e"
 					}
 				},
 				"metadata": {
@@ -3453,7 +3453,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "2c4b9677-afb4-448a-890b-35e359af808a"
+						"spark.autotune.trackingId": "124ecb2c-8f4d-4da9-8e93-7190367a20f3"
 					}
 				},
 				"metadata": {
@@ -3478,7 +3478,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -3498,16 +3499,11 @@
 						},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
-							"import requests\n",
-							"import pandas as pd\n",
-							"import zipfile\n",
-							"import io\n",
-							"from datetime import datetime, timedelta\n",
-							"\n",
+							"import os\n",
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 54
+						"execution_count": 26
 					},
 					{
 						"cell_type": "code",
@@ -3523,10 +3519,10 @@
 							}
 						},
 						"source": [
-							"%run utils/configuration/configuration_parameters_local"
+							"%run utils/configuration/configuration_paramaters_raw_bronze"
 						],
 						"outputs": [],
-						"execution_count": 55
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -3543,10 +3539,11 @@
 						},
 						"source": [
 							"def get_configuration():\n",
-							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
+							"    return PARAMETERS.DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.BRONZE_CONTAINER, PARAMETERS.RAW_SASKEY, PARAMETERS.BRONZE_SASKEY\n",
+							""
 						],
 						"outputs": [],
-						"execution_count": 56
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -3570,7 +3567,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 57
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -3586,104 +3583,11 @@
 							}
 						},
 						"source": [
-							"def _send_data_to_blob (container_client: ContainerClient, fileName:str):\n",
-							"    url = url_base+fileName\n",
-							"\n",
-							"\n",
-							"    print (f'url: {url}')\n",
-							"\n",
-							"    file = fileName.split('.')[0]\n",
-							"    file_to_save = file +'.'+file_extension\n",
-							"\n",
-							"    r = requests.get(url, allow_redirects=True)\n",
-							"    zipDocument = zipfile.ZipFile(io.BytesIO(r.content))  \n",
-							"    \n",
-							"    listOfFileNames = zipDocument.namelist()\n",
-							"\n",
-							"    for file in listOfFileNames:\n",
-							"        tmp = zipDocument.extract(file)\n",
-							"        print (f'file: {file}, p={tmp}')\n",
-							"\n",
-							"        f = open (tmp,\"r\")\n",
-							"        content = f.read()\n",
-							"\n",
-							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
-						],
-						"outputs": [],
-						"execution_count": 58
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"def _create_nested_container_client(blob_service_client: BlobServiceClient, container_name: str, subfolder: str) -> ContainerClient:\n",
-							"    new_name_for_container = container_name + \"/\" + subfolder[0:6]\n",
-							"    return blob_service_client.get_container_client(container=new_name_for_container)"
-						],
-						"outputs": [],
-						"execution_count": 59
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"def upload_blob_file_for_dates(blob_service_client: BlobServiceClient, container_name: str, date_start:str, date_end:str):\n",
-							"    '''date_start and date_end in format YYYY-MM-DD'''\n",
-							"\n",
-							"    for dt in pd.period_range(start=date_start, end=date_end, freq='D'):\n",
-							"        dt_str = str(dt).replace(\"-\",\"\")+'.export.CSV.zip'\n",
-							"\n",
-							"        container_client = _create_nested_container_client(blob_service_client, container_name, dt_str)\n",
-							"        \n",
-							"        _send_data_to_blob(container_client,dt_str)"
-						],
-						"outputs": [],
-						"execution_count": 60
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"def upload_last_X_days(blob_service_client: BlobServiceClient, container_name: str, days: int):\n",
-							"    \n",
-							"    end_date = (datetime.today() - timedelta(days=1)).strftime(\"%Y-%m-%d\")\n",
-							"    start_date = (datetime.today() - timedelta(days=days)).strftime(\"%Y-%m-%d\")\n",
-							"\n",
-							"    upload_blob_file_for_dates(blob_service_client, container_name,start_date,end_date )\n",
+							"account , raw_container, bronze_container, raw_sas_token, bronze_sas_token = get_configuration()\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": 61
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -3699,12 +3603,73 @@
 							}
 						},
 						"source": [
-							"account ,sas_token, container, url_base = get_configuration()\n",
+							"account , raw_container, bronze_container, raw_sas_token, bronze_sas_token"
+						],
+						"outputs": [],
+						"execution_count": 19
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"raw_bsc = get_blob_service_client_sas(account,raw_sas_token)"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"bronze_bsc = get_blob_service_client_sas(account,bronze_sas_token)"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _get_container_client(blob_service_client: BlobServiceClient, url: str, secret: str) -> ContainerClient:\n",
 							"\n",
-							"file_extension = 'csv'"
+							"    sas_key = secret\n",
+							"    if '?' not in sas_key:\n",
+							"        sas_key = '?'+sas_key\n",
+							"    container_client = ContainerClient.from_container_url(url+sas_key)\n",
+							"    return container_client"
 						],
 						"outputs": [],
-						"execution_count": 62
+						"execution_count": 24
 					},
 					{
 						"cell_type": "code",
@@ -3720,10 +3685,20 @@
 							}
 						},
 						"source": [
-							"bsc = get_blob_service_client_sas(account,sas_token)"
+							"def _prepare_paths_for_data_processing (account: str, raw_container: str, bronze_container: str, folder: str, file_name: str):\n",
+							"\n",
+							"    #abfss://raw@sqlday2023.dfs.core.windows.net/customer/part-00000-tid-3200334632332214470-9b4dec79-7e2e-495d-8657-3b5457ed3753-108-1-c000.csv\n",
+							"    #abfss://bronze@sqlday2023.dfs.core.windows.net/AWorks\n",
+							"\n",
+							"\n",
+							"    account_for_abfss = account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
+							"        \n",
+							"    path_to_blob_raw = \"abfss://\" + raw_container + \"@\" + account_for_abfss+\"/\"+ folder +\"/\"+file_name\n",
+							"    path_to_blob_bronze = \"abfss://\" + bronze_container + \"@\" + account_for_abfss+\"/\"+ folder\n",
+							"    return account_for_abfss, path_to_blob_raw, path_to_blob_bronze"
 						],
 						"outputs": [],
-						"execution_count": 63
+						"execution_count": 72
 					},
 					{
 						"cell_type": "code",
@@ -3739,10 +3714,49 @@
 							}
 						},
 						"source": [
-							"upload_last_X_days(bsc,container,7)"
+							"folders = [\"customer\",\"orders\"]"
 						],
 						"outputs": [],
-						"execution_count": 64
+						"execution_count": 67
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"for folder in folders:\n",
+							"    full_path_raw = account + \"/\" + raw_container \n",
+							"    full_path_bronze = account + \"/\" + bronze_container + \"/\" + folder\n",
+							"\n",
+							"    raw_container_client = _get_container_client(raw_bsc, full_path_raw, raw_sas_token)\n",
+							"    bronze_container_client = _get_container_client(raw_bsc,full_path_bronze, bronze_sas_token )\n",
+							"\n",
+							"    blob_list = raw_container_client.list_blobs(name_starts_with=folder) \n",
+							"\n",
+							"\n",
+							"    for item in blob_list:\n",
+							"        blob = os.path.basename(item.name )\n",
+							"\n",
+							"        account_for_abfss, path_to_blob_raw, path_to_blob_bronze = _prepare_paths_for_data_processing(account, raw_container, bronze_container, folder, blob)\n",
+							"\n",
+							"        if 'csv' in path_to_blob_raw:\n",
+							"            print (path_to_blob_raw)        \n",
+							"            df = spark.read.load(path_to_blob_raw, format='csv', header=True)\n",
+							"            df.write.mode(\"append\").parquet(path_to_blob_bronze)\n",
+							"        \n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 73
 					}
 				]
 			},
@@ -3784,6 +3798,26 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/broze vs raw compare')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- This is auto-generated code\nSELECT\n     COUNT(*)\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/bronze/customer/*.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\nGO\nSELECT\n    COUNT(*) \nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/customer/*.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
 		}
 	]
 }
