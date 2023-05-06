@@ -2176,7 +2176,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "38e3e53a-f9f5-408c-8f70-f85b41df42a3"
+						"spark.autotune.trackingId": "0e9838c2-5791-424b-8d8e-172d2ae6f6e6"
 					}
 				},
 				"metadata": {
@@ -2201,7 +2201,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -2230,7 +2231,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 42
+						"execution_count": 54
 					},
 					{
 						"cell_type": "code",
@@ -2249,7 +2250,7 @@
 							"%run utils/configuration/configuration_parameters_local"
 						],
 						"outputs": [],
-						"execution_count": 43
+						"execution_count": 55
 					},
 					{
 						"cell_type": "code",
@@ -2269,7 +2270,7 @@
 							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
 						],
 						"outputs": [],
-						"execution_count": 44
+						"execution_count": 56
 					},
 					{
 						"cell_type": "code",
@@ -2293,7 +2294,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 35
+						"execution_count": 57
 					},
 					{
 						"cell_type": "code",
@@ -2333,7 +2334,7 @@
 							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 						],
 						"outputs": [],
-						"execution_count": 36
+						"execution_count": 58
 					},
 					{
 						"cell_type": "code",
@@ -2354,7 +2355,7 @@
 							"    return blob_service_client.get_container_client(container=new_name_for_container)"
 						],
 						"outputs": [],
-						"execution_count": 37
+						"execution_count": 59
 					},
 					{
 						"cell_type": "code",
@@ -2381,7 +2382,7 @@
 							"        _send_data_to_blob(container_client,dt_str)"
 						],
 						"outputs": [],
-						"execution_count": 38
+						"execution_count": 60
 					},
 					{
 						"cell_type": "code",
@@ -2406,7 +2407,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 39
+						"execution_count": 61
 					},
 					{
 						"cell_type": "code",
@@ -2427,7 +2428,7 @@
 							"file_extension = 'csv'"
 						],
 						"outputs": [],
-						"execution_count": 52
+						"execution_count": 62
 					},
 					{
 						"cell_type": "code",
@@ -2446,7 +2447,7 @@
 							"bsc = get_blob_service_client_sas(account,sas_token)"
 						],
 						"outputs": [],
-						"execution_count": 50
+						"execution_count": 63
 					},
 					{
 						"cell_type": "code",
@@ -2465,7 +2466,7 @@
 							"upload_last_X_days(bsc,container,7)"
 						],
 						"outputs": [],
-						"execution_count": 53
+						"execution_count": 64
 					}
 				]
 			},
@@ -2591,7 +2592,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "a51a9b12-7d8d-41f5-a08b-876525a9e682"
+						"spark.autotune.trackingId": "870adc6f-185c-4f66-b4d7-e38837565769"
 					}
 				},
 				"metadata": {
@@ -2616,13 +2617,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"from notebookutils import mssparkutils"
@@ -2704,7 +2707,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "225b3792-1f71-445c-af9d-dc669f51f0f4"
+						"spark.autotune.trackingId": "d5350cb3-5598-4d84-aaf7-c574b75f5f25"
 					}
 				},
 				"metadata": {
@@ -2816,6 +2819,426 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/authorization_self_akv')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "utils"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "4f34f0bc-76cc-4746-b130-51b7cd1b9c4b"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": true
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
+							"import requests\n",
+							"import pandas as pd\n",
+							"import zipfile\n",
+							"import io\n",
+							"from datetime import datetime, timedelta\n",
+							"\n",
+							"from notebookutils import mssparkutils"
+						],
+						"outputs": [],
+						"execution_count": 54
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%run utils/configuration/configuration_parameters_local"
+						],
+						"outputs": [],
+						"execution_count": 55
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_configuration():\n",
+							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
+						],
+						"outputs": [],
+						"execution_count": 56
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_blob_service_client_sas( account: str, sas_token: str) -> BlobServiceClient:\n",
+							"    account_url = account\n",
+							"    credential = sas_token\n",
+							"    blob_service_client = BlobServiceClient(account_url, credential=credential)\n",
+							"\n",
+							"    return blob_service_client"
+						],
+						"outputs": [],
+						"execution_count": 57
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _send_data_to_blob (container_client: ContainerClient, fileName:str):\n",
+							"    url = url_base+fileName\n",
+							"\n",
+							"\n",
+							"    print (f'url: {url}')\n",
+							"\n",
+							"    file = fileName.split('.')[0]\n",
+							"    file_to_save = file +'.'+file_extension\n",
+							"\n",
+							"    r = requests.get(url, allow_redirects=True)\n",
+							"    zipDocument = zipfile.ZipFile(io.BytesIO(r.content))  \n",
+							"    \n",
+							"    listOfFileNames = zipDocument.namelist()\n",
+							"\n",
+							"    for file in listOfFileNames:\n",
+							"        tmp = zipDocument.extract(file)\n",
+							"        print (f'file: {file}, p={tmp}')\n",
+							"\n",
+							"        f = open (tmp,\"r\")\n",
+							"        content = f.read()\n",
+							"\n",
+							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
+						],
+						"outputs": [],
+						"execution_count": 58
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _create_nested_container_client(blob_service_client: BlobServiceClient, container_name: str, subfolder: str) -> ContainerClient:\n",
+							"    new_name_for_container = container_name + \"/\" + subfolder[0:6]\n",
+							"    return blob_service_client.get_container_client(container=new_name_for_container)"
+						],
+						"outputs": [],
+						"execution_count": 59
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def upload_blob_file_for_dates(blob_service_client: BlobServiceClient, container_name: str, date_start:str, date_end:str):\n",
+							"    '''date_start and date_end in format YYYY-MM-DD'''\n",
+							"\n",
+							"    for dt in pd.period_range(start=date_start, end=date_end, freq='D'):\n",
+							"        dt_str = str(dt).replace(\"-\",\"\")+'.export.CSV.zip'\n",
+							"\n",
+							"        container_client = _create_nested_container_client(blob_service_client, container_name, dt_str)\n",
+							"        \n",
+							"        _send_data_to_blob(container_client,dt_str)"
+						],
+						"outputs": [],
+						"execution_count": 60
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def upload_last_X_days(blob_service_client: BlobServiceClient, container_name: str, days: int):\n",
+							"    \n",
+							"    end_date = (datetime.today() - timedelta(days=1)).strftime(\"%Y-%m-%d\")\n",
+							"    start_date = (datetime.today() - timedelta(days=days)).strftime(\"%Y-%m-%d\")\n",
+							"\n",
+							"    upload_blob_file_for_dates(blob_service_client, container_name,start_date,end_date )\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 61
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"account ,sas_token, container, url_base = get_configuration()\n",
+							"\n",
+							"file_extension = 'csv'"
+						],
+						"outputs": [],
+						"execution_count": 62
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"bsc = get_blob_service_client_sas(account,sas_token)"
+						],
+						"outputs": [],
+						"execution_count": 63
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"upload_last_X_days(bsc,container,7)"
+						],
+						"outputs": [],
+						"execution_count": 64
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/configuration_parameters_local_akv')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "utils/configuration"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "fd5afdbe-cce7-45b3-ac85-6edcf29879d2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": true
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"from dataclasses import dataclass\n",
+							"\n",
+							"@dataclass\n",
+							"class configuration_parameters_local:\n",
+							"    DATALAKE: str\n",
+							"    CONTAINER: str\n",
+							"    SASKEY: str\n",
+							"    URL: str\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"PARAMETERS = configuration_parameters_local (\n",
+							"DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
+							"CONTAINER=\"raw\",\n",
+							"SASKEY=SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayRaw','SQLDay_AKV'),\n",
+							"URL= 'http://data.gdeltproject.org/events/'\n",
+							")"
+						],
+						"outputs": [],
+						"execution_count": 2
+					}
+				]
+			},
+			"dependsOn": []
 		}
 	]
 }
