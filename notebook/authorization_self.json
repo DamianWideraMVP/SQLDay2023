@@ -20,9 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d71cd02f-b371-4d1c-b60d-69c32972d34c",
-				"spark.synapse.library.python.env": "name: sqlday2023\nchannels:\n- defaults\ndependencies:\n- pip:\n  - zipfile36",
-				"spark.synapse.library.python.env.name": "environment.yml"
+				"spark.autotune.trackingId": "3d0ef185-f66b-489d-aa64-93ef1c408855"
 			}
 		},
 		"metadata": {
@@ -72,14 +70,18 @@
 					"import pandas as pd\n",
 					"import zipfile\n",
 					"import io\n",
-					"from datetime import datetime, timedelta"
+					"from datetime import datetime, timedelta\n",
+					"\n",
+					"from notebookutils import mssparkutils"
 				],
 				"execution_count": null
 			},
 			{
 				"cell_type": "code",
 				"source": [
-					"%run utils/configuration/configuration_parameters_akv"
+					"mssparkutils.notebook.run(\"utils/configuration/configuration_parameters_akv\", 10)\n",
+					"\n",
+					"#%run utils/configuration/configuration_parameters_akv"
 				],
 				"execution_count": null
 			},
