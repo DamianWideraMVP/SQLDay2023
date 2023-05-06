@@ -2176,7 +2176,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4416b12b-a63c-4e77-848c-98bf5b722407"
+						"spark.autotune.trackingId": "38e3e53a-f9f5-408c-8f70-f85b41df42a3"
 					}
 				},
 				"metadata": {
@@ -2230,7 +2230,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 32
+						"execution_count": 42
 					},
 					{
 						"cell_type": "code",
@@ -2246,10 +2246,10 @@
 							}
 						},
 						"source": [
-							"%run utils/configuration/configuration_parameters_akv"
+							"%run utils/configuration/configuration_parameters_local"
 						],
 						"outputs": [],
-						"execution_count": 33
+						"execution_count": 43
 					},
 					{
 						"cell_type": "code",
@@ -2266,10 +2266,10 @@
 						},
 						"source": [
 							"def get_configuration():\n",
-							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER"
+							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
 						],
 						"outputs": [],
-						"execution_count": 34
+						"execution_count": 44
 					},
 					{
 						"cell_type": "code",
@@ -2422,10 +2422,12 @@
 							}
 						},
 						"source": [
-							"account ,sas_token, container = get_configuration()"
+							"account ,sas_token, container, url_base = get_configuration()\n",
+							"\n",
+							"file_extension = 'csv'"
 						],
 						"outputs": [],
-						"execution_count": 40
+						"execution_count": 52
 					},
 					{
 						"cell_type": "code",
@@ -2444,7 +2446,7 @@
 							"bsc = get_blob_service_client_sas(account,sas_token)"
 						],
 						"outputs": [],
-						"execution_count": 41
+						"execution_count": 50
 					},
 					{
 						"cell_type": "code",
@@ -2463,7 +2465,7 @@
 							"upload_last_X_days(bsc,container,7)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 53
 					}
 				]
 			},
@@ -2702,7 +2704,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "369e7c1f-2c9e-4769-a87f-30cc182991ee"
+						"spark.autotune.trackingId": "225b3792-1f71-445c-af9d-dc669f51f0f4"
 					}
 				},
 				"metadata": {
@@ -2767,12 +2769,12 @@
 							"PARAMETERS = configuration_parameters_local (\n",
 							"DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
 							"CONTAINER=\"raw\",\n",
-							"SASKEY=f'sp=racwdlmeop&st=2023-05-03T11:20:20Z&se=2023-05-31T19:20:20Z&spr=https&sv=2021-12-02&sr=c&sig=SITj%2FKFPa%2FTLJgawl6TeqABXjTpimz9WcH62TPyxKss%3D',\n",
+							"SASKEY=f'sp=racwdlmeop&st=2023-05-03T21:02:46Z&se=2023-05-31T05:02:46Z&spr=https&sv=2021-12-02&sr=c&sig=8CY7pN26Rsto5wDJoYUM4RzofvxNaozEwpZWARTqVs0%3D',\n",
 							"URL= 'http://data.gdeltproject.org/events/'\n",
 							")"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 2
 					}
 				]
 			},
