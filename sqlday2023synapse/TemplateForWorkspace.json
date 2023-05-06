@@ -1621,7 +1621,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "12da8d92-75dd-4acc-82f9-3bfd25c4944d"
+						"spark.autotune.trackingId": "01bacead-e1b9-4ba9-95c1-e10b94b73503"
 					}
 				},
 				"metadata": {
@@ -1647,7 +1647,6 @@
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": {},
 						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
@@ -1913,7 +1912,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "c3b88769-89b9-4036-9050-a44518396522"
+						"spark.autotune.trackingId": "29bdb392-3dce-4533-996e-756f991746d0"
 					}
 				},
 				"metadata": {
@@ -2018,7 +2017,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "ae021634-cd08-4a9d-9f5f-42a3e559e664"
+						"spark.autotune.trackingId": "34caf07e-9781-47b9-b019-44637c08f18f"
 					}
 				},
 				"metadata": {
@@ -2044,7 +2043,6 @@
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": {},
 						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
@@ -2117,7 +2115,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "296b6d99-e590-43a7-8bb1-83094c9247ae"
+						"spark.autotune.trackingId": "5a061b57-6439-45fa-9dac-2720388636da"
 					}
 				},
 				"metadata": {
@@ -2143,7 +2141,6 @@
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": {},
 						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
@@ -2233,7 +2230,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "92964d90-c572-48f2-9646-f151a60c0c0c"
+						"spark.autotune.trackingId": "d43d67ce-3760-41cb-9735-f27cfbc8e529"
 					}
 				},
 				"metadata": {
@@ -2259,7 +2256,6 @@
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": {},
 						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
@@ -2334,7 +2330,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "2fd589b0-5e04-42c4-ae77-23153fc083ea"
+						"spark.autotune.trackingId": "90febf92-e078-47f5-b42a-1fea14f3a5a7"
 					}
 				},
 				"metadata": {
@@ -2360,7 +2356,6 @@
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": {},
 						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
@@ -2480,7 +2475,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "3b39108d-1303-483c-af93-7d15e1e76db0"
+						"spark.autotune.trackingId": "90430787-7f59-4710-879f-853c6585410b"
 					}
 				},
 				"metadata": {
@@ -2506,7 +2501,6 @@
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": {},
 						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
@@ -2561,7 +2555,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -2580,7 +2574,7 @@
 							"%run \"03 Azure Storage/configuration/configuration_parameters_local_akv\""
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -2600,7 +2594,7 @@
 							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -2624,7 +2618,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -2664,7 +2658,7 @@
 							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -2685,7 +2679,7 @@
 							"    return blob_service_client.get_container_client(container=new_name_for_container)"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -2712,7 +2706,7 @@
 							"        _send_data_to_blob(container_client,dt_str)"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -2737,7 +2731,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -2758,7 +2752,7 @@
 							"file_extension = 'csv'"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -2777,7 +2771,7 @@
 							"bsc = get_blob_service_client_sas(account,sas_token)"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -2796,7 +2790,7 @@
 							"upload_last_X_days(bsc,container,7)"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 15
 					}
 				]
 			},
@@ -2826,7 +2820,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "41ba0cbe-9f75-4b9a-b673-c2fe8b58a99d"
+						"spark.autotune.trackingId": "4fce2845-77de-4673-b948-9950c52d8207"
 					}
 				},
 				"metadata": {
@@ -2852,7 +2846,6 @@
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": {},
 						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
@@ -2987,7 +2980,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "475a523c-cd01-4450-8468-d6b2bc9ece64"
+						"spark.autotune.trackingId": "dd2701f2-c88a-41b7-b7fc-548958b98e10"
 					}
 				},
 				"metadata": {
@@ -3013,12 +3006,36 @@
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": {},
 						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from pyspark.sql import SparkSession\n",
+							"\n",
+							"\n",
+							"spark = SparkSession \\\n",
+							".builder \\\n",
+							".appName(\"SQLDay 2023\") \\\n",
+							".getOrCreate()"
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
 					{
 						"cell_type": "code",
 						"metadata": {
@@ -3043,7 +3060,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 54
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -3059,10 +3076,10 @@
 							}
 						},
 						"source": [
-							"%run utils/configuration/configuration_parameters_local"
+							"%run \"03 Azure Storage/configuration/configuration_parameters_local\""
 						],
 						"outputs": [],
-						"execution_count": 55
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -3082,7 +3099,7 @@
 							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
 						],
 						"outputs": [],
-						"execution_count": 56
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -3106,7 +3123,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 57
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -3146,7 +3163,7 @@
 							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 						],
 						"outputs": [],
-						"execution_count": 58
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -3167,7 +3184,7 @@
 							"    return blob_service_client.get_container_client(container=new_name_for_container)"
 						],
 						"outputs": [],
-						"execution_count": 59
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -3194,7 +3211,7 @@
 							"        _send_data_to_blob(container_client,dt_str)"
 						],
 						"outputs": [],
-						"execution_count": 60
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -3219,7 +3236,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 61
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -3240,7 +3257,7 @@
 							"file_extension = 'csv'"
 						],
 						"outputs": [],
-						"execution_count": 62
+						"execution_count": 16
 					},
 					{
 						"cell_type": "code",
@@ -3259,7 +3276,7 @@
 							"bsc = get_blob_service_client_sas(account,sas_token)"
 						],
 						"outputs": [],
-						"execution_count": 63
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
@@ -3278,7 +3295,7 @@
 							"upload_last_X_days(bsc,container,7)"
 						],
 						"outputs": [],
-						"execution_count": 64
+						"execution_count": 18
 					}
 				]
 			},
@@ -3308,7 +3325,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "24eef330-a144-4874-a8be-b3668d3c0146"
+						"spark.autotune.trackingId": "05b66b56-656a-447d-8866-5cb1730e4c88"
 					}
 				},
 				"metadata": {
@@ -3334,7 +3351,6 @@
 						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
-						"extraHeader": {},
 						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
