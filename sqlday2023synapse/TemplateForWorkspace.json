@@ -869,7 +869,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "a942ea1b-8f24-484d-8523-8654c04ae082"
+						"spark.autotune.trackingId": "8442f67c-dce7-4f1b-bcd8-8f0fa131ef52"
 					}
 				},
 				"metadata": {
@@ -912,7 +912,7 @@
 							"from datetime import datetime, timedelta"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -936,7 +936,7 @@
 							"file_extension = 'csv'"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -960,7 +960,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -1000,7 +1000,7 @@
 							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -1023,7 +1023,7 @@
 							"    "
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -1050,7 +1050,7 @@
 							"        send_data_to_blob(container_client,dt_str)"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -1077,7 +1077,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -1096,7 +1096,7 @@
 							"bsc = get_blob_service_client_sas(account,sas_token)"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -1134,7 +1134,7 @@
 							"upload_last_X_days(bsc,unizpped_container,7)"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 11
 					}
 				]
 			},
@@ -1164,7 +1164,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "db280dcc-9a87-487f-9113-69396329b51b"
+						"spark.autotune.trackingId": "f62e609f-fd24-408f-bcba-caeb0ad0d901"
 					}
 				},
 				"metadata": {
@@ -1212,16 +1212,16 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
 						"metadata": {},
 						"source": [
-							"mssparkutils.notebook.run(\"utils/authorization_self\", 10)"
+							"mssparkutils.notebook.run(\"utils/load_raw_authorization_akv\", 10)"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -1814,7 +1814,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "61cd56b8-c86b-48d5-9e97-5b101b28190b"
+						"spark.autotune.trackingId": "ba66b023-8a96-4d42-a865-3b43d11c016c"
 					}
 				},
 				"metadata": {
