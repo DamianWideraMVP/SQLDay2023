@@ -15,7 +15,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2ef37400-9a4f-48f5-bf0d-c3311c4c95f8",
+				"spark.autotune.trackingId": "98762765-218f-44b3-b6cd-94e2f81e1aca",
 				"spark.synapse.context.sjdname": "Spark job sample"
 			},
 			"args": [
