@@ -1,0 +1,195 @@
+{
+	"name": "51 copy archive folder to raw",
+	"properties": {
+		"activities": [
+			{
+				"name": "FileList4Src",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "src_dir_file_archive",
+						"type": "DatasetReference",
+						"parameters": {
+							"DYear": {
+								"value": "@pipeline().parameters.UYear",
+								"type": "Expression"
+							},
+							"DMonth": {
+								"value": "@pipeline().parameters.UMonth",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "CopyFilez",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FileList4Src",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('FileList4Src').output.childItems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "CopySingleFile",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFileName": {
+											"value": "@{item().name}",
+											"type": "Expression"
+										},
+										"deleteFilesAfterCompletion": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "src_dir_file_archive",
+									"type": "DatasetReference",
+									"parameters": {
+										"DYear": {
+											"value": "@pipeline().parameters.UYear",
+											"type": "Expression"
+										},
+										"DMonth": {
+											"value": "@pipeline().parameters.UMonth",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "dst_dir_file_raw",
+									"type": "DatasetReference",
+									"parameters": {
+										"DAYear": {
+											"value": "@pipeline().parameters.UYear",
+											"type": "Expression"
+										},
+										"DAMonth": {
+											"value": "@pipeline().parameters.UMonth",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "DeleteSingleFile",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "CopySingleFile",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "src_dir_file_archive",
+									"type": "DatasetReference",
+									"parameters": {
+										"DYear": {
+											"value": "@pipeline().parameters.UYear",
+											"type": "Expression"
+										},
+										"DMonth": {
+											"value": "@pipeline().parameters.UMonth",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": {
+										"value": "@{item().name}",
+										"type": "Expression"
+									},
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"UYear": {
+				"type": "string",
+				"defaultValue": "2013"
+			},
+			"UMonth": {
+				"type": "string",
+				"defaultValue": "04"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-04T00:05:41Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

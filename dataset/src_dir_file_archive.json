@@ -1,0 +1,31 @@
+{
+	"name": "src_dir_file_archive",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "lsDataLakeSilver",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"DYear": {
+				"type": "string",
+				"defaultValue": "2013"
+			},
+			"DMonth": {
+				"type": "string",
+				"defaultValue": "05"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat('archive/', dataset().DYear, dataset().DMonth)",
+					"type": "Expression"
+				},
+				"fileSystem": "raw"
+			}
+		}
+	}
+}

@@ -1,5 +1,5 @@
 {
-	"name": "02 load up all history",
+	"name": "50 copy back to raw",
 	"properties": {
 		"activities": [
 			{
@@ -50,35 +50,43 @@
 						"value": "@activity('ListAllFolders').output.value",
 						"type": "Expression"
 					},
-					"isSequential": false,
 					"activities": [
 						{
-							"name": "ExecCopyFolder",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "IfAnyFiles",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"name": "ListFiles",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
-								"pipeline": {
-									"referenceName": "11 copy history to bronze",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"UYear": {
-										"value": "@item().Byear",
-										"type": "Expression"
-									},
-									"UMonth": {
-										"value": "@item().Bmonth",
-										"type": "Expression"
+								"dataset": {
+									"referenceName": "src_dir_file_archive",
+									"type": "DatasetReference",
+									"parameters": {
+										"DYear": {
+											"value": "@item().Byear",
+											"type": "Expression"
+										},
+										"DMonth": {
+											"value": "@item().Bmonth",
+											"type": "Expression"
+										}
 									}
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
 								}
 							}
 						},
@@ -106,14 +114,14 @@
 										"dependsOn": [],
 										"userProperties": [],
 										"typeProperties": {
-											"message": "No files in the source folder",
-											"errorCode": "5001"
+											"message": "No archive files",
+											"errorCode": "5002"
 										}
 									}
 								],
 								"ifTrueActivities": [
 									{
-										"name": "WaitTrue",
+										"name": "WaitYes",
 										"type": "Wait",
 										"dependsOn": [],
 										"userProperties": [],
@@ -122,45 +130,6 @@
 										}
 									}
 								]
-							}
-						},
-						{
-							"name": "ListFiles",
-							"type": "GetMetadata",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "src_dir_file",
-									"type": "DatasetReference",
-									"parameters": {
-										"DYear": {
-											"value": "@item().Byear",
-											"type": "Expression"
-										},
-										"DMonth": {
-											"value": "@item().Bmonth",
-											"type": "Expression"
-										}
-									}
-								},
-								"fieldList": [
-									"childItems"
-								],
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
 							}
 						},
 						{
@@ -177,6 +146,36 @@
 							"userProperties": [],
 							"typeProperties": {
 								"waitTimeInSeconds": 1
+							}
+						},
+						{
+							"name": "ExecBackFromArchive",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "IfAnyFiles",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "51 copy archive folder to raw",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"UYear": {
+										"value": "@item().Byear",
+										"type": "Expression"
+									},
+									"UMonth": {
+										"value": "@item().Bmonth",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
