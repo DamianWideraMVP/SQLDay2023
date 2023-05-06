@@ -1,0 +1,23 @@
+{
+	"name": "DemoLearn",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"sasUri": "https://itechdayadla.dfs.core.windows.net",
+			"sasToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "SQLDay_AKV",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "DemoLearn"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
