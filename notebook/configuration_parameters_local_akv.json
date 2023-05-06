@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4054f0a3-ceae-4d2f-9935-3db97edd53d1"
+				"spark.autotune.trackingId": "af4dfd08-59ad-4b81-96f6-6cd6de0d998d"
 			}
 		},
 		"metadata": {
@@ -54,17 +54,36 @@
 			{
 				"cell_type": "code",
 				"source": [
-					"from dataclasses import dataclassfrom notebookutils import mssparkutils\n",
+					"from dataclasses import dataclass\n",
+					"from notebookutils import mssparkutils\n",
 					"\n",
+					"\n",
+					""
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"@dataclass\n",
 					"class configuration_parameters_local:\n",
 					"    DATALAKE: str\n",
 					"    CONTAINER: str\n",
 					"    SASKEY: str\n",
-					"    URL: str\n",
-					""
+					"    URL: str"
 				],
-				"execution_count": 3
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
