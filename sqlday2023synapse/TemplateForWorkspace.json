@@ -2592,7 +2592,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "870adc6f-185c-4f66-b4d7-e38837565769"
+						"spark.autotune.trackingId": "d71b804f-b9a6-4906-8b27-0633da45dead"
 					}
 				},
 				"metadata": {
@@ -2844,7 +2844,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4f34f0bc-76cc-4746-b130-51b7cd1b9c4b"
+						"spark.autotune.trackingId": "10a3da9a-9657-4ad3-b954-5bbc80d6408b"
 					}
 				},
 				"metadata": {
@@ -2899,7 +2899,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 54
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -2915,10 +2915,10 @@
 							}
 						},
 						"source": [
-							"%run utils/configuration/configuration_parameters_local"
+							"%run utils/configuration/configuration_parameters_local_akv"
 						],
 						"outputs": [],
-						"execution_count": 55
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -2938,7 +2938,7 @@
 							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
 						],
 						"outputs": [],
-						"execution_count": 56
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -3164,7 +3164,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "fd5afdbe-cce7-45b3-ac85-6edcf29879d2"
+						"spark.autotune.trackingId": "9a237fe2-0666-4603-9e57-866e807e22c7"
 					}
 				},
 				"metadata": {
@@ -3229,7 +3229,7 @@
 							"PARAMETERS = configuration_parameters_local (\n",
 							"DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
 							"CONTAINER=\"raw\",\n",
-							"SASKEY=SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayRaw','SQLDay_AKV'),\n",
+							"SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayRaw','SQLDay_AKV'),\n",
 							"URL= 'http://data.gdeltproject.org/events/'\n",
 							")"
 						],
