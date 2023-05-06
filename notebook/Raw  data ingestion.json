@@ -21,9 +21,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "fcc02dae-a4c7-4be8-96de-16630823ec31",
-				"spark.synapse.library.python.env": "name: sqlday2023\nchannels:\n- defaults\ndependencies:\n- pip:\n  - zipfile36",
-				"spark.synapse.library.python.env.name": "environment.yml"
+				"spark.autotune.trackingId": "a5317e93-b0c1-4b81-b335-5ea146b78595"
 			}
 		},
 		"metadata": {
