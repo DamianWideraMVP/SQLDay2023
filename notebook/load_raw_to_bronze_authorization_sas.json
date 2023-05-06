@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8a5f5a57-aba6-47b2-971e-b304f332ebc6"
+				"spark.autotune.trackingId": "843d1472-052f-4b84-bce3-ea9e67255d47"
 			}
 		},
 		"metadata": {
@@ -69,7 +69,7 @@
 					"import os\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 26
+				"execution_count": 76
 			},
 			{
 				"cell_type": "code",
@@ -85,9 +85,9 @@
 					}
 				},
 				"source": [
-					"%run utils/configuration/configuration_paramaters_raw_bronze"
+					"%run \"03 Azure Storage/configuration/configuration_paramaters_raw_bronze\""
 				],
-				"execution_count": 6
+				"execution_count": 78
 			},
 			{
 				"cell_type": "code",
@@ -107,7 +107,7 @@
 					"    return PARAMETERS.DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.BRONZE_CONTAINER, PARAMETERS.RAW_SASKEY, PARAMETERS.BRONZE_SASKEY\n",
 					""
 				],
-				"execution_count": 7
+				"execution_count": 79
 			},
 			{
 				"cell_type": "code",
@@ -130,7 +130,7 @@
 					"\n",
 					"    return blob_service_client"
 				],
-				"execution_count": 9
+				"execution_count": 80
 			},
 			{
 				"cell_type": "code",
@@ -149,7 +149,7 @@
 					"account , raw_container, bronze_container, raw_sas_token, bronze_sas_token = get_configuration()\n",
 					""
 				],
-				"execution_count": 10
+				"execution_count": 81
 			},
 			{
 				"cell_type": "code",
@@ -167,7 +167,7 @@
 				"source": [
 					"account , raw_container, bronze_container, raw_sas_token, bronze_sas_token"
 				],
-				"execution_count": 19
+				"execution_count": 82
 			},
 			{
 				"cell_type": "code",
@@ -185,7 +185,7 @@
 				"source": [
 					"raw_bsc = get_blob_service_client_sas(account,raw_sas_token)"
 				],
-				"execution_count": 11
+				"execution_count": 83
 			},
 			{
 				"cell_type": "code",
@@ -203,7 +203,7 @@
 				"source": [
 					"bronze_bsc = get_blob_service_client_sas(account,bronze_sas_token)"
 				],
-				"execution_count": 12
+				"execution_count": 84
 			},
 			{
 				"cell_type": "code",
@@ -227,7 +227,7 @@
 					"    container_client = ContainerClient.from_container_url(url+sas_key)\n",
 					"    return container_client"
 				],
-				"execution_count": 24
+				"execution_count": 86
 			},
 			{
 				"cell_type": "code",
@@ -255,7 +255,7 @@
 					"    path_to_blob_bronze = \"abfss://\" + bronze_container + \"@\" + account_for_abfss+\"/\"+ folder\n",
 					"    return account_for_abfss, path_to_blob_raw, path_to_blob_bronze"
 				],
-				"execution_count": 72
+				"execution_count": 87
 			},
 			{
 				"cell_type": "code",
@@ -273,7 +273,7 @@
 				"source": [
 					"folders = [\"customer\",\"orders\"]"
 				],
-				"execution_count": 67
+				"execution_count": 88
 			},
 			{
 				"cell_type": "code",
@@ -311,7 +311,7 @@
 					"        \n",
 					""
 				],
-				"execution_count": 73
+				"execution_count": 89
 			}
 		]
 	}
