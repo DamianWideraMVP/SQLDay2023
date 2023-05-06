@@ -1854,7 +1854,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b9bc1c98-7bd0-4b03-85f4-4a5dcde7594c"
+						"spark.autotune.trackingId": "ce978c2e-396b-49b8-bbec-fd745899791b"
 					}
 				},
 				"metadata": {
@@ -2096,7 +2096,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils"
+					"name": "utils"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2162,7 +2162,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils"
+					"name": "utils"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2180,7 +2180,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "0b25b5cd-e5f6-4553-985f-1c580c7cd4f0"
+						"spark.autotune.trackingId": "7ea92ed5-c103-4475-9ce0-188015c7b408"
 					}
 				},
 				"metadata": {
@@ -2239,14 +2239,32 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
 						"source": [
-							"mssparkutils.notebook.run(\"utils/configuration/configuration_parameters_akv\", 10)\n",
-							"\n",
-							"#%run utils/configuration/configuration_parameters_akv"
+							"%run utils/configuration/configuration_parameters_akv"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"mssparkutils.notebook.run(\"utils/configuration/configuration_parameters_akv\",10)\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -2395,7 +2413,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils/configuration"
+					"name": "utils/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2491,7 +2509,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils/configuration"
+					"name": "utils/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2583,18 +2601,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/sqlpool')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "westeurope"
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/smallpool')]",
 			"type": "Microsoft.Synapse/workspaces/bigDataPools",
 			"apiVersion": "2019-06-01-preview",
@@ -2614,6 +2620,18 @@
 				"sparkVersion": "3.3",
 				"isComputeIsolationEnabled": false,
 				"sessionLevelPackagesEnabled": true,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sqlpool')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
 				"annotations": []
 			},
 			"dependsOn": [],
