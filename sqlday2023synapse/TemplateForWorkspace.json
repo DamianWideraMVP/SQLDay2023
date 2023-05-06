@@ -2176,7 +2176,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "c91b49f6-44cc-42da-aac1-27c4b8b76975"
+						"spark.autotune.trackingId": "4416b12b-a63c-4e77-848c-98bf5b722407"
 					}
 				},
 				"metadata": {
@@ -2201,8 +2201,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -2231,7 +2230,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 32
 					},
 					{
 						"cell_type": "code",
@@ -2250,7 +2249,7 @@
 							"%run utils/configuration/configuration_parameters_akv"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 33
 					},
 					{
 						"cell_type": "code",
@@ -2270,7 +2269,7 @@
 							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER"
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": 34
 					},
 					{
 						"cell_type": "code",
@@ -2294,7 +2293,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 23
+						"execution_count": 35
 					},
 					{
 						"cell_type": "code",
@@ -2334,7 +2333,7 @@
 							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 						],
 						"outputs": [],
-						"execution_count": 24
+						"execution_count": 36
 					},
 					{
 						"cell_type": "code",
@@ -2355,7 +2354,7 @@
 							"    return blob_service_client.get_container_client(container=new_name_for_container)"
 						],
 						"outputs": [],
-						"execution_count": 25
+						"execution_count": 37
 					},
 					{
 						"cell_type": "code",
@@ -2382,7 +2381,7 @@
 							"        _send_data_to_blob(container_client,dt_str)"
 						],
 						"outputs": [],
-						"execution_count": 26
+						"execution_count": 38
 					},
 					{
 						"cell_type": "code",
@@ -2407,7 +2406,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 27
+						"execution_count": 39
 					},
 					{
 						"cell_type": "code",
@@ -2426,7 +2425,7 @@
 							"account ,sas_token, container = get_configuration()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 40
 					},
 					{
 						"cell_type": "code",
@@ -2445,7 +2444,7 @@
 							"bsc = get_blob_service_client_sas(account,sas_token)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 41
 					},
 					{
 						"cell_type": "code",
@@ -2590,7 +2589,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9a9c827a-a3c2-459a-ac21-b2d907fbb090"
+						"spark.autotune.trackingId": "a51a9b12-7d8d-41f5-a08b-876525a9e682"
 					}
 				},
 				"metadata": {
@@ -2674,6 +2673,105 @@
 						],
 						"outputs": [],
 						"execution_count": 7
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/configuration_parameters_local')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "utils/configuration"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "ff5d0892-81ae-40d6-9870-6d6def27cf6d"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": true
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"from dataclasses import dataclass\n",
+							"\n",
+							"@dataclass\n",
+							"class configuration_parameters_local:\n",
+							"    DATALAKE: str\n",
+							"    CONTAINER: str\n",
+							"    SASKEY: str\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"PARAMETERS = configuration_parameters_local (\n",
+							"DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
+							"CONTAINER=\"raw\",\n",
+							"SASKEY=f'sp=racwdlmeop&st=2023-05-03T11:20:20Z&se=2023-05-31T19:20:20Z&spr=https&sv=2021-12-02&sr=c&sig=SITj%2FKFPa%2FTLJgawl6TeqABXjTpimz9WcH62TPyxKss%3D'\n",
+							"URL= 'http://data.gdeltproject.org/events/'\n",
+							")"
+						],
+						"outputs": [],
+						"execution_count": 1
 					}
 				]
 			},
