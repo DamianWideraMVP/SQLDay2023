@@ -2,7 +2,7 @@
 	"name": "load_raw_authorization_sas",
 	"properties": {
 		"folder": {
-			"name": "01_Load_raw_data/utils"
+			"name": "utils"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "873eb561-c608-4448-b5c7-bc670818e805"
+				"spark.autotune.trackingId": "3b7b6127-60ea-45b8-85b0-a872e414b1f1"
 			}
 		},
 		"metadata": {
@@ -45,7 +45,8 @@
 				"sparkVersion": "3.3",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},

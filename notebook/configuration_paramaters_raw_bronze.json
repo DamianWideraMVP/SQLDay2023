@@ -2,7 +2,7 @@
 	"name": "configuration_paramaters_raw_bronze",
 	"properties": {
 		"folder": {
-			"name": "01_Load_raw_data/utils/configuration"
+			"name": "utils/configuration"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
