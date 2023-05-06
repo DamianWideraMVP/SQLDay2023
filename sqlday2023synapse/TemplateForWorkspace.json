@@ -38,305 +38,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('workspaceName'), '/DelimitedText1')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "DemoLearn_AccountKey",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "demolearn"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					},
-					{
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/DemoLearn_AccountKey')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/DestinationDataset_ug9')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "sqlday2023synapse-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "raw"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/sqlday2023synapse-WorkspaceDefaultStorage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Raw')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "sqlday2023synapse-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "raw"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "Byear",
-						"type": "String"
-					},
-					{
-						"name": "Bmonth",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/sqlday2023synapse-WorkspaceDefaultStorage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/SourceDataset_ug9')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "DemoLearn_AccountKey",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "demolearn"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "ProductKey",
-						"type": "String"
-					},
-					{
-						"name": "OrderDateKey",
-						"type": "String"
-					},
-					{
-						"name": "DueDateKey",
-						"type": "String"
-					},
-					{
-						"name": "ShipDateKey",
-						"type": "String"
-					},
-					{
-						"name": "CustomerKey",
-						"type": "String"
-					},
-					{
-						"name": "PromotionKey",
-						"type": "String"
-					},
-					{
-						"name": "CurrencyKey",
-						"type": "String"
-					},
-					{
-						"name": "SalesTerritoryKey",
-						"type": "String"
-					},
-					{
-						"name": "SalesOrderNumber",
-						"type": "String"
-					},
-					{
-						"name": "SalesOrderLineNumber",
-						"type": "String"
-					},
-					{
-						"name": "RevisionNumber",
-						"type": "String"
-					},
-					{
-						"name": "OrderQuantity",
-						"type": "String"
-					},
-					{
-						"name": "UnitPrice",
-						"type": "String"
-					},
-					{
-						"name": "ExtendedAmount",
-						"type": "String"
-					},
-					{
-						"name": "UnitPriceDiscountPct",
-						"type": "String"
-					},
-					{
-						"name": "DiscountAmount",
-						"type": "String"
-					},
-					{
-						"name": "ProductStandardCost",
-						"type": "String"
-					},
-					{
-						"name": "TotalProductCost",
-						"type": "String"
-					},
-					{
-						"name": "SalesAmount",
-						"type": "String"
-					},
-					{
-						"name": "TaxAmt",
-						"type": "String"
-					},
-					{
-						"name": "Freight",
-						"type": "String"
-					},
-					{
-						"name": "CarrierTrackingNumber",
-						"type": "String"
-					},
-					{
-						"name": "CustomerPONumber",
-						"type": "String"
-					},
-					{
-						"name": "OrderDate",
-						"type": "String"
-					},
-					{
-						"name": "DueDate",
-						"type": "String"
-					},
-					{
-						"name": "ShipDate",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/DemoLearn_AccountKey')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/DemoLearn_AKV')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -2814,7 +2515,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "1ef6e746-1561-4ac4-b2b2-f75fde5b32c7"
+						"spark.autotune.trackingId": "d752acf3-dc09-4bb0-a74c-487f67bd291d"
 					}
 				},
 				"metadata": {
@@ -3293,7 +2994,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "bee489b1-363b-492c-91b2-e3af24096959"
+						"spark.autotune.trackingId": "bc5d5ae7-c190-4bf2-82d0-f155d7a2db56"
 					}
 				},
 				"metadata": {
@@ -3645,12 +3346,12 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "806b1bee-afd5-447a-affc-5e4442b22195",
+						"spark.autotune.trackingId": "2ef37400-9a4f-48f5-bf0d-c3311c4c95f8",
 						"spark.synapse.context.sjdname": "Spark job sample"
 					},
 					"args": [
 						"abfss://raw@sqlday2023.dfs.core.windows.net/AWInternetSales.csv",
-						"abfss://bronze@sqlday2023.dfs.core.windows.net/"
+						"abfss://bronze@sqlday2023.dfs.core.windows.net/AWorks"
 					],
 					"jars": [],
 					"pyFiles": [
