@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "3643314f-640b-4b6f-b1f1-02abd2f7f9d2"
+				"spark.autotune.trackingId": "90430787-7f59-4710-879f-853c6585410b"
 			}
 		},
 		"metadata": {
@@ -98,7 +98,7 @@
 					"\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 2
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -116,7 +116,7 @@
 				"source": [
 					"%run \"03 Azure Storage/configuration/configuration_parameters_local_akv\""
 				],
-				"execution_count": 7
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -135,7 +135,7 @@
 					"def get_configuration():\n",
 					"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
 				],
-				"execution_count": 8
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -158,7 +158,7 @@
 					"\n",
 					"    return blob_service_client"
 				],
-				"execution_count": 9
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -197,7 +197,7 @@
 					"\n",
 					"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 				],
-				"execution_count": 10
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -217,7 +217,7 @@
 					"    new_name_for_container = container_name + \"/\" + subfolder[0:6]\n",
 					"    return blob_service_client.get_container_client(container=new_name_for_container)"
 				],
-				"execution_count": 11
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -243,7 +243,7 @@
 					"        \n",
 					"        _send_data_to_blob(container_client,dt_str)"
 				],
-				"execution_count": 12
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -267,7 +267,7 @@
 					"    upload_blob_file_for_dates(blob_service_client, container_name,start_date,end_date )\n",
 					""
 				],
-				"execution_count": 13
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -287,7 +287,7 @@
 					"\n",
 					"file_extension = 'csv'"
 				],
-				"execution_count": 14
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -305,7 +305,7 @@
 				"source": [
 					"bsc = get_blob_service_client_sas(account,sas_token)"
 				],
-				"execution_count": 15
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -323,7 +323,7 @@
 				"source": [
 					"upload_last_X_days(bsc,container,7)"
 				],
-				"execution_count": 16
+				"execution_count": 15
 			}
 		]
 	}
