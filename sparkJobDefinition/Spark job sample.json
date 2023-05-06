@@ -1,0 +1,37 @@
+{
+	"name": "Spark job sample",
+	"properties": {
+		"targetBigDataPool": {
+			"referenceName": "smallpool",
+			"type": "BigDataPoolReference"
+		},
+		"requiredSparkVersion": "3.3",
+		"language": "python",
+		"scanFolder": false,
+		"jobProperties": {
+			"name": "Spark job sample",
+			"file": "abfss://synapse@sqlday2023.dfs.core.windows.net/spark_job.py",
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "806b1bee-afd5-447a-affc-5e4442b22195",
+				"spark.synapse.context.sjdname": "Spark job sample"
+			},
+			"args": [
+				"abfss://raw@sqlday2023.dfs.core.windows.net/AWInternetSales.csv",
+				"abfss://bronze@sqlday2023.dfs.core.windows.net/"
+			],
+			"jars": [],
+			"pyFiles": [
+				""
+			],
+			"files": [],
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1
+		}
+	}
+}
