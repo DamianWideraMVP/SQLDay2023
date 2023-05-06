@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "fb189647-f9db-4388-bb7c-a697f2c173c9"
+				"spark.autotune.trackingId": "e66092e1-a517-4a13-8389-bfb07aafdc79"
 			}
 		},
 		"metadata": {
@@ -58,7 +58,7 @@
 					"import os\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 1
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -76,7 +76,7 @@
 				"source": [
 					"%run \"04 Azure Synapse Analytics/configuration/configuration_paramaters_bronze_silver\""
 				],
-				"execution_count": 2
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -96,7 +96,7 @@
 					"    return PARAMETERS.DATALAKE, PARAMETERS.BRONZE_CONTAINER, PARAMETERS.SILVER_CONTAINER, PARAMETERS.BRONZE_SASKEY, PARAMETERS.SILVER_SASKEY\n",
 					""
 				],
-				"execution_count": 3
+				"execution_count": 15
 			},
 			{
 				"cell_type": "code",
@@ -116,10 +116,10 @@
 					"\n",
 					"    account_for_abfss = account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
 					"        \n",
-					"    path_to_blob = \"abfss://\" + ontainer + \"@\" + account_for_abfss+\"/\"+ folder\n",
+					"    path_to_blob = \"abfss://\" + container + \"@\" + account_for_abfss+\"/\"+ folder\n",
 					"    return account_for_abfss, path_to_blob"
 				],
-				"execution_count": 12
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
@@ -138,7 +138,7 @@
 					"account , bronze_container, silver_container, bronze_sas_token, silver_sas_token = get_configuration()\n",
 					""
 				],
-				"execution_count": 5
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
@@ -154,11 +154,11 @@
 					}
 				},
 				"source": [
-					"account_for_abfss,  path_to_orders = _prepare_paths_for_data_processing(account, \"orders\", folder)\n",
-					"account_for_abfss,  path_to_customer = _prepare_paths_for_data_processing(account, \"customer\", folder)\n",
+					"account_for_abfss,  path_to_orders = _prepare_paths_for_data_processing(account, bronze_container, \"orders\")\n",
+					"account_for_abfss,  path_to_customer = _prepare_paths_for_data_processing(account, bronze_container, \"customer\")\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -174,9 +174,64 @@
 					}
 				},
 				"source": [
-					"df = spark.read.load('abfss://bronze@sqlday2023.dfs.core.windows.net/customer/part-00000-17bde504-1c94-4ff0-a346-9984cc52c34a-c000.snappy.parquet', format='parquet')"
+					"account_for_abfss,  path_to_orders, path_to_customer"
 				],
-				"execution_count": 10
+				"execution_count": 22
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_orders = spark.read.load(path_to_orders, format='parquet')"
+				],
+				"execution_count": 23
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"display(df_orders.limit(10))"
+				],
+				"execution_count": 27
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_customer = spark.read.load(path_to_customer, format='parquet')"
+				],
+				"execution_count": 28
 			}
 		]
 	}
