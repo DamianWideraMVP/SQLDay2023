@@ -34,6 +34,99 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('workspaceName'), '/01 Load Dimensions - init')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "01 Create Actor",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "01 Create Actor",
+								"type": "NotebookReference"
+							},
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "smallpool",
+								"type": "BigDataPoolReference"
+							},
+							"executorSize": "Small",
+							"conf": {
+								"spark.dynamicAllocation.enabled": true,
+								"spark.dynamicAllocation.minExecutors": 1,
+								"spark.dynamicAllocation.maxExecutors": 2
+							},
+							"driverSize": "Small",
+							"numExecutors": 1
+						}
+					},
+					{
+						"name": "02 Create Geo",
+						"type": "SynapseNotebook",
+						"dependsOn": [
+							{
+								"activity": "01 Create Actor",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "02 Create Geo",
+								"type": "NotebookReference"
+							},
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "smallpool",
+								"type": "BigDataPoolReference"
+							},
+							"executorSize": "Small",
+							"conf": {
+								"spark.dynamicAllocation.enabled": true,
+								"spark.dynamicAllocation.minExecutors": 1,
+								"spark.dynamicAllocation.maxExecutors": 2
+							},
+							"driverSize": "Small",
+							"numExecutors": 1
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "Initial Load"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/01 Create Actor')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/smallpool')]",
+				"[concat(variables('workspaceId'), '/notebooks/02 Create Geo')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/DemoLearn')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -251,7 +344,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "fc1f2e02-ddc8-4e8e-b43f-64eadc7e87f9"
+						"spark.autotune.trackingId": "9470026b-997d-4fdf-a9d0-ff18fc54ebac"
 					}
 				},
 				"metadata": {
@@ -297,7 +390,8 @@
 						"source": [
 							"import pandas as pd\r\n",
 							"\r\n",
-							"from pyspark.sql.functions import monotonically_increasing_id"
+							"from pyspark.sql.functions import monotonically_increasing_id\r\n",
+							"from delta.tables import DeltaTable"
 						],
 						"outputs": [],
 						"execution_count": 7
@@ -313,7 +407,7 @@
 						"source": [
 							"%%pyspark\r\n",
 							"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/20*/*/gdelt_events.parquet'\r\n",
-							"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor/'"
+							"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'"
 						],
 						"outputs": [],
 						"execution_count": 5
@@ -390,6 +484,32 @@
 						],
 						"outputs": [],
 						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"## full reload\r\n",
+							"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
+							"delta_table.delete()\r\n",
+							"delta_table.vacuum()"
+						],
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -497,6 +617,228 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/02 Create Geo')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "02 Load to Delta"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "9af01632-2e09-4440-9571-97ae26796955"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"import pandas as pd\r\n",
+							"\r\n",
+							"from pyspark.sql.functions import monotonically_increasing_id, col, regexp_replace\r\n",
+							"from delta.tables import DeltaTable"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/20*/*/gdelt_events.parquet'\r\n",
+							"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df_all_events = spark.read.parquet(src_location)\r\n",
+							"\r\n",
+							"geo_columns1 = ['Actor1Geo_Type'\r\n",
+							",'Actor1Geo_Fullname'\r\n",
+							",'Actor1Geo_CountryCode'\r\n",
+							",'Actor1Geo_ADM1Code'\r\n",
+							",'Actor1Geo_Lat'\r\n",
+							",'Actor1Geo_Long'\r\n",
+							",'Actor1Geo_FeatureID']\r\n",
+							"geo_columns2 = ['Actor2Geo_Type'\r\n",
+							",'Actor2Geo_Fullname'\r\n",
+							",'Actor2Geo_CountryCode'\r\n",
+							",'Actor2Geo_ADM1Code'\r\n",
+							",'Actor2Geo_Lat'\r\n",
+							",'Actor2Geo_Long'\r\n",
+							",'Actor2Geo_FeatureID']\r\n",
+							"geo_columns3 = ['ActionGeo_Type'\r\n",
+							",'ActionGeo_Fullname'\r\n",
+							",'ActionGeo_CountryCode'\r\n",
+							",'ActionGeo_ADM1Code'\r\n",
+							",'ActionGeo_Lat'\r\n",
+							",'ActionGeo_Long'\r\n",
+							",'ActionGeo_FeatureID']\r\n",
+							"\r\n",
+							"df_geo1 = df_all_events.select(geo_columns1)\r\n",
+							"df_geo2 = df_all_events.select(geo_columns2)\r\n",
+							"df_geo3 = df_all_events.select(geo_columns3)\r\n",
+							"\r\n",
+							"df_geo1 = df_geo1.toDF('Geo_Type'\r\n",
+							",'Geo_Fullname'\r\n",
+							",'Geo_CountryCode'\r\n",
+							",'Geo_ADM1Code'\r\n",
+							",'Geo_Lat'\r\n",
+							",'Geo_Long'\r\n",
+							",'Geo_FeatureID')\r\n",
+							"df_geo2 = df_geo2.toDF('Geo_Type'\r\n",
+							",'Geo_Fullname'\r\n",
+							",'Geo_CountryCode'\r\n",
+							",'Geo_ADM1Code'\r\n",
+							",'Geo_Lat'\r\n",
+							",'Geo_Long'\r\n",
+							",'Geo_FeatureID')\r\n",
+							"df_geo3 = df_geo3.toDF('Geo_Type'\r\n",
+							",'Geo_Fullname'\r\n",
+							",'Geo_CountryCode'\r\n",
+							",'Geo_ADM1Code'\r\n",
+							",'Geo_Lat'\r\n",
+							",'Geo_Long'\r\n",
+							",'Geo_FeatureID')\r\n",
+							"\r\n",
+							"\r\n",
+							"df_geo_all = df_geo1.union(df_geo2).union(df_geo3)\r\n",
+							"df_geo_all = df_geo_all.withColumn('Geo_Lat', regexp_replace(col('Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Geo_Long', regexp_replace(col('Geo_Long'), '[^0-9\\\\-.]', ''))\r\n",
+							"df_geo = df_geo_all.distinct()\r\n",
+							"\r\n",
+							"display(df_geo.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"## full reload\r\n",
+							"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
+							"delta_table.delete()\r\n",
+							"delta_table.vacuum()"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df_geo_wkey = df_geo.withColumn('GeoID', monotonically_increasing_id())\r\n",
+							"df_geo_wkey.write.option(\"path\", dst_location).format(\"delta\").save()"
+						],
+						"outputs": [],
+						"execution_count": 4
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Data Engineering Spark Pool')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -506,17 +848,21 @@
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
 				"sessionProperties": {
 					"driverMemory": "28g",
 					"driverCores": 4,
 					"executorMemory": "28g",
 					"executorCores": 4,
-					"numExecutors": 2,
+					"numExecutors": 1,
 					"conf": {
-						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "18639fb2-5ba4-4e10-9d47-45b51277e2cb"
+						"spark.autotune.trackingId": "fb189647-f9db-4388-bb7c-a697f2c173c9"
 					}
 				},
 				"metadata": {
@@ -524,10 +870,24 @@
 					"enableDebugMode": false,
 					"kernelspec": {
 						"name": "synapse_pyspark",
-						"display_name": "python"
+						"display_name": "Synapse PySpark"
 					},
 					"language_info": {
 						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -535,10 +895,136 @@
 					{
 						"cell_type": "code",
 						"source": [
+							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
+							"import os\n",
+							"from notebookutils import mssparkutils"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%run \"04 Azure Synapse Analytics/configuration/configuration_paramaters_bronze_silver\""
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_configuration():\n",
+							"    return PARAMETERS.DATALAKE, PARAMETERS.BRONZE_CONTAINER, PARAMETERS.SILVER_CONTAINER, PARAMETERS.BRONZE_SASKEY, PARAMETERS.SILVER_SASKEY\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _prepare_paths_for_data_processing (account: str, container: str, folder: str):\n",
+							"\n",
+							"    account_for_abfss = account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
+							"        \n",
+							"    path_to_blob = \"abfss://\" + ontainer + \"@\" + account_for_abfss+\"/\"+ folder\n",
+							"    return account_for_abfss, path_to_blob"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"account , bronze_container, silver_container, bronze_sas_token, silver_sas_token = get_configuration()\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"account_for_abfss,  path_to_orders = _prepare_paths_for_data_processing(account, \"orders\", folder)\n",
+							"account_for_abfss,  path_to_customer = _prepare_paths_for_data_processing(account, \"customer\", folder)\n",
 							""
 						],
 						"outputs": [],
 						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df = spark.read.load('abfss://bronze@sqlday2023.dfs.core.windows.net/customer/part-00000-17bde504-1c94-4ff0-a346-9984cc52c34a-c000.snappy.parquet', format='parquet')"
+						],
+						"outputs": [],
+						"execution_count": 10
 					}
 				]
 			},
@@ -1348,7 +1834,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "78258292-225a-42e4-9745-2bf9e299f2c5"
+						"spark.autotune.trackingId": "89b7bf73-a914-4383-a937-023bd6992bd6"
 					}
 				},
 				"metadata": {
@@ -1386,7 +1872,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"@dataclass\n",
 							"class configuration_parameters_raw_bronze:\n",
