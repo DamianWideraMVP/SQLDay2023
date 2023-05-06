@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "2d1b1e31-bd4f-41b5-b1a7-e01762d5449c"
+				"spark.autotune.trackingId": "14fc0840-f687-42fd-bbf9-9b63c08b3691"
 			}
 		},
 		"metadata": {
@@ -219,9 +219,15 @@
 					}
 				},
 				"source": [
-					"folders = [\"customer\",\"orders\"]"
+					"def _get_container_client(blob_service_client: BlobServiceClient, url: str, secret: str) -> ContainerClient:\n",
+					"\n",
+					"    sas_key = secret\n",
+					"    if '?' not in sas_key:\n",
+					"        sas_key = '?'+sas_key\n",
+					"    container_client = ContainerClient.from_container_url(url+sas_key)\n",
+					"    return container_client"
 				],
-				"execution_count": 13
+				"execution_count": 24
 			},
 			{
 				"cell_type": "code",
@@ -237,15 +243,38 @@
 					}
 				},
 				"source": [
-					"def _get_container_client(blob_service_client: BlobServiceClient, url: str, secret: str) -> ContainerClient:\n",
+					"def _prepare_paths_for_data_processing (account: str, raw_container: str, bronze_container: str, folder: str, file_name: str):\n",
 					"\n",
-					"    sas_key = secret\n",
-					"    if '?' not in sas_key:\n",
-					"        sas_key = '?'+sas_key\n",
-					"    container_client = ContainerClient.from_container_url(url+sas_key)\n",
-					"    return container_client"
+					"    #abfss://raw@sqlday2023.dfs.core.windows.net/customer/part-00000-tid-3200334632332214470-9b4dec79-7e2e-495d-8657-3b5457ed3753-108-1-c000.csv\n",
+					"    #abfss://bronze@sqlday2023.dfs.core.windows.net/AWorks\n",
+					"\n",
+					"\n",
+					"    account_for_abfss = account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
+					"        \n",
+					"    path_to_blob_raw = \"abfss://\" + raw_container + \"@\" + account_for_abfss+\"/\"+ folder +\"/\"+file_name\n",
+					"    path_to_blob_bronze = \"abfss://\" + bronze_container + \"@\" + account_for_abfss+\"/\"+ folder +\"/\"+file_name.split('.')[0]+'.parquet'\n",
+					"\n",
+					"    return account_for_abfss, path_to_blob_raw, path_to_blob_bronze"
 				],
-				"execution_count": 24
+				"execution_count": 64
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"folders = [\"customer\",\"orders\"]"
+				],
+				"execution_count": 65
 			},
 			{
 				"cell_type": "code",
@@ -274,13 +303,7 @@
 					"    for item in blob_list:\n",
 					"        blob = os.path.basename(item.name )\n",
 					"\n",
-					"        #abfss://raw@sqlday2023.dfs.core.windows.net/customer/part-00000-tid-3200334632332214470-9b4dec79-7e2e-495d-8657-3b5457ed3753-108-1-c000.csv\n",
-					"        #abfss://bronze@sqlday2023.dfs.core.windows.net/AWorks\n",
-					"\n",
-					"        account_for_abfss = account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
-					"        \n",
-					"        path_to_blob_raw = \"abfss://\" + raw_container + \"@\" + account_for_abfss+\"/\"+ folder +\"/\"+blob\n",
-					"        path_to_blob_bronze = \"abfss://\" + bronze_container + \"@\" + account_for_abfss+\"/\"+ folder \n",
+					"        account_for_abfss, path_to_blob_raw, path_to_blob_bronze = _prepare_paths_for_data_processing(account, raw_container, bronze_container, folder, blob)\n",
 					"\n",
 					"        if 'csv' in path_to_blob_raw:\n",
 					"            print (path_to_blob_raw)        \n",
@@ -289,7 +312,7 @@
 					"        \n",
 					""
 				],
-				"execution_count": 57
+				"execution_count": 63
 			}
 		]
 	}
