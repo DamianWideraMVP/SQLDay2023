@@ -2014,7 +2014,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "2e91be44-249d-49ae-b698-b6ab47449e57"
+						"spark.autotune.trackingId": "3dcb84cb-9a59-412a-9b7a-b2ce8f9dd056"
 					}
 				},
 				"metadata": {
@@ -2101,10 +2101,10 @@
 							"PARAMETERS = configuration_parameters (\n",
 							"SRC_DATALAKE=\"https://itechdayadla.blob.core.windows.net\",\n",
 							"SRC_CONTAINER=\"demolearn\",\n",
-							"SRC_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','DemoLearnKey','SQLDay_AKV'),#f\"?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupyx&se=2023-05-31T09:27:54Z&st=2023-05-06T01:27:54Z&spr=https&sig=kvedG7707y8H%2FE8ZNsrEIOl7L2AhS3X0QEqtXi0GoJg%3D\",\n",
+							"SRC_SASKEY=f\"?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupyx&se=2023-05-31T09:27:54Z&st=2023-05-06T01:27:54Z&spr=https&sig=kvedG7707y8H%2FE8ZNsrEIOl7L2AhS3X0QEqtXi0GoJg%3D\",\n",
 							"RAW_DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
 							"RAW_CONTAINER=\"raw\",\n",
-							"RAW_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayRaw','SQLDay_AKV')\n",
+							"RAW_SASKEY=f\"?sp=racwdlmeop&st=2023-05-03T21:02:46Z&se=2023-05-31T05:02:46Z&spr=https&sv=2021-12-02&sr=c&sig=8CY7pN26Rsto5wDJoYUM4RzofvxNaozEwpZWARTqVs0%3D\"\n",
 							")"
 						],
 						"outputs": [],
@@ -2836,7 +2836,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "14c811a5-adf5-42aa-b2b3-d47964e86d90"
+						"spark.autotune.trackingId": "77ced635-9526-4f6f-835b-46746eb854bf"
 					}
 				},
 				"metadata": {
@@ -2861,7 +2861,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -2888,16 +2889,17 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"%run \"03 Azure Storage/configuration/configuration_parameters\"\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -2914,10 +2916,10 @@
 						},
 						"source": [
 							"def _get_configuration():\n",
-							"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SCR_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
+							"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SRC_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -2941,7 +2943,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -2957,10 +2959,35 @@
 							}
 						},
 						"source": [
-							"src_account, src_container, src_saskey, raw_account, raw_container, raw_saskey = _get_configuration()"
+							"def _get_container_client(blob_service_client: BlobServiceClient, url: str, secret: str) -> ContainerClient:\n",
+							"\n",
+							"    sas_key = secret\n",
+							"    if '?' not in sas_key:\n",
+							"        sas_key = '?'+sas_key\n",
+							"    container_client = ContainerClient.from_container_url(url+sas_key)\n",
+							"    return container_client"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 27
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"src_account, src_container, src_sas_token, raw_account, raw_container, raw_sas_token = _get_configuration()"
+						],
+						"outputs": [],
+						"execution_count": 24
 					},
 					{
 						"cell_type": "code",
@@ -2979,7 +3006,7 @@
 							"source_bsc = get_blob_service_client (src_account, src_container)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
@@ -2998,7 +3025,78 @@
 							"raw_bsc = get_blob_service_client (raw_account, raw_container)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 22
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _prepare_paths_for_data_processing (src_account: str,raw_account: str, src_container: str, raw_container: str, folder: str, file_name: str):\n",
+							"\n",
+							"    #https://itechdayadla.blob.core.windows.net/demolearn/Logfiles/Log1.json\n",
+							"    #abfss://raw@sqlday2023.dfs.core.windows.net/customer/part-00000-tid-3200334632332214470-9b4dec79-7e2e-495d-8657-3b5457ed3753-108-1-c000.csv\n",
+							"\n",
+							"\n",
+							"    src_account_for_abfss = src_account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
+							"    raw_account_for_abfss = raw_account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
+							"        \n",
+							"    path_to_blob_src = \"abfss://\" + src_container + \"@\" + src_account_for_abfss+\"/\"+ folder +\"/\"+file_name\n",
+							"    path_to_blob_raw = \"abfss://\" + raw_container + \"@\" + raw_account_for_abfss+\"/\"+ folder\n",
+							"\n",
+							"    return src_account_for_abfss, raw_account_for_abfss, path_to_blob_src, path_to_blob_raw"
+						],
+						"outputs": [],
+						"execution_count": 23
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"folder = \"Logfiles\"\n",
+							"full_path_src = src_account + \"/\" + src_container \n",
+							"full_path_raw = raw_account + \"/\" + raw_container + \"/\" + folder\n",
+							"\n",
+							"src_container_client = _get_container_client(source_bsc, full_path_src, src_sas_token)\n",
+							"raw_container_client = _get_container_client(raw_bsc,full_path_raw, raw_sas_token )\n",
+							"\n",
+							"blob_list = src_container_client.list_blobs(name_starts_with=folder) \n",
+							"\n",
+							"\n",
+							"for item in blob_list:\n",
+							"    blob = os.path.basename(item.name )\n",
+							"\n",
+							"    src_account_for_abfss, raw_account_for_abfss, path_to_blob_src, path_to_blob_raw = _prepare_paths_for_data_processing(src_account,raw_account ,src_container, raw_container, folder, blob)\n",
+							"\n",
+							"    if 'json' in path_to_blob_src:\n",
+							"        print (path_to_blob_src)        \n",
+							"        df = spark.read.load(path_to_blob_src, format='json')\n",
+							"        df.write.mode(\"append\").json(path_to_blob_raw)\n",
+							"        \n",
+							"\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 28
 					}
 				]
 			},
