@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4416b12b-a63c-4e77-848c-98bf5b722407"
+				"spark.autotune.trackingId": "38e3e53a-f9f5-408c-8f70-f85b41df42a3"
 			}
 		},
 		"metadata": {
@@ -74,7 +74,7 @@
 					"\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 32
+				"execution_count": 42
 			},
 			{
 				"cell_type": "code",
@@ -90,9 +90,9 @@
 					}
 				},
 				"source": [
-					"%run utils/configuration/configuration_parameters_akv"
+					"%run utils/configuration/configuration_parameters_local"
 				],
-				"execution_count": 33
+				"execution_count": 43
 			},
 			{
 				"cell_type": "code",
@@ -109,9 +109,9 @@
 				},
 				"source": [
 					"def get_configuration():\n",
-					"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER"
+					"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
 				],
-				"execution_count": 34
+				"execution_count": 44
 			},
 			{
 				"cell_type": "code",
@@ -259,9 +259,11 @@
 					}
 				},
 				"source": [
-					"account ,sas_token, container = get_configuration()"
+					"account ,sas_token, container, url_base = get_configuration()\n",
+					"\n",
+					"file_extension = 'csv'"
 				],
-				"execution_count": 40
+				"execution_count": 52
 			},
 			{
 				"cell_type": "code",
@@ -279,7 +281,7 @@
 				"source": [
 					"bsc = get_blob_service_client_sas(account,sas_token)"
 				],
-				"execution_count": 41
+				"execution_count": 50
 			},
 			{
 				"cell_type": "code",
@@ -297,7 +299,7 @@
 				"source": [
 					"upload_last_X_days(bsc,container,7)"
 				],
-				"execution_count": null
+				"execution_count": 53
 			}
 		]
 	}
