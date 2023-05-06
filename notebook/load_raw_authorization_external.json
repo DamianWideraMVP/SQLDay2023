@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "bf018834-5918-4714-a1ec-7cadcb7fb862"
+				"spark.autotune.trackingId": "fb6f8e2a-1e93-4110-ac4a-75e5dace2113"
 			}
 		},
 		"metadata": {
@@ -72,7 +72,7 @@
 					"\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 39
+				"execution_count": 50
 			},
 			{
 				"cell_type": "code",
@@ -80,7 +80,7 @@
 					"%run \"03 Azure Storage/configuration/configuration_parameters\"\n",
 					""
 				],
-				"execution_count": 41
+				"execution_count": 51
 			},
 			{
 				"cell_type": "code",
@@ -99,7 +99,7 @@
 					"def _get_configuration():\n",
 					"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SRC_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 				],
-				"execution_count": 42
+				"execution_count": 52
 			},
 			{
 				"cell_type": "code",
@@ -122,7 +122,7 @@
 					"\n",
 					"    return blob_service_client"
 				],
-				"execution_count": 33
+				"execution_count": 53
 			},
 			{
 				"cell_type": "code",
@@ -146,61 +146,7 @@
 					"    container_client = ContainerClient.from_container_url(url+sas_key)\n",
 					"    return container_client"
 				],
-				"execution_count": 47
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"src_account, src_container, src_sas_token, raw_account, raw_container, raw_sas_token = _get_configuration()"
-				],
-				"execution_count": 43
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"source_bsc = _get_blob_service_client (src_account, src_container)"
-				],
-				"execution_count": 44
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"raw_bsc = _get_blob_service_client (raw_account, raw_container)"
-				],
-				"execution_count": 45
+				"execution_count": 54
 			},
 			{
 				"cell_type": "code",
@@ -218,10 +164,6 @@
 				"source": [
 					"def _prepare_paths_for_data_processing (src_account: str,raw_account: str, src_container: str, raw_container: str, folder: str, file_name: str):\n",
 					"\n",
-					"    #https://itechdayadla.blob.core.windows.net/demolearn/Logfiles/Log1.json\n",
-					"    #abfss://raw@sqlday2023.dfs.core.windows.net/customer/part-00000-tid-3200334632332214470-9b4dec79-7e2e-495d-8657-3b5457ed3753-108-1-c000.csv\n",
-					"\n",
-					"\n",
 					"    src_account_for_abfss = src_account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
 					"    raw_account_for_abfss = raw_account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
 					"        \n",
@@ -230,7 +172,61 @@
 					"\n",
 					"    return src_account_for_abfss, raw_account_for_abfss, path_to_blob_src, path_to_blob_raw"
 				],
-				"execution_count": 37
+				"execution_count": 58
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"src_account, src_container, src_sas_token, raw_account, raw_container, raw_sas_token = _get_configuration()"
+				],
+				"execution_count": 61
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"source_bsc = _get_blob_service_client (src_account, src_container)"
+				],
+				"execution_count": 56
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"raw_bsc = _get_blob_service_client (raw_account, raw_container)"
+				],
+				"execution_count": 57
 			},
 			{
 				"cell_type": "code",
@@ -251,6 +247,7 @@
 					"full_path_raw = raw_account + \"/\" + raw_container + \"/\" + folder\n",
 					"\n",
 					"src_container_client = _get_container_client(source_bsc, full_path_src, src_sas_token)\n",
+					"\n",
 					"raw_container_client = _get_container_client(raw_bsc,full_path_raw, raw_sas_token )\n",
 					"\n",
 					"blob_list = src_container_client.list_blobs(name_starts_with=folder) \n",
@@ -259,8 +256,8 @@
 					"for item in blob_list:\n",
 					"    blob = os.path.basename(item.name )\n",
 					"\n",
-					"    src_account_for_abfss, raw_account_for_abfss, path_to_blob_src, path_to_blob_raw = _prepare_paths_for_data_processing(src_account,raw_account ,src_container, raw_container, folder, blob)\n",
 					"\n",
+					"    src_account_for_abfss, raw_account_for_abfss, path_to_blob_src, path_to_blob_raw = _prepare_paths_for_data_processing(src_account,raw_account ,src_container, raw_container, folder, blob)\n",
 					"    if 'json' in path_to_blob_src:\n",
 					"        print (path_to_blob_src)        \n",
 					"        df = spark.read.json(path_to_blob_src)\n",
@@ -269,7 +266,25 @@
 					"\n",
 					""
 				],
-				"execution_count": 49
+				"execution_count": 66
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df = spark.read.json(\"abfss://demolearn@itechdayadla.dfs.core.windows.net/Logfiles/Log1.json\")"
+				],
+				"execution_count": 65
 			}
 		]
 	}
