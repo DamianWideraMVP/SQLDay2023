@@ -7,22 +7,10 @@
 			"metadata": "Workspace name",
 			"defaultValue": "sqlday2023synapse"
 		},
-		"DemoLearn_AccountKey_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'DemoLearn_AccountKey'"
-		},
 		"sqlday2023synapse-WorkspaceDefaultSqlServer_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'sqlday2023synapse-WorkspaceDefaultSqlServer'",
 			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:sqlday2023synapse.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
-		},
-		"DemoLearn_AKV_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://itechdayadla.dfs.core.windows.net"
-		},
-		"DemoLearn_AccountKey_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://itechdayadla.dfs.core.windows.net"
 		},
 		"SQLDay_AKV_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -31,63 +19,20 @@
 		"sqlday2023synapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://sqlday2023.dfs.core.windows.net"
+		},
+		"DemoLearn_sasUri": {
+			"type": "secureString",
+			"metadata": "Secure string for 'sasUri' of 'DemoLearn'"
+		},
+		"DemoLearn_properties_typeProperties_sasToken_secretName": {
+			"type": "string",
+			"defaultValue": "DemoLearn"
 		}
 	},
 	"variables": {
 		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('workspaceName'), '/DemoLearn_AKV')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('DemoLearn_AKV_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "SQLDay_AKV",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "DemoLearnKey"
-					}
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
-				"[concat(variables('workspaceId'), '/linkedServices/SQLDay_AKV')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/DemoLearn_AccountKey')]",
-			"type": "Microsoft.Synapse/workspaces/linkedServices",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('DemoLearn_AccountKey_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('DemoLearn_AccountKey_accountKey')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "AutoResolveIntegrationRuntime",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
-			]
-		},
 		{
 			"name": "[concat(parameters('workspaceName'), '/SQLDay_AKV')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
@@ -2836,7 +2781,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "3e511a5f-67bd-46c8-9afb-b95757b77d7a"
+						"spark.autotune.trackingId": "cb5ae7ba-101b-43c0-b717-2e3bdb36f7e6"
 					}
 				},
 				"metadata": {
@@ -2899,7 +2844,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 29
+						"execution_count": 41
 					},
 					{
 						"cell_type": "code",
@@ -2919,7 +2864,7 @@
 							"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SRC_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 						],
 						"outputs": [],
-						"execution_count": 30
+						"execution_count": 42
 					},
 					{
 						"cell_type": "code",
@@ -2968,7 +2913,7 @@
 							"    return container_client"
 						],
 						"outputs": [],
-						"execution_count": 32
+						"execution_count": 47
 					},
 					{
 						"cell_type": "code",
@@ -2987,7 +2932,7 @@
 							"src_account, src_container, src_sas_token, raw_account, raw_container, raw_sas_token = _get_configuration()"
 						],
 						"outputs": [],
-						"execution_count": 34
+						"execution_count": 43
 					},
 					{
 						"cell_type": "code",
@@ -3006,7 +2951,7 @@
 							"source_bsc = _get_blob_service_client (src_account, src_container)"
 						],
 						"outputs": [],
-						"execution_count": 35
+						"execution_count": 44
 					},
 					{
 						"cell_type": "code",
@@ -3025,7 +2970,7 @@
 							"raw_bsc = _get_blob_service_client (raw_account, raw_container)"
 						],
 						"outputs": [],
-						"execution_count": 36
+						"execution_count": 45
 					},
 					{
 						"cell_type": "code",
@@ -3089,14 +3034,14 @@
 							"\n",
 							"    if 'json' in path_to_blob_src:\n",
 							"        print (path_to_blob_src)        \n",
-							"        df = spark.read.load(path_to_blob_src, format='json')\n",
+							"        df = spark.read.json(path_to_blob_src)\n",
 							"        df.write.mode(\"append\").json(path_to_blob_raw)\n",
 							"        \n",
 							"\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": 40
+						"execution_count": 49
 					}
 				]
 			},
@@ -3814,6 +3759,34 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DemoLearn')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"sasUri": "[parameters('DemoLearn_sasUri')]",
+					"sasToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "SQLDay_AKV",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "[parameters('DemoLearn_properties_typeProperties_sasToken_secretName')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/SQLDay_AKV')]"
+			]
 		}
 	]
 }
