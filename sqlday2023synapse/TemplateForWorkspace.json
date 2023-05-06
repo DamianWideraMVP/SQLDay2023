@@ -2783,7 +2783,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "249b553d-cbfd-4a7c-827e-b38d0d5e4916"
+						"spark.autotune.trackingId": "c26de173-4f16-4036-9188-5cd63e9c7b32"
 					}
 				},
 				"metadata": {
@@ -2836,7 +2836,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 50
+						"execution_count": 67
 					},
 					{
 						"cell_type": "code",
@@ -2846,7 +2846,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 51
+						"execution_count": 68
 					},
 					{
 						"cell_type": "code",
@@ -2866,7 +2866,7 @@
 							"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SRC_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 						],
 						"outputs": [],
-						"execution_count": 52
+						"execution_count": 69
 					},
 					{
 						"cell_type": "code",
@@ -2890,7 +2890,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 53
+						"execution_count": 70
 					},
 					{
 						"cell_type": "code",
@@ -2915,7 +2915,7 @@
 							"    return container_client"
 						],
 						"outputs": [],
-						"execution_count": 54
+						"execution_count": 71
 					},
 					{
 						"cell_type": "code",
@@ -2942,7 +2942,7 @@
 							"    return src_account_for_abfss, raw_account_for_abfss, path_to_blob_src, path_to_blob_raw"
 						],
 						"outputs": [],
-						"execution_count": 58
+						"execution_count": 72
 					},
 					{
 						"cell_type": "code",
@@ -2961,7 +2961,7 @@
 							"src_account, src_container, src_sas_token, raw_account, raw_container, raw_sas_token = _get_configuration()"
 						],
 						"outputs": [],
-						"execution_count": 61
+						"execution_count": 73
 					},
 					{
 						"cell_type": "code",
@@ -2980,7 +2980,7 @@
 							"source_bsc = _get_blob_service_client (src_account, src_container)"
 						],
 						"outputs": [],
-						"execution_count": 56
+						"execution_count": 74
 					},
 					{
 						"cell_type": "code",
@@ -2999,14 +2999,14 @@
 							"raw_bsc = _get_blob_service_client (raw_account, raw_container)"
 						],
 						"outputs": [],
-						"execution_count": 57
+						"execution_count": 75
 					},
 					{
 						"cell_type": "code",
 						"metadata": {
 							"jupyter": {
 								"source_hidden": false,
-								"outputs_hidden": false
+								"outputs_hidden": true
 							},
 							"nteract": {
 								"transient": {
@@ -3040,26 +3040,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 66
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"df = spark.read.json(\"abfss://demolearn@itechdayadla.dfs.core.windows.net/Logfiles/Log1.json\")"
-						],
-						"outputs": [],
-						"execution_count": 65
+						"execution_count": 76
 					}
 				]
 			},
