@@ -16,7 +16,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "fda98a33-a572-4a7b-a054-23e13c649d05"
+				"spark.autotune.trackingId": "cdee9533-6b05-4da5-8c7a-6fcda25cd9c6"
 			}
 		},
 		"metadata": {
@@ -35,7 +35,7 @@
 			{
 				"cell_type": "code",
 				"source": [
-					""
+					"%run utils/configuration/configuration_parameters_akv"
 				],
 				"execution_count": null
 			}
