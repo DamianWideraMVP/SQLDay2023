@@ -143,6 +143,32 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/DestinationDataset_ug9')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "sqlday2023synapse-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/sqlday2023synapse-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Raw')]",
 			"type": "Microsoft.Synapse/workspaces/datasets",
 			"apiVersion": "2019-06-01-preview",
@@ -173,32 +199,6 @@
 						"type": "String"
 					}
 				]
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/linkedServices/sqlday2023synapse-WorkspaceDefaultStorage')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/DestinationDataset_ug9')]",
-			"type": "Microsoft.Synapse/workspaces/datasets",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "sqlday2023synapse-WorkspaceDefaultStorage",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "raw"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"quoteChar": "\""
-				},
-				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/sqlday2023synapse-WorkspaceDefaultStorage')]"
@@ -2409,7 +2409,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e3a6a272-5bdc-4b69-9eaa-59c744b3b70c"
+						"spark.autotune.trackingId": "cbdedfee-f09e-4c8a-b722-64839adaa2bd"
 					}
 				},
 				"metadata": {
@@ -2434,15 +2434,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"\n",
@@ -2507,7 +2505,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "1fe17e01-4c23-4f8d-83ed-5e5674b4521d"
+						"spark.autotune.trackingId": "70316932-054b-4a86-9a5c-8a514c3c1746"
 					}
 				},
 				"metadata": {
@@ -2532,15 +2530,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"from notebookutils import mssparkutils"
@@ -2720,7 +2716,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "fdfb6e1e-25fb-4cd2-84dc-770380465ef5"
+						"spark.autotune.trackingId": "42d015dd-4f20-457a-a94e-c59cfa4fe2be"
 					}
 				},
 				"metadata": {
@@ -2745,15 +2741,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"\n",
@@ -2820,7 +2814,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "3af9017b-70d0-4029-a555-a6c3c8deedb7"
+						"spark.autotune.trackingId": "1ef6e746-1561-4ac4-b2b2-f75fde5b32c7"
 					}
 				},
 				"metadata": {
@@ -2853,12 +2847,104 @@
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
+							"import requests\n",
+							"import pandas as pdimport io\n",
+							"from datetime import datetime, timedelta\n",
+							"\n",
+							"from notebookutils import mssparkutils"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
 						"metadata": {},
 						"source": [
 							"%run utils/configuration/configuration_parameters"
 						],
 						"outputs": [],
 						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_configuration():\n",
+							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_blob_service_client_sas( account: str, sas_token: str) -> BlobServiceClient:\n",
+							"    account_url = account\n",
+							"    credential = sas_token\n",
+							"    blob_service_client = BlobServiceClient(account_url, credential=credential)\n",
+							"\n",
+							"    return blob_service_client"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_blob_service_source_client_sas( account: str, sas_token: str) -> BlobServiceClient:\n",
+							"    account_url = account\n",
+							"    credential = sas_token\n",
+							"    blob_service_client = BlobServiceClient(account_url, credential=credential)\n",
+							"\n",
+							"    return blob_service_client"
+						],
+						"outputs": [],
+						"execution_count": null
 					}
 				]
 			},
@@ -3207,7 +3293,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "873eb561-c608-4448-b5c7-bc670818e805"
+						"spark.autotune.trackingId": "bee489b1-363b-492c-91b2-e3af24096959"
 					}
 				},
 				"metadata": {
@@ -3232,7 +3318,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -3538,6 +3625,46 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Spark job sample')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "3.3",
+				"language": "python",
+				"scanFolder": false,
+				"jobProperties": {
+					"name": "Spark job sample",
+					"file": "abfss://synapse@sqlday2023.dfs.core.windows.net/spark_job.py",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "806b1bee-afd5-447a-affc-5e4442b22195",
+						"spark.synapse.context.sjdname": "Spark job sample"
+					},
+					"args": [
+						"abfss://raw@sqlday2023.dfs.core.windows.net/AWInternetSales.csv",
+						"abfss://bronze@sqlday2023.dfs.core.windows.net/"
+					],
+					"jars": [],
+					"pyFiles": [
+						""
+					],
+					"files": [],
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }
