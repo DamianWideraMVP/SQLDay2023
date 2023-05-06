@@ -407,7 +407,7 @@
 							},
 							{
 								"source": {
-									"type": "Single",
+									"type": "String",
 									"ordinal": 41
 								},
 								"sink": {
@@ -470,7 +470,7 @@
 							},
 							{
 								"source": {
-									"type": "Single",
+									"type": "String",
 									"ordinal": 48
 								},
 								"sink": {
@@ -533,7 +533,7 @@
 							},
 							{
 								"source": {
-									"type": "Single",
+									"type": "String",
 									"ordinal": 55
 								},
 								"sink": {
