@@ -2,7 +2,7 @@
 	"name": "configuration_parameters",
 	"properties": {
 		"folder": {
-			"name": "01 Load raw data/utils/configuration"
+			"name": "utils/configuration"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,

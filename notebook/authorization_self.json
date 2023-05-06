@@ -2,7 +2,7 @@
 	"name": "authorization_self",
 	"properties": {
 		"folder": {
-			"name": "01 Load raw data/utils"
+			"name": "utils"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c06cfe3b-4626-4fca-9ed4-12c5f60a02d4"
+				"spark.autotune.trackingId": "52aa54a6-9539-4424-abcd-39142042c138"
 			}
 		},
 		"metadata": {
@@ -74,16 +74,15 @@
 					"\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 3
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
 				"source": [
-					"mssparkutils.notebook.run(\"utils/configuration/configuration_parameters_akv\", 10)\n",
-					"\n",
-					"#%run utils/configuration/configuration_parameters_akv"
+					"mssparkutils.notebook.run(\"utils/configuration/configuration_parameters_akv\",10)\n",
+					""
 				],
-				"execution_count": null
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",

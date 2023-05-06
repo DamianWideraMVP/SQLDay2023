@@ -2,7 +2,7 @@
 	"name": "authorization_external",
 	"properties": {
 		"folder": {
-			"name": "01 Load raw data/utils"
+			"name": "utils"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
