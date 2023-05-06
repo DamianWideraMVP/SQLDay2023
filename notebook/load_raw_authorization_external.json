@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b713f167-5c05-4525-bcaa-ff81f6c18000"
+				"spark.autotune.trackingId": "8804c101-0e39-4948-a4cb-19ad9bf68600"
 			}
 		},
 		"metadata": {
@@ -72,14 +72,15 @@
 					"\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
 				"source": [
-					"%run \"03 Azure Storage/configuration/configuration_parameters\""
+					"%run \"03 Azure Storage/configuration/configuration_parameters\"\n",
+					""
 				],
-				"execution_count": 1
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -95,7 +96,7 @@
 					}
 				},
 				"source": [
-					"def get_configuration():\n",
+					"def _get_configuration():\n",
 					"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SCR_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 				],
 				"execution_count": null
@@ -137,7 +138,43 @@
 					}
 				},
 				"source": [
-					"bsc_source = get_blob_service_client ()"
+					"src_account, src_container, src_saskey, raw_account, raw_container, raw_saskey = _get_configuration()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"source_bsc = get_blob_service_client (src_account, src_container)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"raw_bsc = get_blob_service_client (raw_account, raw_container)"
 				],
 				"execution_count": null
 			}
