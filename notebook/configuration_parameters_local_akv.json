@@ -2,7 +2,7 @@
 	"name": "configuration_parameters_local_akv",
 	"properties": {
 		"folder": {
-			"name": "01 Load raw data/utils/configuration"
+			"name": "01_Load_raw_data/utils/configuration"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "af4dfd08-59ad-4b81-96f6-6cd6de0d998d"
+				"spark.autotune.trackingId": "701985f4-9600-40f2-b28d-e0db9fab22f8"
 			}
 		},
 		"metadata": {
