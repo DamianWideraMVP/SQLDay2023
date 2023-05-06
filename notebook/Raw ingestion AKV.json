@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c3a66397-6269-4ccd-8925-212ad8114b01"
+				"spark.autotune.trackingId": "95d4ffc2-965f-492a-9de0-71310309633f"
 			}
 		},
 		"metadata": {
@@ -67,14 +67,14 @@
 				"source": [
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 5
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					"mssparkutils.notebook.run(\"utils/authorization_self\", 10)"
 				],
-				"execution_count": 6
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -90,9 +90,9 @@
 					}
 				},
 				"source": [
-					"account, sas_token, container = get_configuration()"
+					"print(account, sas_token, container)"
 				],
-				"execution_count": 7
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
