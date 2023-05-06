@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "636b9809-6035-419a-b108-f007e4267d7f"
+				"spark.autotune.trackingId": "2ccf3c7f-61fd-4701-8b24-4c5c0e66d7d4"
 			}
 		},
 		"metadata": {
@@ -67,12 +67,12 @@
 				"source": [
 					"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 					"import requests\n",
-					"import pandas as pdimport io\n",
+					"import io\n",
 					"from datetime import datetime, timedelta\n",
 					"\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 6
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -80,7 +80,7 @@
 					"%run \"03 Azure Storage/configuration/configuration_parameters\"\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
