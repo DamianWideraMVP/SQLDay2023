@@ -2,7 +2,7 @@
 	"name": "configuration_parameters_local_akv",
 	"properties": {
 		"folder": {
-			"name": "utils/configuration"
+			"name": "03 Azure Storage/configuration"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "701985f4-9600-40f2-b28d-e0db9fab22f8"
+				"spark.autotune.trackingId": "a9a4b8c8-8cb9-4a49-961c-36e0fb072963"
 			}
 		},
 		"metadata": {

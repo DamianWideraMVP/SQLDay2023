@@ -2,7 +2,7 @@
 	"name": "configuration_parameters",
 	"properties": {
 		"folder": {
-			"name": "utils/configuration"
+			"name": "03 Azure Storage/configuration"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "cbdedfee-f09e-4c8a-b722-64839adaa2bd"
+				"spark.autotune.trackingId": "b6e8c2e0-d8dc-4784-bdc5-a2fd701bc400"
 			}
 		},
 		"metadata": {
@@ -45,7 +45,8 @@
 				"sparkVersion": "3.3",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},

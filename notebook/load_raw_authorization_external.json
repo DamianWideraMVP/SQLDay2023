@@ -2,7 +2,7 @@
 	"name": "load_raw_authorization_external",
 	"properties": {
 		"folder": {
-			"name": "utils"
+			"name": "03 Azure Storage"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "81f2bdc6-b3b6-4632-a65f-d2cc1c227627"
+				"spark.autotune.trackingId": "8fa5ca93-f9c6-44c2-b1b2-8fd5207ad8fe"
 			}
 		},
 		"metadata": {
@@ -45,7 +45,8 @@
 				"sparkVersion": "3.3",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},
