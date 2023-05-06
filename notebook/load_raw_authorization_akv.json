@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "405fe0b8-bba2-44b5-ad26-7101d7a391d3"
+				"spark.autotune.trackingId": "3643314f-640b-4b6f-b1f1-02abd2f7f9d2"
 			}
 		},
 		"metadata": {
@@ -65,14 +65,13 @@
 					}
 				},
 				"source": [
-					"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
-					"import requests\n",
-					"import pandas as pd\n",
-					"import zipfile\n",
-					"import io\n",
-					"from datetime import datetime, timedelta\n",
+					"from pyspark.sql import SparkSession\n",
 					"\n",
-					"from notebookutils import mssparkutils"
+					"\n",
+					"spark = SparkSession \\\n",
+					".builder \\\n",
+					".appName(\"SQLDay 2023\") \\\n",
+					".getOrCreate()"
 				],
 				"execution_count": 3
 			},
@@ -90,7 +89,32 @@
 					}
 				},
 				"source": [
-					"%run utils/configuration/configuration_parameters_local_akv"
+					"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
+					"import requests\n",
+					"import pandas as pd\n",
+					"import zipfile\n",
+					"import io\n",
+					"from datetime import datetime, timedelta\n",
+					"\n",
+					"from notebookutils import mssparkutils"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%run \"03 Azure Storage/configuration/configuration_parameters_local_akv\""
 				],
 				"execution_count": 7
 			},
