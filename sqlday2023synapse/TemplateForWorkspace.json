@@ -2176,7 +2176,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "09445c99-ff22-4655-bcb9-565644f599a0"
+						"spark.autotune.trackingId": "b86ddca0-21eb-4144-91d4-dc45c8447d2a"
 					}
 				},
 				"metadata": {
@@ -2201,7 +2201,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -2230,7 +2231,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 16
 					},
 					{
 						"cell_type": "code",
@@ -2249,10 +2250,11 @@
 							"%run utils/configuration/configuration_parameters_akv"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"mssparkutils.notebook.run(\"utils/configuration/configuration_parameters_akv\",10)\n",
 							""
@@ -2278,7 +2280,7 @@
 							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -2294,12 +2296,10 @@
 							}
 						},
 						"source": [
-							"account = PARAMETERS.DATALAKE\n",
-							"sas_key = PARAMETERS.SASKEY\n",
-							"container = PARAMETERS.CONTAINER"
+							"account ,sas_key,container = get_configuration()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 21
 					},
 					{
 						"cell_type": "code",
@@ -2323,7 +2323,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 23
 					},
 					{
 						"cell_type": "code",
@@ -2363,7 +2363,7 @@
 							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 24
 					},
 					{
 						"cell_type": "code",
@@ -2384,7 +2384,7 @@
 							"    return blob_service_client.get_container_client(container=new_name_for_container)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 25
 					},
 					{
 						"cell_type": "code",
@@ -2411,7 +2411,7 @@
 							"        _send_data_to_blob(container_client,dt_str)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 26
 					},
 					{
 						"cell_type": "code",
@@ -2436,7 +2436,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 27
 					}
 				]
 			},
@@ -2562,7 +2562,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "49e0b3f1-1b17-472d-b519-fbee86d3e9be"
+						"spark.autotune.trackingId": "d9e89837-ffdb-4583-881a-f754fa8e9c1f"
 					}
 				},
 				"metadata": {
@@ -2587,15 +2587,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"from notebookutils import mssparkutils"
