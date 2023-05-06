@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "14fc0840-f687-42fd-bbf9-9b63c08b3691"
+				"spark.autotune.trackingId": "b02dace4-9e1f-4edd-afa7-e1c9c1b15407"
 			}
 		},
 		"metadata": {
@@ -252,11 +252,10 @@
 					"    account_for_abfss = account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
 					"        \n",
 					"    path_to_blob_raw = \"abfss://\" + raw_container + \"@\" + account_for_abfss+\"/\"+ folder +\"/\"+file_name\n",
-					"    path_to_blob_bronze = \"abfss://\" + bronze_container + \"@\" + account_for_abfss+\"/\"+ folder +\"/\"+file_name.split('.')[0]+'.parquet'\n",
-					"\n",
+					"    path_to_blob_bronze = \"abfss://\" + bronze_container + \"@\" + account_for_abfss+\"/\"+ folder\n",
 					"    return account_for_abfss, path_to_blob_raw, path_to_blob_bronze"
 				],
-				"execution_count": 64
+				"execution_count": 72
 			},
 			{
 				"cell_type": "code",
@@ -274,7 +273,7 @@
 				"source": [
 					"folders = [\"customer\",\"orders\"]"
 				],
-				"execution_count": 65
+				"execution_count": 67
 			},
 			{
 				"cell_type": "code",
@@ -308,11 +307,11 @@
 					"        if 'csv' in path_to_blob_raw:\n",
 					"            print (path_to_blob_raw)        \n",
 					"            df = spark.read.load(path_to_blob_raw, format='csv', header=True)\n",
-					"            df.write.mode(\"overwrite\").parquet(path_to_blob_bronze)\n",
+					"            df.write.mode(\"append\").parquet(path_to_blob_bronze)\n",
 					"        \n",
 					""
 				],
-				"execution_count": 63
+				"execution_count": 73
 			}
 		]
 	}
