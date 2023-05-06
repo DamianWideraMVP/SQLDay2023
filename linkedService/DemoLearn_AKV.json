@@ -1,0 +1,22 @@
+{
+	"name": "DemoLearn_AKV",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://itechdayadla.dfs.core.windows.net",
+			"accountKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "SQLDay_AKV",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "DemoLearnKey"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
