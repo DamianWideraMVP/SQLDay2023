@@ -2,7 +2,7 @@
 	"name": "configuration_paramaters_raw_bronze",
 	"properties": {
 		"folder": {
-			"name": "utils/configuration"
+			"name": "01 Load raw data/utils/configuration"
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
@@ -16,7 +16,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "fcfb0b87-fd29-4382-8eea-d5ffd580eb89"
+				"spark.autotune.trackingId": "6d94d5b1-7af1-4996-88f7-56985b1d07e2"
 			}
 		},
 		"metadata": {
