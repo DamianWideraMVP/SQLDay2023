@@ -703,15 +703,31 @@
 									"referenceName": "src_dir_file",
 									"type": "DatasetReference",
 									"parameters": {
-										"DYear": "2013",
-										"DMonth": "05"
+										"DYear": {
+											"value": "@pipeline().parameters.UYear",
+											"type": "Expression"
+										},
+										"DMonth": {
+											"value": "@pipeline().parameters.UMonth",
+											"type": "Expression"
+										}
 									}
 								}
 							],
 							"outputs": [
 								{
 									"referenceName": "dst_dir_file",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"DAYear": {
+											"value": "@pipeline().parameters.UYear",
+											"type": "Expression"
+										},
+										"DAMonth": {
+											"value": "@pipeline().parameters.UMonth",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -739,8 +755,14 @@
 									"referenceName": "src_dir_file",
 									"type": "DatasetReference",
 									"parameters": {
-										"DYear": "2013",
-										"DMonth": "05"
+										"DYear": {
+											"value": "@pipeline().parameters.UYear",
+											"type": "Expression"
+										},
+										"DMonth": {
+											"value": "@pipeline().parameters.UMonth",
+											"type": "Expression"
+										}
 									}
 								},
 								"enableLogging": false,
