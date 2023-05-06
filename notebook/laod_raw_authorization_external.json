@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "cccd3819-fe86-461f-9743-604d5b7793e9"
+				"spark.autotune.trackingId": "38b02ff5-970f-4d0f-a5dd-5cc24dccc3b4"
 			}
 		},
 		"metadata": {
@@ -51,6 +51,29 @@
 			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
+					"import requests\n",
+					"import pandas as pdimport io\n",
+					"from datetime import datetime, timedelta\n",
+					"\n",
+					"from notebookutils import mssparkutils"
+				],
+				"execution_count": null
+			},
 			{
 				"cell_type": "code",
 				"source": [
