@@ -1602,7 +1602,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data"
+					"name": "01_Load_raw_data"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -1896,7 +1896,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data"
+					"name": "01_Load_raw_data"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -1914,7 +1914,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "17009e72-f75d-4ec4-9905-59dc6b68baf5"
+						"spark.autotune.trackingId": "f5380663-4ec0-4b04-97eb-912ce463cf24"
 					}
 				},
 				"metadata": {
@@ -1939,7 +1939,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -1961,15 +1962,16 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
-							"mssparkutils.notebook.run(\"01 Load raw data/utils/configuration/configuration_paramaters_local_akv\", 10)"
+							"mssparkutils.notebook.run(f\"01 Load raw data/utils/configuration/configuration_paramaters_local_akv\", 10)"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -2038,7 +2040,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils/configuration"
+					"name": "01_Load_raw_data/utils/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2138,7 +2140,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils/configuration"
+					"name": "01_Load_raw_data/utils/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2234,7 +2236,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils/configuration"
+					"name": "01_Load_raw_data/utils/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2347,7 +2349,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils/configuration"
+					"name": "01_Load_raw_data/utils/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2445,7 +2447,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils/configuration"
+					"name": "01_Load_raw_data/utils/configuration"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2565,7 +2567,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils"
+					"name": "01_Load_raw_data/utils"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2884,7 +2886,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils"
+					"name": "01_Load_raw_data/utils"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3042,7 +3044,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils"
+					"name": "01_Load_raw_data/utils"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -3361,7 +3363,7 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "01 Load raw data/utils"
+					"name": "01_Load_raw_data/utils"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
