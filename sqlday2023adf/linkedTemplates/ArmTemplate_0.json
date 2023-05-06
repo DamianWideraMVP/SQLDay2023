@@ -381,7 +381,79 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/11 copy history to silver')]",
+			"name": "[concat(parameters('factoryName'), '/src_dir_file_archive')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsDataLakeSilver",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"DYear": {
+						"type": "string",
+						"defaultValue": "2013"
+					},
+					"DMonth": {
+						"type": "string",
+						"defaultValue": "05"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@concat('archive/', dataset().DYear, dataset().DMonth)",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsDataLakeSilver')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dst_dir_file_raw')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "lsDataLakeSilver",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"DAYear": {
+						"type": "string",
+						"defaultValue": "2013"
+					},
+					"DAMonth": {
+						"type": "string",
+						"defaultValue": "04"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@concat(dataset().DAYear, dataset().DAMonth)",
+							"type": "Expression"
+						},
+						"fileSystem": "raw"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/lsDataLakeSilver')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/11 copy history to bronze')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -791,7 +863,7 @@
 									},
 									{
 										"source": {
-											"type": "Single",
+											"type": "String",
 											"ordinal": 41
 										},
 										"sink": {
@@ -854,7 +926,7 @@
 									},
 									{
 										"source": {
-											"type": "Single",
+											"type": "String",
 											"ordinal": 48
 										},
 										"sink": {
@@ -917,7 +989,7 @@
 									},
 									{
 										"source": {
-											"type": "Single",
+											"type": "String",
 											"ordinal": 55
 										},
 										"sink": {
@@ -1191,6 +1263,210 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/51 copy archive folder to raw')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "FileList4Src",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "src_dir_file_archive",
+								"type": "DatasetReference",
+								"parameters": {
+									"DYear": {
+										"value": "@pipeline().parameters.UYear",
+										"type": "Expression"
+									},
+									"DMonth": {
+										"value": "@pipeline().parameters.UMonth",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "CopyFilez",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "FileList4Src",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('FileList4Src').output.childItems",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "CopySingleFile",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"wildcardFileName": {
+													"value": "@{item().name}",
+													"type": "Expression"
+												},
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "src_dir_file_archive",
+											"type": "DatasetReference",
+											"parameters": {
+												"DYear": {
+													"value": "@pipeline().parameters.UYear",
+													"type": "Expression"
+												},
+												"DMonth": {
+													"value": "@pipeline().parameters.UMonth",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "dst_dir_file_raw",
+											"type": "DatasetReference",
+											"parameters": {
+												"DAYear": {
+													"value": "@pipeline().parameters.UYear",
+													"type": "Expression"
+												},
+												"DAMonth": {
+													"value": "@pipeline().parameters.UMonth",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "DeleteSingleFile",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "CopySingleFile",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "src_dir_file_archive",
+											"type": "DatasetReference",
+											"parameters": {
+												"DYear": {
+													"value": "@pipeline().parameters.UYear",
+													"type": "Expression"
+												},
+												"DMonth": {
+													"value": "@pipeline().parameters.UMonth",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"wildcardFileName": {
+												"value": "@{item().name}",
+												"type": "Expression"
+											},
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"UYear": {
+						"type": "string",
+						"defaultValue": "2013"
+					},
+					"UMonth": {
+						"type": "string",
+						"defaultValue": "04"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-04T00:05:41Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/src_dir_file_archive')]",
+				"[concat(variables('factoryId'), '/datasets/dst_dir_file_raw')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/02 load up all history')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1261,7 +1537,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "11 copy history to silver",
+											"referenceName": "11 copy history to bronze",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -1386,7 +1662,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/src_filelist')]",
-				"[concat(variables('factoryId'), '/pipelines/11 copy history to silver')]",
+				"[concat(variables('factoryId'), '/pipelines/11 copy history to bronze')]",
 				"[concat(variables('factoryId'), '/datasets/src_dir_file')]"
 			]
 		},
@@ -1460,7 +1736,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
-											"referenceName": "11 copy history to silver",
+											"referenceName": "11 copy history to bronze",
 											"type": "PipelineReference"
 										},
 										"waitOnCompletion": true,
@@ -1514,7 +1790,207 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/src_dir_file')]",
-				"[concat(variables('factoryId'), '/pipelines/11 copy history to silver')]"
+				"[concat(variables('factoryId'), '/pipelines/11 copy history to bronze')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/50 copy back to raw')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ListAllFolders",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "src_filelist",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "TraverseFolders",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "ListAllFolders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('ListAllFolders').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "ListFiles",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "src_dir_file_archive",
+											"type": "DatasetReference",
+											"parameters": {
+												"DYear": {
+													"value": "@item().Byear",
+													"type": "Expression"
+												},
+												"DMonth": {
+													"value": "@item().Bmonth",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"childItems"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"enablePartitionDiscovery": false
+										},
+										"formatSettings": {
+											"type": "BinaryReadSettings"
+										}
+									}
+								},
+								{
+									"name": "IfAnyFiles",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "ListFiles",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@greater(length(activity('ListFiles').output.childItems), 0)",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "FailNoFiles",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": "No archive files",
+													"errorCode": "5002"
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "WaitYes",
+												"type": "Wait",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"waitTimeInSeconds": 1
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "WaitFalse",
+									"type": "Wait",
+									"dependsOn": [
+										{
+											"activity": "IfAnyFiles",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								},
+								{
+									"name": "ExecBackFromArchive",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "IfAnyFiles",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "51 copy archive folder to raw",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"UYear": {
+												"value": "@item().Byear",
+												"type": "Expression"
+											},
+											"UMonth": {
+												"value": "@item().Bmonth",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/src_filelist')]",
+				"[concat(variables('factoryId'), '/datasets/src_dir_file_archive')]",
+				"[concat(variables('factoryId'), '/pipelines/51 copy archive folder to raw')]"
 			]
 		}
 	]
