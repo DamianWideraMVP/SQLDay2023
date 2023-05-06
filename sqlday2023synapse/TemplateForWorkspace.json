@@ -1621,7 +1621,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "01bacead-e1b9-4ba9-95c1-e10b94b73503"
+						"spark.autotune.trackingId": "32f2ff21-d433-4e1e-9d27-2e6051aa68ea"
 					}
 				},
 				"metadata": {
@@ -1646,15 +1646,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\r\n",
 							"import requests\r\n",
@@ -1912,7 +1910,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "29bdb392-3dce-4533-996e-756f991746d0"
+						"spark.autotune.trackingId": "29f617ce-c31a-4510-87ec-a3d4f7b0bd5c"
 					}
 				},
 				"metadata": {
@@ -2017,7 +2015,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "34caf07e-9781-47b9-b019-44637c08f18f"
+						"spark.autotune.trackingId": "b373d579-a6ce-481e-b64e-1ed2d3c715ea"
 					}
 				},
 				"metadata": {
@@ -2050,15 +2048,38 @@
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
 						"source": [
 							"from dataclasses import dataclass\n",
+							"from notebookutils import mssparkutils"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"\n",
 							"\n",
 							"@dataclass\n",
 							"class configuration_parameters:\n",
-							"    DATALAKE: str\n",
-							"    CONTAINER: str\n",
-							"    SASKEY: str\n",
+							"    SRC_DATALAKE: str\n",
+							"    SRC_CONTAINER: str\n",
+							"    SCR_SASKEY: str\n",
+							"    RAW_DATALAKE: str\n",
+							"    RAW_CONTAINER: str\n",
+							"    RAW_SASKEY: str\n",
 							""
 						],
 						"outputs": [],
@@ -2079,9 +2100,12 @@
 						},
 						"source": [
 							"PARAMETERS = configuration_parameters (\n",
-							"DATALAKE=\"https://itechdayadla.blob.core.windows.net\",\n",
-							"CONTAINER=\"demolearn\",\n",
-							"SASKEY=r\"?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupyx&se=2023-05-31T09:27:54Z&st=2023-05-06T01:27:54Z&spr=https&sig=kvedG7707y8H%2FE8ZNsrEIOl7L2AhS3X0QEqtXi0GoJg%3D\"\n",
+							"SRC_DATALAKE=\"https://itechdayadla.blob.core.windows.net\",\n",
+							"SRC_CONTAINER=\"demolearn\",\n",
+							"SRC_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','DemoLearnKey','SQLDay_AKV')#f\"?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupyx&se=2023-05-31T09:27:54Z&st=2023-05-06T01:27:54Z&spr=https&sig=kvedG7707y8H%2FE8ZNsrEIOl7L2AhS3X0QEqtXi0GoJg%3D\",\n",
+							"RAW_DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
+							"RAW_CONTAINER=\"raw\",\n",
+							"RAW_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayRaw','SQLDay_AKV')\n",
 							")"
 						],
 						"outputs": [],
@@ -2115,7 +2139,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "5a061b57-6439-45fa-9dac-2720388636da"
+						"spark.autotune.trackingId": "926226ae-1f99-41cb-b600-c2eac4cf72cc"
 					}
 				},
 				"metadata": {
@@ -2140,15 +2164,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"from notebookutils import mssparkutils"
@@ -2230,7 +2252,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "d43d67ce-3760-41cb-9735-f27cfbc8e529"
+						"spark.autotune.trackingId": "533497f6-6f5a-48df-8507-5e7fc200223b"
 					}
 				},
 				"metadata": {
@@ -2255,15 +2277,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"\n",
@@ -2330,7 +2350,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "90febf92-e078-47f5-b42a-1fea14f3a5a7"
+						"spark.autotune.trackingId": "4d38f5c3-5e48-4942-9d14-077f52df705e"
 					}
 				},
 				"metadata": {
@@ -2355,8 +2375,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -2388,7 +2407,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"from notebookutils import mssparkutils\n",
@@ -2500,8 +2518,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -2820,7 +2837,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4fce2845-77de-4673-b948-9950c52d8207"
+						"spark.autotune.trackingId": "1da8d9ac-c050-473a-9cc9-1f25ef80d46d"
 					}
 				},
 				"metadata": {
@@ -2879,7 +2896,7 @@
 						"cell_type": "code",
 						"metadata": {},
 						"source": [
-							"%run utils/configuration/configuration_parameters"
+							"%run \"03 Azure Storage/configuration/configuration_parameters\""
 						],
 						"outputs": [],
 						"execution_count": 1
@@ -2918,7 +2935,7 @@
 							}
 						},
 						"source": [
-							"def get_blob_service_client_sas( account: str, sas_token: str) -> BlobServiceClient:\n",
+							"def get_blob_service_client( account: str, sas_token: str) -> BlobServiceClient:\n",
 							"    account_url = account\n",
 							"    credential = sas_token\n",
 							"    blob_service_client = BlobServiceClient(account_url, credential=credential)\n",
@@ -2942,12 +2959,7 @@
 							}
 						},
 						"source": [
-							"def get_blob_service_source_client_sas( account: str, sas_token: str) -> BlobServiceClient:\n",
-							"    account_url = account\n",
-							"    credential = sas_token\n",
-							"    blob_service_client = BlobServiceClient(account_url, credential=credential)\n",
-							"\n",
-							"    return blob_service_client"
+							"bsc_source = get_blob_service_client ()"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -2980,7 +2992,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "dd2701f2-c88a-41b7-b7fc-548958b98e10"
+						"spark.autotune.trackingId": "8ec94ab1-dbf5-4f5d-b09a-2501429045a5"
 					}
 				},
 				"metadata": {
@@ -3005,8 +3017,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -3325,7 +3336,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "05b66b56-656a-447d-8866-5cb1730e4c88"
+						"spark.autotune.trackingId": "8a5f5a57-aba6-47b2-971e-b304f332ebc6"
 					}
 				},
 				"metadata": {
@@ -3350,8 +3361,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -3635,18 +3645,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/sqlpool')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "westeurope"
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/smallpool')]",
 			"type": "Microsoft.Synapse/workspaces/bigDataPools",
 			"apiVersion": "2019-06-01-preview",
@@ -3666,6 +3664,18 @@
 				"sparkVersion": "3.3",
 				"isComputeIsolationEnabled": false,
 				"sessionLevelPackagesEnabled": true,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sqlpool')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
 				"annotations": []
 			},
 			"dependsOn": [],
