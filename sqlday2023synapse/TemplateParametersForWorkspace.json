@@ -8,17 +8,17 @@
 		"sqlday2023synapse-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:sqlday2023synapse.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
 		},
-		"SQLDay_AKV_properties_typeProperties_baseUrl": {
-			"value": "https://sqlday2023akv.vault.azure.net/"
-		},
-		"sqlday2023synapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
-			"value": "https://sqlday2023.dfs.core.windows.net"
-		},
 		"DemoLearn_sasUri": {
 			"value": ""
 		},
 		"DemoLearn_properties_typeProperties_sasToken_secretName": {
 			"value": "DemoLearn"
+		},
+		"SQLDay_AKV_properties_typeProperties_baseUrl": {
+			"value": "https://sqlday2023akv.vault.azure.net/"
+		},
+		"sqlday2023synapse-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://sqlday2023.dfs.core.windows.net"
 		}
 	}
 }
