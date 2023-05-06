@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4d9c8fb3-e253-44de-94c3-bfb0e93a42c9"
+				"spark.autotune.trackingId": "9af91b09-f4ff-4cdb-bee3-c94ae8133bb4"
 			}
 		},
 		"metadata": {
@@ -67,14 +67,14 @@
 				"source": [
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 2
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
 				"source": [
-					"mssparkutils.notebook.run(\"utils/authorization_self\", 10)"
+					"mssparkutils.notebook.run(\"utils/load_raw_authorization_akv\", 10)"
 				],
-				"execution_count": 19
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
