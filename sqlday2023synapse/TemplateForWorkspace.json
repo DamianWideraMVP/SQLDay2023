@@ -2515,7 +2515,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "d752acf3-dc09-4bb0-a74c-487f67bd291d"
+						"spark.autotune.trackingId": "0b364384-dedd-4e5f-b5e6-b240433c5e3f"
 					}
 				},
 				"metadata": {
@@ -2994,7 +2994,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "bc5d5ae7-c190-4bf2-82d0-f155d7a2db56"
+						"spark.autotune.trackingId": "80b4b4da-b2c3-4316-99f5-5910787fb548"
 					}
 				},
 				"metadata": {
@@ -3346,7 +3346,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "2ef37400-9a4f-48f5-bf0d-c3311c4c95f8",
+						"spark.autotune.trackingId": "98762765-218f-44b3-b6cd-94e2f81e1aca",
 						"spark.synapse.context.sjdname": "Spark job sample"
 					},
 					"args": [
