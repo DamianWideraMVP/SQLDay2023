@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "652d5ae8-b606-4b33-9962-81f8d26abedd"
+				"spark.autotune.trackingId": "fb189647-f9db-4388-bb7c-a697f2c173c9"
 			}
 		},
 		"metadata": {
@@ -112,38 +112,14 @@
 					}
 				},
 				"source": [
-					"def get_blob_service_client_sas( account: str, sas_token: str) -> BlobServiceClient:\n",
-					"    account_url = account\n",
-					"    credential = sas_token\n",
-					"    blob_service_client = BlobServiceClient(account_url, credential=credential)\n",
+					"def _prepare_paths_for_data_processing (account: str, container: str, folder: str):\n",
 					"\n",
-					"    return blob_service_client"
+					"    account_for_abfss = account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
+					"        \n",
+					"    path_to_blob = \"abfss://\" + ontainer + \"@\" + account_for_abfss+\"/\"+ folder\n",
+					"    return account_for_abfss, path_to_blob"
 				],
-				"execution_count": 4
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"def _get_container_client(blob_service_client: BlobServiceClient, url: str, secret: str) -> ContainerClient:\n",
-					"\n",
-					"    sas_key = secret\n",
-					"    if '?' not in sas_key:\n",
-					"        sas_key = '?'+sas_key\n",
-					"    container_client = ContainerClient.from_container_url(url+sas_key)\n",
-					"    return container_client"
-				],
-				"execution_count": 8
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -178,9 +154,11 @@
 					}
 				},
 				"source": [
-					"bronze_bsc = get_blob_service_client_sas(account,bronze_sas_token)"
+					"account_for_abfss,  path_to_orders = _prepare_paths_for_data_processing(account, \"orders\", folder)\n",
+					"account_for_abfss,  path_to_customer = _prepare_paths_for_data_processing(account, \"customer\", folder)\n",
+					""
 				],
-				"execution_count": 6
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -196,9 +174,9 @@
 					}
 				},
 				"source": [
-					"silver_bsc = get_blob_service_client_sas(account,silver_sas_token)"
+					"df = spark.read.load('abfss://bronze@sqlday2023.dfs.core.windows.net/customer/part-00000-17bde504-1c94-4ff0-a346-9984cc52c34a-c000.snappy.parquet', format='parquet')"
 				],
-				"execution_count": 7
+				"execution_count": 10
 			}
 		]
 	}
