@@ -2087,7 +2087,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/authorization_external')]",
+			"name": "[concat(parameters('workspaceName'), '/laod_raw_authorization_external')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -2110,7 +2110,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "c27c28c6-f19a-4220-a92e-e22d584051a9"
+						"spark.autotune.trackingId": "0f4ffbb4-5e0f-486a-9c5b-9c362970a4b4"
 					}
 				},
 				"metadata": {
@@ -2135,13 +2135,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"%run utils/configuration/configuration_parameters"
 						],
@@ -2153,7 +2155,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/authorization_self')]",
+			"name": "[concat(parameters('workspaceName'), '/load_raw_authorization_sas')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -2176,7 +2178,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "0e9838c2-5791-424b-8d8e-172d2ae6f6e6"
+						"spark.autotune.trackingId": "d18d9346-8253-4ccf-8ece-ff274e169e96"
 					}
 				},
 				"metadata": {
@@ -2496,7 +2498,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "fe0ed2d5-5333-46c0-b11e-1f6a9b0ec018"
+						"spark.autotune.trackingId": "7208fd85-ef7b-4174-a08d-fd0c0c31b9bd"
 					}
 				},
 				"metadata": {
@@ -2521,13 +2523,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"\n",
@@ -2707,7 +2711,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "d5350cb3-5598-4d84-aaf7-c574b75f5f25"
+						"spark.autotune.trackingId": "be55a93e-1051-448c-90b5-85fa521d96b9"
 					}
 				},
 				"metadata": {
@@ -2821,7 +2825,7 @@
 			"location": "westeurope"
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/authorization_self_akv')]",
+			"name": "[concat(parameters('workspaceName'), '/load_raw_authorization_akv')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -2844,7 +2848,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "10a3da9a-9657-4ad3-b954-5bbc80d6408b"
+						"spark.autotune.trackingId": "8bd736f5-4c36-4a19-ac12-baf29ab4b299"
 					}
 				},
 				"metadata": {
@@ -2918,7 +2922,7 @@
 							"%run utils/configuration/configuration_parameters_local_akv"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -2938,7 +2942,7 @@
 							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -2962,7 +2966,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 57
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -3002,7 +3006,7 @@
 							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 						],
 						"outputs": [],
-						"execution_count": 58
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -3023,7 +3027,7 @@
 							"    return blob_service_client.get_container_client(container=new_name_for_container)"
 						],
 						"outputs": [],
-						"execution_count": 59
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -3050,7 +3054,7 @@
 							"        _send_data_to_blob(container_client,dt_str)"
 						],
 						"outputs": [],
-						"execution_count": 60
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -3075,7 +3079,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 61
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -3096,7 +3100,7 @@
 							"file_extension = 'csv'"
 						],
 						"outputs": [],
-						"execution_count": 62
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -3115,7 +3119,7 @@
 							"bsc = get_blob_service_client_sas(account,sas_token)"
 						],
 						"outputs": [],
-						"execution_count": 63
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -3134,7 +3138,7 @@
 							"upload_last_X_days(bsc,container,7)"
 						],
 						"outputs": [],
-						"execution_count": 64
+						"execution_count": 16
 					}
 				]
 			},
