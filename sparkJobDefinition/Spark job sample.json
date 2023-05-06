@@ -15,12 +15,12 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "806b1bee-afd5-447a-affc-5e4442b22195",
+				"spark.autotune.trackingId": "2ef37400-9a4f-48f5-bf0d-c3311c4c95f8",
 				"spark.synapse.context.sjdname": "Spark job sample"
 			},
 			"args": [
 				"abfss://raw@sqlday2023.dfs.core.windows.net/AWInternetSales.csv",
-				"abfss://bronze@sqlday2023.dfs.core.windows.net/"
+				"abfss://bronze@sqlday2023.dfs.core.windows.net/AWorks"
 			],
 			"jars": [],
 			"pyFiles": [
