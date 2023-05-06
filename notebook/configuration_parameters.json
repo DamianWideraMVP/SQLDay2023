@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e0d8d43b-1fdd-4d4d-a988-3612ca528e1a"
+				"spark.autotune.trackingId": "4a55b6db-5c8a-443c-9e67-d4f65c442a71"
 			}
 		},
 		"metadata": {
@@ -68,7 +68,7 @@
 					"from dataclasses import dataclass\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": null
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -79,7 +79,7 @@
 					"class configuration_parameters:\n",
 					"    SRC_DATALAKE: str\n",
 					"    SRC_CONTAINER: str\n",
-					"    SCR_SASKEY: str\n",
+					"    SRC_SASKEY: str\n",
 					"    RAW_DATALAKE: str\n",
 					"    RAW_CONTAINER: str\n",
 					"    RAW_SASKEY: str\n",
