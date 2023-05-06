@@ -1,5 +1,5 @@
 {
-	"name": "laod_raw_authorization_external",
+	"name": "load_raw_authorization_external",
 	"properties": {
 		"folder": {
 			"name": "utils"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b7b45e7f-81f2-47a8-aee6-767f993c7d3a"
+				"spark.autotune.trackingId": "81f2bdc6-b3b6-4632-a65f-d2cc1c227627"
 			}
 		},
 		"metadata": {

@@ -1,0 +1,76 @@
+{
+	"name": "configuration_paramaters_raw_bronze",
+	"properties": {
+		"folder": {
+			"name": "utils/configuration"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "a76921c6-cbef-4984-b5c3-369bec459780"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"from dataclasses import dataclass\n",
+					"\n",
+					"@dataclass\n",
+					"class configuration_parameters_raw_bronze:\n",
+					"    DATALAKE: str\n",
+					"    RAW_CONTAINER: str\n",
+					"    BRONZE_CONTAINER: str\n",
+					"    RAW_SASKEY: str\n",
+					"    BRONZE_SASKEY: str\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"PARAMETERS = configuration_parameters_raw_bronze (\n",
+					"DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
+					"RAW_CONTAINER=\"raw\",\n",
+					"SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayRaw','SQLDay_AKV'),\n",
+					"URL= 'http://data.gdeltproject.org/events/'\n",
+					")"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
