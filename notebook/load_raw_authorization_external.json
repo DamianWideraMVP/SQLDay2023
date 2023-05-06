@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "35c53ca4-2725-4a54-b7f7-32e7cb2a9a98"
+				"spark.autotune.trackingId": "bf018834-5918-4714-a1ec-7cadcb7fb862"
 			}
 		},
 		"metadata": {
@@ -80,7 +80,7 @@
 					"%run \"03 Azure Storage/configuration/configuration_parameters\"\n",
 					""
 				],
-				"execution_count": 29
+				"execution_count": 41
 			},
 			{
 				"cell_type": "code",
@@ -99,7 +99,7 @@
 					"def _get_configuration():\n",
 					"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SRC_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 				],
-				"execution_count": 30
+				"execution_count": 42
 			},
 			{
 				"cell_type": "code",
@@ -146,7 +146,7 @@
 					"    container_client = ContainerClient.from_container_url(url+sas_key)\n",
 					"    return container_client"
 				],
-				"execution_count": 32
+				"execution_count": 47
 			},
 			{
 				"cell_type": "code",
@@ -164,7 +164,7 @@
 				"source": [
 					"src_account, src_container, src_sas_token, raw_account, raw_container, raw_sas_token = _get_configuration()"
 				],
-				"execution_count": 34
+				"execution_count": 43
 			},
 			{
 				"cell_type": "code",
@@ -182,7 +182,7 @@
 				"source": [
 					"source_bsc = _get_blob_service_client (src_account, src_container)"
 				],
-				"execution_count": 35
+				"execution_count": 44
 			},
 			{
 				"cell_type": "code",
@@ -200,7 +200,7 @@
 				"source": [
 					"raw_bsc = _get_blob_service_client (raw_account, raw_container)"
 				],
-				"execution_count": 36
+				"execution_count": 45
 			},
 			{
 				"cell_type": "code",
@@ -263,13 +263,13 @@
 					"\n",
 					"    if 'json' in path_to_blob_src:\n",
 					"        print (path_to_blob_src)        \n",
-					"        df = spark.read.load(path_to_blob_src, format='json')\n",
+					"        df = spark.read.json(path_to_blob_src)\n",
 					"        df.write.mode(\"append\").json(path_to_blob_raw)\n",
 					"        \n",
 					"\n",
 					""
 				],
-				"execution_count": 40
+				"execution_count": 49
 			}
 		]
 	}
