@@ -1,0 +1,10 @@
+{
+	"name": "SQLDay_AKV",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://sqlday2023akv.vault.azure.net/"
+		}
+	}
+}
