@@ -1,5 +1,5 @@
 {
-	"name": "configuration_parameters_akv",
+	"name": "configuration_parameters_local",
 	"properties": {
 		"folder": {
 			"name": "utils/configuration"
@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a51a9b12-7d8d-41f5-a08b-876525a9e682"
+				"spark.autotune.trackingId": "88a1012f-1bd2-4b54-81a1-9ac5031838fc"
 			}
 		},
 		"metadata": {
@@ -55,7 +55,13 @@
 				"cell_type": "code",
 				"source": [
 					"from dataclasses import dataclass\n",
-					"from notebookutils import mssparkutils"
+					"\n",
+					"@dataclass\n",
+					"class configuration_parameters:\n",
+					"    DATALAKE: str\n",
+					"    CONTAINER: str\n",
+					"    SASKEY: str\n",
+					""
 				],
 				"execution_count": 3
 			},
@@ -73,35 +79,13 @@
 					}
 				},
 				"source": [
-					"@dataclass\n",
-					"class configuration_parameters_akv:\n",
-					"    DATALAKE: str\n",
-					"    CONTAINER: str\n",
-					"    SASKEY: str"
-				],
-				"execution_count": 4
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"PARAMETERS = configuration_parameters_akv (\n",
-					"DATALAKE=\"https://itechdayadla.dfs.core.windows.net\",\n",
-					"CONTAINER=\"demolearn\",\n",
-					"SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','DemoLearnKey','SQLDay_AKV')\n",
+					"PARAMETERS = configuration_parameters (\n",
+					"DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
+					"CONTAINER=\"raw\",\n",
+					"SASKEY=f'sp=racwdlmeop&st=2023-05-03T11:20:20Z&se=2023-05-31T19:20:20Z&spr=https&sv=2021-12-02&sr=c&sig=SITj%2FKFPa%2FTLJgawl6TeqABXjTpimz9WcH62TPyxKss%3D'URL=\n",
 					")"
 				],
-				"execution_count": 7
+				"execution_count": 1
 			}
 		]
 	}
