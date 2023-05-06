@@ -1,0 +1,94 @@
+{
+	"name": "configuration_paramaters_bronze_silver",
+	"properties": {
+		"folder": {
+			"name": "04 Azure Synapse Analytics/configuration"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "ded7acc6-3c20-45fd-909b-64b7faa87eef"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from dataclasses import dataclass\n",
+					"from notebookutils import mssparkutils"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"@dataclass\n",
+					"class configuration_parameters_raw_bronze:\n",
+					"    DATALAKE: str\n",
+					"    BRONZE_CONTAINER: str\n",
+					"    SILVER_CONTAINER: str\n",
+					"    BRONZE_SASKEY: str\n",
+					"    SILVER_SASKEY: str\n",
+					"    "
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"PARAMETERS = configuration_parameters_raw_bronze (\n",
+					"DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
+					"BRONZE_CONTAINER=\"bronze\",\n",
+					"SILVER_CONTAINER=\"silver\",\n",
+					"BRONZE_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayBronze','SQLDay_AKV'),\n",
+					"SILVER_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDaySilver','SQLDay_AKV')\n",
+					")"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
