@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "75a5c7d8-b525-42ca-aad0-cd4508691606"
+				"spark.autotune.trackingId": "cd7c2459-5874-4fcf-a27b-9f77d9980dfe"
 			}
 		},
 		"metadata": {
@@ -96,14 +96,6 @@
 			},
 			{
 				"cell_type": "code",
-				"source": [
-					"mssparkutils.notebook.run(\"utils/configuration/configuration_parameters_akv\",10)\n",
-					""
-				],
-				"execution_count": 14
-			},
-			{
-				"cell_type": "code",
 				"metadata": {
 					"jupyter": {
 						"source_hidden": false,
@@ -120,24 +112,6 @@
 					"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER"
 				],
 				"execution_count": 19
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"account ,sas_key,container = get_configuration()"
-				],
-				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -270,6 +244,60 @@
 					""
 				],
 				"execution_count": 27
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"account ,sas_key,container = get_configuration()"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"bsc = get_blob_service_client_sas(account,sas_token)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"upload_last_X_days(bsc,container,7)"
+				],
+				"execution_count": null
 			}
 		]
 	}
