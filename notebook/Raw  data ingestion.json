@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8442f67c-dce7-4f1b-bcd8-8f0fa131ef52"
+				"spark.autotune.trackingId": "e78d3743-d8ef-4cc4-9d86-0f0a522b4be9"
 			}
 		},
 		"metadata": {
@@ -46,7 +46,8 @@
 				"sparkVersion": "3.3",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -61,7 +62,7 @@
 					"import io\r\n",
 					"from datetime import datetime, timedelta"
 				],
-				"execution_count": 3
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -84,7 +85,7 @@
 					"unizpped_container = 'raw'\r\n",
 					"file_extension = 'csv'"
 				],
-				"execution_count": 4
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -107,7 +108,7 @@
 					"\r\n",
 					"    return blob_service_client"
 				],
-				"execution_count": 5
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
@@ -146,7 +147,7 @@
 					"\n",
 					"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 				],
-				"execution_count": 6
+				"execution_count": 18
 			},
 			{
 				"cell_type": "code",
@@ -168,7 +169,7 @@
 					"    \n",
 					"    "
 				],
-				"execution_count": 7
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -194,7 +195,7 @@
 					"        \n",
 					"        send_data_to_blob(container_client,dt_str)"
 				],
-				"execution_count": 8
+				"execution_count": 20
 			},
 			{
 				"cell_type": "code",
@@ -220,7 +221,7 @@
 					"\n",
 					""
 				],
-				"execution_count": 9
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
@@ -238,7 +239,7 @@
 				"source": [
 					"bsc = get_blob_service_client_sas(account,sas_token)"
 				],
-				"execution_count": 10
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
@@ -274,7 +275,7 @@
 				"source": [
 					"upload_last_X_days(bsc,unizpped_container,7)"
 				],
-				"execution_count": 11
+				"execution_count": 24
 			}
 		]
 	}
