@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "95a48d71-c30e-430b-bb07-65a1ee9a8876"
+				"spark.autotune.trackingId": "9af01632-2e09-4440-9571-97ae26796955"
 			}
 		},
 		"metadata": {
@@ -56,7 +56,8 @@
 				"source": [
 					"import pandas as pd\r\n",
 					"\r\n",
-					"from pyspark.sql.functions import monotonically_increasing_id, col, regexp_replace"
+					"from pyspark.sql.functions import monotonically_increasing_id, col, regexp_replace\r\n",
+					"from delta.tables import DeltaTable"
 				],
 				"execution_count": 1
 			},
@@ -79,7 +80,7 @@
 				"source": [
 					"%%pyspark\r\n",
 					"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/20*/*/gdelt_events.parquet'\r\n",
-					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo/'"
+					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'"
 				],
 				"execution_count": 2
 			},
@@ -160,6 +161,31 @@
 					"display(df_geo.limit(10))"
 				],
 				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"## full reload\r\n",
+					"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
+					"delta_table.delete()\r\n",
+					"delta_table.vacuum()"
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
