@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b6e8c2e0-d8dc-4784-bdc5-a2fd701bc400"
+				"spark.autotune.trackingId": "8c976fad-150f-4030-8360-1166f847632c"
 			}
 		},
 		"metadata": {
@@ -58,9 +58,9 @@
 					"\n",
 					"@dataclass\n",
 					"class configuration_parameters:\n",
-					"    DATALAKE: str\n",
-					"    CONTAINER: str\n",
-					"    SASKEY: str\n",
+					"    SRC_DATALAKE: str\n",
+					"    SRC_CONTAINER: str\n",
+					"    SCR_SASKEY: str\n",
 					""
 				],
 				"execution_count": 3

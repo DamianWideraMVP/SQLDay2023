@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5ebd74ea-9114-45a3-b264-75674789c478"
+				"spark.autotune.trackingId": "7a92d7bd-ba34-4641-b746-b88fb95897bb"
 			}
 		},
 		"metadata": {
@@ -114,7 +114,7 @@
 					}
 				},
 				"source": [
-					"def get_blob_service_client_sas( account: str, sas_token: str) -> BlobServiceClient:\n",
+					"def get_blob_service_client( account: str, sas_token: str) -> BlobServiceClient:\n",
 					"    account_url = account\n",
 					"    credential = sas_token\n",
 					"    blob_service_client = BlobServiceClient(account_url, credential=credential)\n",
@@ -137,12 +137,7 @@
 					}
 				},
 				"source": [
-					"def get_blob_service_source_client_sas( account: str, sas_token: str) -> BlobServiceClient:\n",
-					"    account_url = account\n",
-					"    credential = sas_token\n",
-					"    blob_service_client = BlobServiceClient(account_url, credential=credential)\n",
-					"\n",
-					"    return blob_service_client"
+					"bsc_source = get_blob_service_client ()"
 				],
 				"execution_count": null
 			}
