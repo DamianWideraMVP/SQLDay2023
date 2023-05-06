@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "aee1a2e4-0b74-4d52-b907-1e9aabc2a0cb"
+				"spark.autotune.trackingId": "c224777d-430a-4de4-a417-0a8e5cb0ea2b"
 			}
 		},
 		"metadata": {
@@ -74,7 +74,7 @@
 					"\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 54
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -90,9 +90,9 @@
 					}
 				},
 				"source": [
-					"%run utils/configuration/configuration_parameters_local"
+					"%run utils/configuration/configuration_parameters_local_akv"
 				],
-				"execution_count": 55
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -111,7 +111,7 @@
 					"def get_configuration():\n",
 					"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER, PARAMETERS.URL"
 				],
-				"execution_count": 56
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
