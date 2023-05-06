@@ -2014,7 +2014,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e1982348-62f5-4623-92ae-8ae648a096a8"
+						"spark.autotune.trackingId": "cd2f978c-4574-459c-b0aa-e0f649fc557a"
 					}
 				},
 				"metadata": {
@@ -2063,7 +2063,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 1
 					},
 					{
 						"cell_type": "code",
@@ -2075,7 +2075,7 @@
 							"class configuration_parameters:\n",
 							"    SRC_DATALAKE: str\n",
 							"    SRC_CONTAINER: str\n",
-							"    SCR_SASKEY: str\n",
+							"    SRC_SASKEY: str\n",
 							"    RAW_DATALAKE: str\n",
 							"    RAW_CONTAINER: str\n",
 							"    RAW_SASKEY: str\n",
@@ -2836,7 +2836,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "2ccf3c7f-61fd-4701-8b24-4c5c0e66d7d4"
+						"spark.autotune.trackingId": "14c811a5-adf5-42aa-b2b3-d47964e86d90"
 					}
 				},
 				"metadata": {
@@ -2888,7 +2888,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -2897,7 +2897,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -2917,7 +2917,7 @@
 							"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SCR_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
