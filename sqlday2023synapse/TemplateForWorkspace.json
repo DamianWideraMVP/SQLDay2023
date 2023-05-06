@@ -1854,7 +1854,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "ce978c2e-396b-49b8-bbec-fd745899791b"
+						"spark.autotune.trackingId": "a4d6cf19-ed8b-4316-8c82-0990d0e64a3e"
 					}
 				},
 				"metadata": {
@@ -1901,7 +1901,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 2
 					},
 					{
 						"cell_type": "code",
@@ -1911,7 +1911,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -1927,12 +1927,10 @@
 							}
 						},
 						"source": [
-							"account = PARAMETERS.DATALAKE\n",
-							"sas_token = PARAMETERS.SASKEY\n",
-							"container = PARAMETERS.CONTAINER"
+							"account, sas_token, container = get_configuration()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -2180,7 +2178,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "7ea92ed5-c103-4475-9ce0-188015c7b408"
+						"spark.autotune.trackingId": "5b0b7516-0452-4756-9ece-9c679c1054b5"
 					}
 				},
 				"metadata": {
@@ -2254,7 +2252,7 @@
 							"%run utils/configuration/configuration_parameters_akv"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -2264,7 +2262,27 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def get_configuration():\n",
+							"    return PARAMETERS.DATALAKE, PARAMETERS.SASKEY, PARAMETERS.CONTAINER"
+						],
+						"outputs": [],
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
