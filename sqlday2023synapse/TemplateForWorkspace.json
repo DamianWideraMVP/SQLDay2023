@@ -1959,7 +1959,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "be831854-be50-4f54-bd56-7f69ab9efd05"
+						"spark.autotune.trackingId": "ba98fc69-3b52-4c8b-978f-1db3bdf43eb0"
 					}
 				},
 				"metadata": {
@@ -2046,10 +2046,10 @@
 							"PARAMETERS = configuration_parameters (\n",
 							"SRC_DATALAKE=\"https://itechdayadla.blob.core.windows.net\",\n",
 							"SRC_CONTAINER=\"demolearn\",\n",
-							"SRC_SASKEY=f\"?sp=racwdlmeop&st=2023-05-06T21:33:20Z&se=2023-05-31T05:33:20Z&spr=https&sv=2022-11-02&sr=c&sig=3ZNou11hnKV3laQd1YN5kxti0Ek%2FE4EK3hynf4H2Q2U%3D\",\n",
+							"SRC_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','DemoLearn','SQLDay_AKV'),\n",
 							"RAW_DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
 							"RAW_CONTAINER=\"raw\",\n",
-							"RAW_SASKEY=f\"?sp=racwdlmeop&st=2023-05-03T21:02:46Z&se=2023-05-31T05:02:46Z&spr=https&sv=2021-12-02&sr=c&sig=8CY7pN26Rsto5wDJoYUM4RzofvxNaozEwpZWARTqVs0%3D\"\n",
+							"RAW_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayRaw','SQLDay_AKV')\n",
 							")"
 						],
 						"outputs": [],
@@ -2083,7 +2083,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "926226ae-1f99-41cb-b600-c2eac4cf72cc"
+						"spark.autotune.trackingId": "dd0ffcf3-e963-4ac8-9e8c-e2d616e2877b"
 					}
 				},
 				"metadata": {
@@ -2108,13 +2108,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"from notebookutils import mssparkutils"
@@ -2162,7 +2164,7 @@
 							"PARAMETERS = configuration_parameters_akv (\n",
 							"DATALAKE=\"https://itechdayadla.blob.core.windows.net\",\n",
 							"CONTAINER=\"demolearn\",\n",
-							"SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','DemoLearnKey','SQLDay_AKV')\n",
+							"SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','DemoLearn','SQLDay_AKV')\n",
 							")"
 						],
 						"outputs": [],
@@ -2781,7 +2783,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "cb5ae7ba-101b-43c0-b717-2e3bdb36f7e6"
+						"spark.autotune.trackingId": "ee796ed7-33fe-41d4-982b-09b9ff30c93a"
 					}
 				},
 				"metadata": {
