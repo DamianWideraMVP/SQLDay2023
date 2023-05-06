@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8cce2451-d8a0-4c55-bf2f-ce13b4fcee4e"
+				"spark.autotune.trackingId": "70316932-054b-4a86-9a5c-8a514c3c1746"
 			}
 		},
 		"metadata": {
@@ -96,7 +96,7 @@
 				},
 				"source": [
 					"PARAMETERS = configuration_parameters_akv (\n",
-					"DATALAKE=\"https://itechdayadla.dfs.core.windows.net\",\n",
+					"DATALAKE=\"https://itechdayadla.blob.core.windows.net\",\n",
 					"CONTAINER=\"demolearn\",\n",
 					"SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','DemoLearnKey','SQLDay_AKV')\n",
 					")"

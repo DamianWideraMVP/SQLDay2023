@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "fe0ed2d5-5333-46c0-b11e-1f6a9b0ec018"
+				"spark.autotune.trackingId": "cbdedfee-f09e-4c8a-b722-64839adaa2bd"
 			}
 		},
 		"metadata": {
@@ -45,7 +45,8 @@
 				"sparkVersion": "3.3",
 				"nodeCount": 3,
 				"cores": 4,
-				"memory": 28
+				"memory": 28,
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -79,7 +80,7 @@
 				},
 				"source": [
 					"PARAMETERS = configuration_parameters (\n",
-					"DATALAKE=\"https://itechdayadla.dfs.core.windows.net\",\n",
+					"DATALAKE=\"https://itechdayadla.blob.core.windows.net\",\n",
 					"CONTAINER=\"demolearn\",\n",
 					"SASKEY=r\"?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupyx&se=2023-05-31T09:27:54Z&st=2023-05-06T01:27:54Z&spr=https&sig=kvedG7707y8H%2FE8ZNsrEIOl7L2AhS3X0QEqtXi0GoJg%3D\"\n",
 					")"
