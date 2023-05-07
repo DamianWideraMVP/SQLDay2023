@@ -862,7 +862,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "6237d5ac-5b3e-40a0-b913-b8b024dc5244"
+						"spark.autotune.trackingId": "a3a98bed-1fcd-4688-9e3e-d258712df423"
 					}
 				},
 				"metadata": {
@@ -1548,6 +1548,82 @@
 						],
 						"outputs": [],
 						"execution_count": 192
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"MERGE INTO orders dest\n",
+							"USING order_priority src\n",
+							"ON src.O_ORDERPRIORITY = dest.O_ORDERPRIORITY\n",
+							"When Matched then\n",
+							"Update \n",
+							"    SET O_ORDERPRIORITY_ID = src.O_ORDERPRIORITY_ID"
+						],
+						"outputs": [],
+						"execution_count": 193
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"ALTER TABLE orders SET TBLPROPERTIES (\n",
+							"   'delta.columnMapping.mode' = 'name',\n",
+							"   'delta.minReaderVersion' = '2',\n",
+							"   'delta.minWriterVersion' = '5')"
+						],
+						"outputs": [],
+						"execution_count": 195
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_drop_column(\"orders\",\"O_ORDERPRIORITY\")"
+						],
+						"outputs": [],
+						"execution_count": 196
 					}
 				]
 			},
