@@ -344,7 +344,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e25d3377-5ce2-40cd-a743-673b9542400f"
+						"spark.autotune.trackingId": "396d7f54-308d-4285-ae1e-245631d392dc"
 					}
 				},
 				"metadata": {
@@ -394,7 +394,7 @@
 							"from delta.tables import DeltaTable"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 1
 					},
 					{
 						"cell_type": "code",
@@ -410,7 +410,7 @@
 							"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 2
 					},
 					{
 						"cell_type": "code",
@@ -484,7 +484,7 @@
 							"display(df_actor.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -510,7 +510,7 @@
 							"delta_table.vacuum()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -534,7 +534,7 @@
 							"df_actor_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -611,7 +611,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 36
+						"execution_count": 6
 					}
 				]
 			},
@@ -866,7 +866,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "cd2f41f1-2417-46ce-a378-e94aab56c5e4"
+						"spark.autotune.trackingId": "8530d5d5-28bc-4d08-a351-12c94d856cc1"
 					}
 				},
 				"metadata": {
@@ -891,15 +891,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 							"import os\n",
@@ -2194,6 +2192,280 @@
 						],
 						"outputs": [],
 						"execution_count": 13
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ML on Spark Pool')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "04 Azure Synapse Analytics"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "6bc0202e-3ab5-4629-b699-bcd1824434f1"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": true
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"%%configure -f\n",
+							"{\n",
+							"  \"name\": \"synapseml\",\n",
+							"  \"conf\": {\n",
+							"      \"spark.dynamicAllocation.enabled\": \"false\",\n",
+							"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\"\n",
+							"  }\n",
+							"}"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"from synapse.ml.core.platform import *"
+						],
+						"outputs": [],
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df = (\n",
+							"    spark.read.format(\"csv\")\n",
+							"    .option(\"header\", True)\n",
+							"    .option(\"inferSchema\", True)\n",
+							"    .load(\n",
+							"        \"wasbs://publicwasb@mmlspark.blob.core.windows.net/heart_disease_prediction_data.csv\"\n",
+							"    )\n",
+							")\n",
+							"print(\"records read: \" + str(df.count()))\n",
+							"print(\"Schema: \")\n",
+							"df.printSchema()"
+						],
+						"outputs": [],
+						"execution_count": 10
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df)"
+						],
+						"outputs": [],
+						"execution_count": 11
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"train, test = df.randomSplit([0.85, 0.15], seed=1)"
+						],
+						"outputs": [],
+						"execution_count": 12
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from synapse.ml.vw import VowpalWabbitFeaturizer\n",
+							"\n",
+							"featurizer = VowpalWabbitFeaturizer(inputCols=df.columns[:-1], outputCol=\"features\")\n",
+							"train_data = featurizer.transform(train)[\"target\", \"features\"]\n",
+							"test_data = featurizer.transform(test)[\"target\", \"features\"]"
+						],
+						"outputs": [],
+						"execution_count": 13
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(train_data.groupBy(\"target\").count())"
+						],
+						"outputs": [],
+						"execution_count": 14
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from synapse.ml.vw import VowpalWabbitClassifier\n",
+							"\n",
+							"model = VowpalWabbitClassifier(\n",
+							"    numPasses=20, labelCol=\"target\", featuresCol=\"features\"\n",
+							").fit(train_data)"
+						],
+						"outputs": [],
+						"execution_count": 16
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"predictions = model.transform(test_data)\n",
+							"display(predictions)"
+						],
+						"outputs": [],
+						"execution_count": 17
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from synapse.ml.train import ComputeModelStatistics\n",
+							"\n",
+							"metrics = ComputeModelStatistics(\n",
+							"    evaluationMetric=\"classification\", labelCol=\"target\", scoredLabelsCol=\"prediction\"\n",
+							").transform(predictions)\n",
+							"display(metrics)"
+						],
+						"outputs": [],
+						"execution_count": 18
 					}
 				]
 			},
