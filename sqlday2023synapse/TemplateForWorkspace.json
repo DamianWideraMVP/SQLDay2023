@@ -927,7 +927,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "29a12c72-8c67-48e6-a3e6-97fe16e7c0c7"
+						"spark.autotune.trackingId": "4c118b6d-c22e-4fc2-bde6-539c3d8895c9"
 					}
 				},
 				"metadata": {
@@ -967,7 +967,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -986,7 +986,7 @@
 							"%run \"04 Azure Synapse Analytics/configuration/configuration_paramaters_bronze_silver\""
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -1007,7 +1007,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -1031,7 +1031,7 @@
 							"    return account_for_abfss, path_to_blob"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -1051,7 +1051,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -1075,7 +1075,7 @@
 							"account_for_abfss_silver,  path_to_orderpriority_silver = _prepare_paths_for_data_processing(account, silver_container, \"orderpriority/delta\")"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 52
 					},
 					{
 						"cell_type": "code",
@@ -1094,7 +1094,7 @@
 							"account_for_abfss,  path_to_orders, path_to_customer, path_to_customer_silver, path_to_orders_silver, path_to_mktsegment_silver, path_to_orderpriority_silver"
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -1113,7 +1113,7 @@
 							"df_orders = spark.read.load(path_to_orders, format='parquet')"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 76
 					},
 					{
 						"cell_type": "code",
@@ -1152,7 +1152,7 @@
 							"df_customer = spark.read.load(path_to_customer, format='parquet')"
 						],
 						"outputs": [],
-						"execution_count": 166
+						"execution_count": 77
 					},
 					{
 						"cell_type": "code",
@@ -1200,7 +1200,7 @@
 							"df_orders = df_orders.withColumn(\"O_ORDERPRIORITY_ID\", lit(0))"
 						],
 						"outputs": [],
-						"execution_count": 168
+						"execution_count": 78
 					},
 					{
 						"cell_type": "code",
@@ -1239,7 +1239,7 @@
 							"list_segment = df_customer.select('C_MKTSEGMENT').distinct().collect()"
 						],
 						"outputs": [],
-						"execution_count": 170
+						"execution_count": 79
 					},
 					{
 						"cell_type": "code",
@@ -1259,7 +1259,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 171
+						"execution_count": 80
 					},
 					{
 						"cell_type": "code",
@@ -1299,7 +1299,7 @@
 							"df_order_priority= spark.createDataFrame(list_order_priority)"
 						],
 						"outputs": [],
-						"execution_count": 173
+						"execution_count": 81
 					},
 					{
 						"cell_type": "code",
@@ -1322,7 +1322,7 @@
 							"df_order_priority = df_order_priority.withColumn(\"O_ORDERPRIORITY_ID\", sf.row_number().over(Window.orderBy(sf.col(\"O_ORDERPRIORITY\"))))"
 						],
 						"outputs": [],
-						"execution_count": 174
+						"execution_count": 82
 					},
 					{
 						"cell_type": "code",
@@ -1361,7 +1361,7 @@
 							"db = \"SilverDatabase\""
 						],
 						"outputs": [],
-						"execution_count": 176
+						"execution_count": 83
 					},
 					{
 						"cell_type": "code",
@@ -1383,7 +1383,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 84
 					},
 					{
 						"cell_type": "code",
@@ -1402,7 +1402,7 @@
 							"_drop_silver_database(db)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 86
 					},
 					{
 						"cell_type": "code",
@@ -1428,7 +1428,26 @@
 							"    spark.sql(str)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 87
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_create_silver_database(db)"
+						],
+						"outputs": [],
+						"execution_count": 88
 					},
 					{
 						"cell_type": "code",
@@ -1450,7 +1469,27 @@
 							"df_orders.write.format(\"delta\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_orders_silver)"
 						],
 						"outputs": [],
-						"execution_count": 177
+						"execution_count": 89
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df_orders.limit(10), True)"
+						],
+						"outputs": [],
+						"execution_count": 48
 					},
 					{
 						"cell_type": "code",
@@ -1466,10 +1505,10 @@
 							}
 						},
 						"source": [
-							"df_orders.write.format(\"csv\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_orders_silver)"
+							"df_orders.write.save(path='abfss://silver@sqlday2023.dfs.core.windows.net/orders/ML', format='csv', mode='append', sep=',')"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 66
 					},
 					{
 						"cell_type": "code",
@@ -1492,7 +1531,7 @@
 							"    "
 						],
 						"outputs": [],
-						"execution_count": 178
+						"execution_count": 67
 					},
 					{
 						"cell_type": "code",
@@ -1520,7 +1559,7 @@
 							"    spark.sql(str)"
 						],
 						"outputs": [],
-						"execution_count": 179
+						"execution_count": 68
 					},
 					{
 						"cell_type": "code",
@@ -1543,7 +1582,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 180
+						"execution_count": 90
 					},
 					{
 						"cell_type": "code",
@@ -1568,7 +1607,7 @@
 							"select * from order_priority"
 						],
 						"outputs": [],
-						"execution_count": 182
+						"execution_count": 35
 					},
 					{
 						"cell_type": "code",
@@ -1599,7 +1638,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 186
+						"execution_count": 91
 					},
 					{
 						"cell_type": "code",
@@ -1626,7 +1665,7 @@
 							"   'delta.minWriterVersion' = '5')"
 						],
 						"outputs": [],
-						"execution_count": 190
+						"execution_count": 92
 					},
 					{
 						"cell_type": "code",
@@ -1650,7 +1689,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 188
+						"execution_count": 38
 					},
 					{
 						"cell_type": "code",
@@ -1670,7 +1709,7 @@
 							"_drop_column(\"customer\",\"C_MKTSEGMENT\")"
 						],
 						"outputs": [],
-						"execution_count": 191
+						"execution_count": 93
 					},
 					{
 						"cell_type": "code",
@@ -1692,10 +1731,10 @@
 						"source": [
 							"%%sql\n",
 							"\n",
-							"select * from customer"
+							"select  * from customer"
 						],
 						"outputs": [],
-						"execution_count": 192
+						"execution_count": 96
 					},
 					{
 						"cell_type": "code",
@@ -1725,7 +1764,7 @@
 							"    SET O_ORDERPRIORITY_ID = src.O_ORDERPRIORITY_ID"
 						],
 						"outputs": [],
-						"execution_count": 193
+						"execution_count": 98
 					},
 					{
 						"cell_type": "code",
@@ -1752,7 +1791,7 @@
 							"   'delta.minWriterVersion' = '5')"
 						],
 						"outputs": [],
-						"execution_count": 195
+						"execution_count": 100
 					},
 					{
 						"cell_type": "code",
@@ -1771,7 +1810,7 @@
 							"_drop_column(\"orders\",\"O_ORDERPRIORITY\")"
 						],
 						"outputs": [],
-						"execution_count": 196
+						"execution_count": 101
 					},
 					{
 						"cell_type": "markdown",
@@ -4582,7 +4621,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9afa2f12-4635-4b06-ad4f-3edcdeed82ca"
+						"spark.autotune.trackingId": "9553d0b8-4966-4df3-b88b-bd0bb7f2f9eb"
 					}
 				},
 				"metadata": {
@@ -4607,8 +4646,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
