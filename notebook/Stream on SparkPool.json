@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "6a93d542-28aa-40e6-ba57-5a02770139d9"
+				"spark.autotune.trackingId": "c08c363d-4983-4790-b8f4-4522fb9e3ef9"
 			}
 		},
 		"metadata": {
@@ -28,7 +28,7 @@
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
@@ -54,9 +54,58 @@
 			{
 				"cell_type": "code",
 				"source": [
-					""
+					"from notebookutils import mssparkutils"
 				],
-				"execution_count": null
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"logFilePath = \"/mnt/Blob/Logfiles/\"\n",
+					"\n",
+					"logSchema = StructType([ StructField(\"source\", StringType(), True), StructField(\"data\", StringType(), True), StructField(\"IP\", StringType(), True), StructField(\"log_level\", StringType(), True),StructField(\"log_type\", StringType(), True),StructField(\"log_app\", StringType(), True), StructField(\"log_timestamp\", TimestampType(), True) ])\n",
+					"\n",
+					"\n",
+					"LogDF = (\n",
+					"  spark\n",
+					"    .read\n",
+					"    .schema(logSchema)\n",
+					"    .option(\"multiline\",\"true\")\n",
+					"    .json(logFilePath)\n",
+					")\n",
+					"\n",
+					"display(LogDF)"
+				],
+				"execution_count": 17
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"mssparkutils.fs.ls(directory)"
+				],
+				"execution_count": 18
 			}
 		]
 	}
