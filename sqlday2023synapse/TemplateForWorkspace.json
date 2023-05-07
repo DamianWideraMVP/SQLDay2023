@@ -4582,7 +4582,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b3df8265-7356-4b68-9e10-5a047c7a2742"
+						"spark.autotune.trackingId": "9afa2f12-4635-4b06-ad4f-3edcdeed82ca"
 					}
 				},
 				"metadata": {
@@ -4632,7 +4632,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 76
+						"execution_count": 1
 					},
 					{
 						"cell_type": "code",
