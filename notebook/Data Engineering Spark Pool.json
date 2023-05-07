@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "95231233-ca8b-4796-a608-a0a3e88a5648"
+				"spark.autotune.trackingId": "10240dad-25ef-4b9d-9f6a-c6c9cc56fc57"
 			}
 		},
 		"metadata": {
@@ -197,7 +197,7 @@
 				"source": [
 					"df_orders = spark.read.load(path_to_orders, format='parquet')"
 				],
-				"execution_count": 23
+				"execution_count": 164
 			},
 			{
 				"cell_type": "code",
@@ -216,7 +216,7 @@
 				"source": [
 					"display(df_orders.limit(10))"
 				],
-				"execution_count": 56
+				"execution_count": 165
 			},
 			{
 				"cell_type": "code",
@@ -234,7 +234,7 @@
 				"source": [
 					"df_customer = spark.read.load(path_to_customer, format='parquet')"
 				],
-				"execution_count": 28
+				"execution_count": 166
 			},
 			{
 				"cell_type": "code",
@@ -253,7 +253,7 @@
 				"source": [
 					"display(df_customer.limit(10))"
 				],
-				"execution_count": 57
+				"execution_count": 167
 			},
 			{
 				"cell_type": "code",
@@ -269,15 +269,18 @@
 					}
 				},
 				"source": [
-					"from pyspark.sql.functions import lit, functools\n",
+					"from pyspark.sql.functions import lit\n",
 					"from datetime import datetime\n",
 					"\n",
 					"now = datetime.now()\n",
 					"dt_string = now.strftime(\"%d/%m/%Y %H:%M:%S\")\n",
 					"\n",
-					"df_customer = df_customer.withColumn(\"##_RecordLoaded\", lit(dt_string))"
+					"df_customer = df_customer.withColumn(\"##_RecordLoaded\", lit(dt_string))\n",
+					"df_customer = df_customer.withColumn(\"C_MKTSEGMENT_ID\", lit(0))\n",
+					"\n",
+					"df_orders = df_orders.withColumn(\"O_ORDERPRIORITY_ID\", lit(0))"
 				],
-				"execution_count": 122
+				"execution_count": 168
 			},
 			{
 				"cell_type": "code",
@@ -296,7 +299,7 @@
 				"source": [
 					"display(df_customer.limit(10))"
 				],
-				"execution_count": 123
+				"execution_count": 169
 			},
 			{
 				"cell_type": "code",
@@ -314,7 +317,7 @@
 				"source": [
 					"list_segment = df_customer.select('C_MKTSEGMENT').distinct().collect()"
 				],
-				"execution_count": 147
+				"execution_count": 170
 			},
 			{
 				"cell_type": "code",
@@ -333,7 +336,7 @@
 					"df_mktsegment = spark.createDataFrame(list_segment)\n",
 					""
 				],
-				"execution_count": 148
+				"execution_count": 171
 			},
 			{
 				"cell_type": "code",
@@ -352,7 +355,7 @@
 				"source": [
 					"display(df_mktsegment)"
 				],
-				"execution_count": 149
+				"execution_count": 172
 			},
 			{
 				"cell_type": "code",
@@ -371,7 +374,7 @@
 					"list_order_priority = df_orders.select('O_ORDERPRIORITY').distinct().collect()\n",
 					"df_order_priority= spark.createDataFrame(list_order_priority)"
 				],
-				"execution_count": 150
+				"execution_count": 173
 			},
 			{
 				"cell_type": "code",
@@ -393,7 +396,7 @@
 					"df_mktsegment = df_mktsegment.withColumn(\"C_MKTSEGMENT_ID\", sf.row_number().over(Window.orderBy(sf.col(\"C_MKTSEGMENT\"))))\n",
 					"df_order_priority = df_order_priority.withColumn(\"O_ORDERPRIORITY_ID\", sf.row_number().over(Window.orderBy(sf.col(\"O_ORDERPRIORITY\"))))"
 				],
-				"execution_count": 151
+				"execution_count": 174
 			},
 			{
 				"cell_type": "code",
@@ -412,7 +415,7 @@
 				"source": [
 					"display(df_mktsegment)"
 				],
-				"execution_count": 152
+				"execution_count": 175
 			},
 			{
 				"cell_type": "code",
@@ -429,11 +432,11 @@
 				},
 				"source": [
 					"db = \"SilverDatabase\"\n",
-					" \n",
+					"spark.sql(f\"DROP DATABASE IF EXISTS {db} CASCADE\")\n",
 					"spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db}\")\n",
 					"spark.sql(f\"USE {db}\")"
 				],
-				"execution_count": 153
+				"execution_count": 176
 			},
 			{
 				"cell_type": "code",
@@ -454,7 +457,7 @@
 					"df_customer .write .format(\"delta\") .mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_customer_silver)\n",
 					"df_orders.write.format(\"delta\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_orders_silver)"
 				],
-				"execution_count": 154
+				"execution_count": 177
 			},
 			{
 				"cell_type": "code",
@@ -476,7 +479,7 @@
 					"    spark.sql(str)\n",
 					"    "
 				],
-				"execution_count": 112
+				"execution_count": 178
 			},
 			{
 				"cell_type": "code",
@@ -503,7 +506,7 @@
 					"\n",
 					"    spark.sql(str)"
 				],
-				"execution_count": 114
+				"execution_count": 179
 			},
 			{
 				"cell_type": "code",
@@ -525,7 +528,7 @@
 					"_create_table (\"orders\", path_to_orders_silver)\n",
 					""
 				],
-				"execution_count": 155
+				"execution_count": 180
 			},
 			{
 				"cell_type": "code",
@@ -549,7 +552,31 @@
 					"\n",
 					"select * from order_priority"
 				],
-				"execution_count": 157
+				"execution_count": 181
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"ALTER TABLE customer ADD C_MKTSEGMENT_ID INTERSECT\n",
+					""
+				],
+				"execution_count": 163
 			},
 			{
 				"cell_type": "code",
