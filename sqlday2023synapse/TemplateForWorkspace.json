@@ -4782,6 +4782,26 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/serverless sql pool engineering')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2016/Quarter=Q3/Month=9/Day=20160930/sale-small-20160930-snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n\nSELECT\n    TransactionDate, ProductId,\n        CAST(SUM(ProfitAmount) AS decimal(18,2)) AS [(sum) Profit],\n        CAST(AVG(ProfitAmount) AS decimal(18,2)) AS [(avg) Profit],\n        SUM(Quantity) AS [(sum) Quantity]\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2016/Quarter=Q3/Month=9/Day=20160930/sale-small-20160930-snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [r] GROUP BY r.TransactionDate, r.ProductId;\n\n\n\nSELECT\n    COUNT(*)\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2019/*/*/*/*',\n        FORMAT = 'PARQUET'\n    ) AS [r] ;\n\n\n\nGO\n\ncreate DATABASE demo_serverless\nGO\n\n\nuse demo_serverless\nGO\n\n--wyklikac external table\n\nIF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'raw_sqlday2023_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [raw_sqlday2023_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://raw@sqlday2023.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.All2019Sales (\n\t[TransactionId] nvarchar(4000),\n\t[CustomerId] int,\n\t[ProductId] smallint,\n\t[Quantity] smallint,\n\t[Price] numeric(38,18),\n\t[TotalAmount] numeric(38,18),\n\t[TransactionDate] int,\n\t[ProfitAmount] numeric(38,18),\n\t[Hour] smallint,\n\t[Minute] smallint,\n\t[StoreId] smallint\n\t)\n\tWITH (\n\tLOCATION = 'sale-small/Year=2019/*/*/*/*.parquet',\n\tDATA_SOURCE = [raw_sqlday2023_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.All2019Sales\nGO\n\n\n\n--external data \n\nIF NOT EXISTS (SELECT * FROM sys.symmetric_keys) BEGIN\n    declare @pasword nvarchar(400) = CAST(newid() as VARCHAR(400));\n    EXEC('CREATE MASTER KEY ENCRYPTION BY PASSWORD = ''' + @pasword + '''')\nEND\n\nCREATE DATABASE SCOPED CREDENTIAL [sqlondemand]\nWITH IDENTITY='SHARED ACCESS SIGNATURE',  \nSECRET = 'sv=2018-03-28&ss=bf&srt=sco&sp=rl&st=2019-10-14T12%3A10%3A25Z&se=2061-12-31T12%3A10%3A00Z&sig=KlSU2ullCscyTS0An0nozEpo4tO5JAgGBvw%2FJX2lguw%3D'\nGO\n\n-- Create external data source secured using credential\nCREATE EXTERNAL DATA SOURCE SqlOnDemandDemo WITH (\n    LOCATION = 'https://sqlondemandstorage.blob.core.windows.net',\n    CREDENTIAL = sqlondemand\n);\nGO\n\nCREATE EXTERNAL FILE FORMAT QuotedCsvWithHeader\nWITH (  \n    FORMAT_TYPE = DELIMITEDTEXT,\n    FORMAT_OPTIONS (\n        FIELD_TERMINATOR = ',',\n        STRING_DELIMITER = '\"',\n        FIRST_ROW = 2\n    )\n);\nGO\n\nCREATE EXTERNAL TABLE [population]\n(\n    [country_code] VARCHAR (5) COLLATE Latin1_General_BIN2,\n    [country_name] VARCHAR (100) COLLATE Latin1_General_BIN2,\n    [year] smallint,\n    [population] bigint\n)\nWITH (\n    LOCATION = 'csv/population/population.csv',\n    DATA_SOURCE = SqlOnDemandDemo,\n    FILE_FORMAT = QuotedCsvWithHeader\n);\nGO\n\n\n\nSELECT [country_code]\n    ,[country_name]\n    ,[year]\n    ,[population]\nFROM [dbo].[population]\nWHERE [year] = 2019 and population > 100000000\n\n\n\n\n--view \n\n\nCREATE VIEW [dbo].[Sales2019ByProduct]\n\tAS \n    SELECT [ProductId], SUM([TotalAmount]) as Total \n    FROM [dbo].[All2019Sales]\n    GROUP BY ProductId\n\n\nSELECT * FROM [dbo].[Sales2019ByProduct]\n\n\n\n--db created in spark\nUSE silverdatabase\ngo\n\nSELECT TOP (100) * FROM [dbo].[orders]\n\n\n\nCREATE VIEW dbo.UrgentOrders_View\nAS\nSELECT  O.* \nFROM [dbo].[orders] O join dbo.order_priority OP\nON O.O_ORDERPRIORITY_ID = OP.O_ORDERPRIORITY_ID\nWHERE OP.O_ORDERPRIORITY LIKE  '%URGENT'\n\n\n\nuse demo_serverless\nGO\n\nSELECT TOP (100) * FROM [silverdatabase].[dbo].[orders]\n\n\n\nCREATE VIEW dbo.UrgentOrders_View\nAS\nSELECT  O.* \nFROM [silverdatabase].[dbo].[orders] O join [silverdatabase].dbo.order_priority OP\nON O.O_ORDERPRIORITY_ID = OP.O_ORDERPRIORITY_ID\nWHERE OP.O_ORDERPRIORITY LIKE  '%URGENT'\n\n\n\nselect * from dbo.UrgentOrders_View\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "demo_serverless",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
 		}
 	]
 }
