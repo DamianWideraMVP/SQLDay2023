@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e25d3377-5ce2-40cd-a743-673b9542400f"
+				"spark.autotune.trackingId": "396d7f54-308d-4285-ae1e-245631d392dc"
 			}
 		},
 		"metadata": {
@@ -71,7 +71,7 @@
 					"from pyspark.sql.functions import monotonically_increasing_id\r\n",
 					"from delta.tables import DeltaTable"
 				],
-				"execution_count": 7
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -86,7 +86,7 @@
 					"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/20*/*/gdelt_events.parquet'\r\n",
 					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'"
 				],
-				"execution_count": 5
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -159,7 +159,7 @@
 					"\r\n",
 					"display(df_actor.limit(10))"
 				],
-				"execution_count": 4
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -184,7 +184,7 @@
 					"delta_table.delete()\r\n",
 					"delta_table.vacuum()"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -207,7 +207,7 @@
 					"df_actor_wkey = df_actor.withColumn('ActorID', monotonically_increasing_id())\r\n",
 					"df_actor_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 				],
-				"execution_count": 8
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -283,7 +283,7 @@
 					",'SOURCEURL') \"\"\"\r\n",
 					""
 				],
-				"execution_count": 36
+				"execution_count": 6
 			}
 		]
 	}
