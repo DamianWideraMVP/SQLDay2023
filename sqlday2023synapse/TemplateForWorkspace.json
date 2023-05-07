@@ -344,7 +344,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9470026b-997d-4fdf-a9d0-ff18fc54ebac"
+						"spark.autotune.trackingId": "817436f6-dd35-4d23-a57d-4f5b97cc70a1"
 					}
 				},
 				"metadata": {
@@ -369,7 +369,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -530,7 +531,7 @@
 						"source": [
 							"%%pyspark\r\n",
 							"df_actor_wkey = df_actor.withColumn('ActorID', monotonically_increasing_id())\r\n",
-							"df_actor_wkey.write.option(\"path\", dst_location).format(\"delta\").save()"
+							"df_actor_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 						],
 						"outputs": [],
 						"execution_count": 8
@@ -640,7 +641,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9af01632-2e09-4440-9571-97ae26796955"
+						"spark.autotune.trackingId": "d27b596a-b2fd-4a66-b915-46245effa992"
 					}
 				},
 				"metadata": {
@@ -829,7 +830,7 @@
 						"source": [
 							"%%pyspark\r\n",
 							"df_geo_wkey = df_geo.withColumn('GeoID', monotonically_increasing_id())\r\n",
-							"df_geo_wkey.write.option(\"path\", dst_location).format(\"delta\").save()"
+							"df_geo_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 						],
 						"outputs": [],
 						"execution_count": 4
@@ -862,7 +863,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "a3a98bed-1fcd-4688-9e3e-d258712df423"
+						"spark.autotune.trackingId": "4edc8b02-26f5-4651-9e18-23a2b13144c3"
 					}
 				},
 				"metadata": {
@@ -887,15 +888,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 							"import os\n",
