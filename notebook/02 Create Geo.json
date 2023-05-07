@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9af01632-2e09-4440-9571-97ae26796955"
+				"spark.autotune.trackingId": "d27b596a-b2fd-4a66-b915-46245effa992"
 			}
 		},
 		"metadata": {
@@ -206,7 +206,7 @@
 				"source": [
 					"%%pyspark\r\n",
 					"df_geo_wkey = df_geo.withColumn('GeoID', monotonically_increasing_id())\r\n",
-					"df_geo_wkey.write.option(\"path\", dst_location).format(\"delta\").save()"
+					"df_geo_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 				],
 				"execution_count": 4
 			}

@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9470026b-997d-4fdf-a9d0-ff18fc54ebac"
+				"spark.autotune.trackingId": "6a269718-fb87-49b0-9d4c-7b09566fc85e"
 			}
 		},
 		"metadata": {
@@ -204,7 +204,7 @@
 				"source": [
 					"%%pyspark\r\n",
 					"df_actor_wkey = df_actor.withColumn('ActorID', monotonically_increasing_id())\r\n",
-					"df_actor_wkey.write.option(\"path\", dst_location).format(\"delta\").save()"
+					"df_actor_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 				],
 				"execution_count": 8
 			},
