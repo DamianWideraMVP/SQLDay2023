@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "181831c9-89a1-4170-9d09-54501a0571bd"
+				"spark.autotune.trackingId": "4edc8b02-26f5-4651-9e18-23a2b13144c3"
 			}
 		},
 		"metadata": {
@@ -675,6 +675,79 @@
 					"select * from customer"
 				],
 				"execution_count": 192
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"MERGE INTO orders dest\n",
+					"USING order_priority src\n",
+					"ON src.O_ORDERPRIORITY = dest.O_ORDERPRIORITY\n",
+					"When Matched then\n",
+					"Update \n",
+					"    SET O_ORDERPRIORITY_ID = src.O_ORDERPRIORITY_ID"
+				],
+				"execution_count": 193
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"ALTER TABLE orders SET TBLPROPERTIES (\n",
+					"   'delta.columnMapping.mode' = 'name',\n",
+					"   'delta.minReaderVersion' = '2',\n",
+					"   'delta.minWriterVersion' = '5')"
+				],
+				"execution_count": 195
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"_drop_column(\"orders\",\"O_ORDERPRIORITY\")"
+				],
+				"execution_count": 196
 			}
 		]
 	}
