@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "b88670f5-b4ec-463b-a861-47519d6f7f2d"
+				"spark.autotune.trackingId": "28b70292-3bb7-4dd5-8f14-f78180b78723"
 			}
 		},
 		"metadata": {
@@ -188,7 +188,7 @@
 					"delta_table.delete()\r\n",
 					"delta_table.vacuum()"
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -211,7 +211,7 @@
 					"df_geo_wkey = df_geo.withColumn('GeoID', monotonically_increasing_id())\r\n",
 					"df_geo_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 				],
-				"execution_count": 4
+				"execution_count": 5
 			}
 		]
 	}
