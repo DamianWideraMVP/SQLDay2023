@@ -2496,7 +2496,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "32f2ff21-d433-4e1e-9d27-2e6051aa68ea"
+						"spark.autotune.trackingId": "9eb43d43-134f-41d1-a478-a14e986d905d"
 					}
 				},
 				"metadata": {
@@ -2521,13 +2521,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\r\n",
 							"import requests\r\n",
@@ -2737,7 +2739,7 @@
 							}
 						},
 						"source": [
-							"upload_blob_file_for_dates(bsc,unizpped_container,'2023-03-24','2023-03-31')"
+							"#upload_blob_file_for_dates(bsc,unizpped_container,'2023-03-24','2023-03-31')"
 						],
 						"outputs": [],
 						"execution_count": 46
