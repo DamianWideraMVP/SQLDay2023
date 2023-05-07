@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "8373ed97-aaf1-477b-8d56-47a7d4bcc6b5"
+				"spark.autotune.trackingId": "61af1ef6-3754-4018-9d4f-398174a85215"
 			}
 		},
 		"metadata": {
@@ -74,20 +74,9 @@
 				"source": [
 					"logFilePath = \"https://sqlday2023.blob.core.windows.net/raw/Logfiles/\"\n",
 					"\n",
-					"logSchema = StructType([ StructField(\"source\", StringType(), True), StructField(\"data\", StringType(), True), StructField(\"IP\", StringType(), True), StructField(\"log_level\", StringType(), True),StructField(\"log_type\", StringType(), True),StructField(\"log_app\", StringType(), True), StructField(\"log_timestamp\", TimestampType(), True) ])\n",
-					"\n",
-					"\n",
-					"LogDF = (\n",
-					"  spark\n",
-					"    .read\n",
-					"    .schema(logSchema)\n",
-					"    .option(\"multiline\",\"true\")\n",
-					"    .json(logFilePath)\n",
-					")\n",
-					"\n",
-					"display(LogDF)"
+					""
 				],
-				"execution_count": 17
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -103,9 +92,45 @@
 					}
 				},
 				"source": [
-					"mssparkutils.fs.ls(directory)"
+					"logSchema = StructType(\n",
+					"  [ StructField(\"source\", StringType(), True), \n",
+					"  StructField(\"data\", StringType(), True), \n",
+					"  StructField(\"IP\", StringType(), True), \n",
+					"  StructField(\"log_level\", StringType(), True),\n",
+					"  StructField(\"log_type\", StringType(), True),\n",
+					"  StructField(\"log_app\", StringType(), True), \n",
+					"  StructField(\"log_timestamp\", TimestampType(), True) ])\n",
+					"\n",
+					""
 				],
-				"execution_count": 18
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"\n",
+					"LogDF = (\n",
+					"  spark\n",
+					"    .read\n",
+					"    .schema(logSchema)\n",
+					"    .option(\"multiline\",\"true\")\n",
+					"    .json(logFilePath)\n",
+					")\n",
+					"\n",
+					""
+				],
+				"execution_count": null
 			}
 		]
 	}
