@@ -2,7 +2,7 @@
 	"name": "dedicated sql pool resource management",
 	"properties": {
 		"content": {
-			"query": "",
+			"query": "-- import very large parquet file\n\n/*\nThere is often a level of orchestration involved when moving data into a data warehouse, \ncoordinating movement from one or more data sources and sometimes some level of transformation. \n\nThe transformation step can occur during (extract-transform-load - ETL) or after (extract-load-transform - ELT) data movement. \nAny modern data platform must provide a seamless experience for all the typical data wrangling actions \nlike extractions, parsing, joining, standardizing, augmenting, cleansing, consolidating, and filtering. \n\nAzure Synapse Analytics provides two significant categories of features \n- data flows and data orchestrations (implemented as pipelines).\n*/\n\n",
 			"metadata": {
 				"language": "sql"
 			},
