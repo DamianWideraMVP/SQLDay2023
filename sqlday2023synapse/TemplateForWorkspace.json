@@ -344,7 +344,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "817436f6-dd35-4d23-a57d-4f5b97cc70a1"
+						"spark.autotune.trackingId": "e25d3377-5ce2-40cd-a743-673b9542400f"
 					}
 				},
 				"metadata": {
@@ -369,8 +369,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -479,7 +478,8 @@
 							",'ActorType2Code'\r\n",
 							",'ActorType3Code')\r\n",
 							"\r\n",
-							"df_actor = df_actor1.union(df_actor2).distinct()\r\n",
+							"df_actor = df_actor1.union(df_actor2).dropDuplicates(['ActorCode'\r\n",
+							",'ActorName'])\r\n",
 							"\r\n",
 							"display(df_actor.limit(10))"
 						],
@@ -589,7 +589,7 @@
 							",'Actor1Geo_Fullname'\r\n",
 							",'Actor1Geo_CountryCode'\r\n",
 							",'Actor1Geo_ADM1Code'\r\n",
-							",'Actor1Geo_Lat'\r\n",
+							",'Actor1GeoID'\r\n",
 							",'Actor1Geo_Long'\r\n",
 							",'Actor1Geo_FeatureID'\r\n",
 							",'Actor2Geo_Type'\r\n",
@@ -641,7 +641,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "d27b596a-b2fd-4a66-b915-46245effa992"
+						"spark.autotune.trackingId": "28b70292-3bb7-4dd5-8f14-f78180b78723"
 					}
 				},
 				"metadata": {
@@ -778,7 +778,10 @@
 							"\r\n",
 							"df_geo_all = df_geo1.union(df_geo2).union(df_geo3)\r\n",
 							"df_geo_all = df_geo_all.withColumn('Geo_Lat', regexp_replace(col('Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Geo_Long', regexp_replace(col('Geo_Long'), '[^0-9\\\\-.]', ''))\r\n",
-							"df_geo = df_geo_all.distinct()\r\n",
+							"df_geo = df_geo_all.dropDuplicates(['Geo_ADM1Code'\r\n",
+							",'Geo_Lat'\r\n",
+							",'Geo_Long'\r\n",
+							",'Geo_FeatureID'])\r\n",
 							"\r\n",
 							"display(df_geo.limit(10))"
 						],
@@ -809,7 +812,7 @@
 							"delta_table.vacuum()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -833,7 +836,7 @@
 							"df_geo_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 5
 					}
 				]
 			},
@@ -863,7 +866,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4edc8b02-26f5-4651-9e18-23a2b13144c3"
+						"spark.autotune.trackingId": "cd2f41f1-2417-46ce-a378-e94aab56c5e4"
 					}
 				},
 				"metadata": {
@@ -888,13 +891,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 							"import os\n",
@@ -1623,6 +1628,182 @@
 						],
 						"outputs": [],
 						"execution_count": 196
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"some other transformations"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"class TransformationException(Exception):\n",
+							"    pass"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"class MustNotModifyProtectedColumnsException (TransformationException):\n",
+							"    pass"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"PROTECTED_COLUMNS: set[str] = {\n",
+							"    \"##_RecordLoaded\",\n",
+							"    \"_source\",\n",
+							"    \"_errCode\"\n",
+							"}"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _check_protected_column (column_name: str):\n",
+							"    if column_name in PROTECTED_COLUMNS:\n",
+							"        raise MustNotModifyProtectedColumnsException\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def add_column_to_target_as_copy (df: DataFrame, sourceColumn: str, targetColumn: str) -> DataFrame:\n",
+							"    _check_protected_column(targetColumn)\n",
+							"\n",
+							"    if targetColumn in df.schema.names:\n",
+							"        df.withColumn(column=targetColumn, col=F.col(sourceColumn))\n",
+							"\n",
+							"    return df"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def rename_column (df: DataFrame, before: str, after: str)-> DataFrame:\n",
+							"    _check_protected_column(before)\n",
+							"    _check_protected_column(after)\n",
+							"\n",
+							"    columns = df.columns\n",
+							"\n",
+							"    if before not in columns:\n",
+							"        print (f'')\n",
+							"    if after in columns:\n",
+							"        print (f'')\n",
+							"\n",
+							"    return df.withColumnRenamed(before, after)    \n",
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def drop_column (df: DataFrame, columnName: str)-> DataFrame:\n",
+							"    _check_protected_column(column_name)\n",
+							"\n",
+							"    return df.drop(columnName)"
+						],
+						"outputs": [],
+						"execution_count": null
 					}
 				]
 			},
