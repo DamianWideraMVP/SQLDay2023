@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "396d7f54-308d-4285-ae1e-245631d392dc"
+				"spark.autotune.trackingId": "b8412392-6fc5-4594-aa99-1eb6b93d0221"
 			}
 		},
 		"metadata": {
@@ -68,7 +68,7 @@
 				"source": [
 					"import pandas as pd\r\n",
 					"\r\n",
-					"from pyspark.sql.functions import monotonically_increasing_id\r\n",
+					"from pyspark.sql.functions import monotonically_increasing_id, col, upper, trim\r\n",
 					"from delta.tables import DeltaTable"
 				],
 				"execution_count": 1
@@ -154,8 +154,9 @@
 					",'ActorType2Code'\r\n",
 					",'ActorType3Code')\r\n",
 					"\r\n",
-					"df_actor = df_actor1.union(df_actor2).dropDuplicates(['ActorCode'\r\n",
+					"df_actor_all = df_actor1.union(df_actor2).dropDuplicates(['ActorCode'\r\n",
 					",'ActorName'])\r\n",
+					"df_actor = df_actor_all.withColumn('ActorCode', upper(trim(col('ActorCode')))).withColumn('ActorName', trim(col('ActorName')))\r\n",
 					"\r\n",
 					"display(df_actor.limit(10))"
 				],
