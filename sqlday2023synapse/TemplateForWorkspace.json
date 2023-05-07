@@ -862,7 +862,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "fb189647-f9db-4388-bb7c-a697f2c173c9"
+						"spark.autotune.trackingId": "6237d5ac-5b3e-40a0-b913-b8b024dc5244"
 					}
 				},
 				"metadata": {
@@ -887,20 +887,22 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 							"import os\n",
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 33
 					},
 					{
 						"cell_type": "code",
@@ -919,7 +921,7 @@
 							"%run \"04 Azure Synapse Analytics/configuration/configuration_paramaters_bronze_silver\""
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 34
 					},
 					{
 						"cell_type": "code",
@@ -940,7 +942,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 35
 					},
 					{
 						"cell_type": "code",
@@ -960,11 +962,11 @@
 							"\n",
 							"    account_for_abfss = account.split('://')[-1].replace(\"blob\",\"dfs\")\n",
 							"        \n",
-							"    path_to_blob = \"abfss://\" + ontainer + \"@\" + account_for_abfss+\"/\"+ folder\n",
+							"    path_to_blob = \"abfss://\" + container + \"@\" + account_for_abfss+\"/\"+ folder\n",
 							"    return account_for_abfss, path_to_blob"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 36
 					},
 					{
 						"cell_type": "code",
@@ -984,7 +986,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 37
 					},
 					{
 						"cell_type": "code",
@@ -1000,12 +1002,219 @@
 							}
 						},
 						"source": [
-							"account_for_abfss,  path_to_orders = _prepare_paths_for_data_processing(account, \"orders\", folder)\n",
-							"account_for_abfss,  path_to_customer = _prepare_paths_for_data_processing(account, \"customer\", folder)\n",
+							"account_for_abfss,  path_to_orders = _prepare_paths_for_data_processing(account, bronze_container, \"orders\")\n",
+							"account_for_abfss,  path_to_customer = _prepare_paths_for_data_processing(account, bronze_container, \"customer\")\n",
+							"account_for_abfss_silver,  path_to_customer_silver = _prepare_paths_for_data_processing(account, silver_container, \"customer/delta\")\n",
+							"account_for_abfss_silver,  path_to_orders_silver = _prepare_paths_for_data_processing(account, silver_container, \"orders/delta\")\n",
+							"account_for_abfss_silver,  path_to_mktsegment_silver = _prepare_paths_for_data_processing(account, silver_container, \"mktsegment/delta\")\n",
+							"account_for_abfss_silver,  path_to_orderpriority_silver = _prepare_paths_for_data_processing(account, silver_container, \"orderpriority/delta\")"
+						],
+						"outputs": [],
+						"execution_count": 145
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"account_for_abfss,  path_to_orders, path_to_customer, path_to_customer_silver, path_to_orders_silver, path_to_mktsegment_silver, path_to_orderpriority_silver"
+						],
+						"outputs": [],
+						"execution_count": 146
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_orders = spark.read.load(path_to_orders, format='parquet')"
+						],
+						"outputs": [],
+						"execution_count": 164
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df_orders.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 165
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_customer = spark.read.load(path_to_customer, format='parquet')"
+						],
+						"outputs": [],
+						"execution_count": 166
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df_customer.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 167
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from pyspark.sql.functions import lit\n",
+							"from datetime import datetime\n",
+							"\n",
+							"now = datetime.now()\n",
+							"dt_string = now.strftime(\"%d/%m/%Y %H:%M:%S\")\n",
+							"\n",
+							"df_customer = df_customer.withColumn(\"##_RecordLoaded\", lit(dt_string))\n",
+							"df_customer = df_customer.withColumn(\"C_MKTSEGMENT_ID\", lit(0))\n",
+							"\n",
+							"df_orders = df_orders.withColumn(\"O_ORDERPRIORITY_ID\", lit(0))"
+						],
+						"outputs": [],
+						"execution_count": 168
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df_customer.limit(10))"
+						],
+						"outputs": [],
+						"execution_count": 169
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"list_segment = df_customer.select('C_MKTSEGMENT').distinct().collect()"
+						],
+						"outputs": [],
+						"execution_count": 170
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_mktsegment = spark.createDataFrame(list_segment)\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 171
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df_mktsegment)"
+						],
+						"outputs": [],
+						"execution_count": 172
 					},
 					{
 						"cell_type": "code",
@@ -1021,10 +1230,324 @@
 							}
 						},
 						"source": [
-							"df = spark.read.load('abfss://bronze@sqlday2023.dfs.core.windows.net/customer/part-00000-17bde504-1c94-4ff0-a346-9984cc52c34a-c000.snappy.parquet', format='parquet')"
+							"list_order_priority = df_orders.select('O_ORDERPRIORITY').distinct().collect()\n",
+							"df_order_priority= spark.createDataFrame(list_order_priority)"
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 173
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from pyspark.sql import functions as sf\n",
+							"from pyspark.sql.window import Window\n",
+							"\n",
+							"df_mktsegment = df_mktsegment.withColumn(\"C_MKTSEGMENT_ID\", sf.row_number().over(Window.orderBy(sf.col(\"C_MKTSEGMENT\"))))\n",
+							"df_order_priority = df_order_priority.withColumn(\"O_ORDERPRIORITY_ID\", sf.row_number().over(Window.orderBy(sf.col(\"O_ORDERPRIORITY\"))))"
+						],
+						"outputs": [],
+						"execution_count": 174
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"display(df_mktsegment)"
+						],
+						"outputs": [],
+						"execution_count": 175
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"db = \"SilverDatabase\"\n",
+							"spark.sql(f\"DROP DATABASE IF EXISTS {db} CASCADE\")\n",
+							"spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db}\")\n",
+							"spark.sql(f\"USE {db}\")"
+						],
+						"outputs": [],
+						"execution_count": 176
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_mktsegment.write .format(\"delta\") .mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_mktsegment_silver)\n",
+							"df_order_priority.write .format(\"delta\") .mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_orderpriority_silver)\n",
+							"df_customer .write .format(\"delta\") .mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_customer_silver)\n",
+							"df_orders.write.format(\"delta\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_orders_silver)"
+						],
+						"outputs": [],
+						"execution_count": 177
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _drop_table (folder: str):\n",
+							"    \n",
+							"    str = f\"DROP TABLE IF EXISTS {folder}; \"\n",
+							"    spark.sql(str)\n",
+							"    "
+						],
+						"outputs": [],
+						"execution_count": 178
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"def _create_table (folder: str, path_to_silver:str):\n",
+							"    \n",
+							"    _drop_table(folder)\n",
+							"    \n",
+							"    str = f\"CREATE TABLE {folder} \\\n",
+							"    USING delta \\\n",
+							"    location '{path_to_silver}'\"\n",
+							"\n",
+							"    spark.sql(str)"
+						],
+						"outputs": [],
+						"execution_count": 179
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_create_table (\"mkt_segment\", path_to_mktsegment_silver)\n",
+							"_create_table (\"order_priority\", path_to_orderpriority_silver)\n",
+							"_create_table (\"customer\", path_to_customer_silver)\n",
+							"_create_table (\"orders\", path_to_orders_silver)\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 180
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"select * from order_priority"
+						],
+						"outputs": [],
+						"execution_count": 182
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"MERGE INTO customer dest\n",
+							"USING mkt_segment src\n",
+							"ON src.C_MKTSEGMENT = dest.C_MKTSEGMENT\n",
+							"When Matched then\n",
+							"Update \n",
+							"    SET C_MKTSEGMENT_ID = src.C_MKTSEGMENT_ID\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 186
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"ALTER TABLE customer SET TBLPROPERTIES (\n",
+							"   'delta.columnMapping.mode' = 'name',\n",
+							"   'delta.minReaderVersion' = '2',\n",
+							"   'delta.minWriterVersion' = '5')"
+						],
+						"outputs": [],
+						"execution_count": 190
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _drop_column (table: str, column: str):\n",
+							"    str = f\"ALTER TABLE {table} \\\n",
+							"    DROP column {column}\"\n",
+							"\n",
+							"    spark.sql(str)\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 188
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"_drop_column(\"customer\",\"C_MKTSEGMENT\")"
+						],
+						"outputs": [],
+						"execution_count": 191
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"select * from customer"
+						],
+						"outputs": [],
+						"execution_count": 192
 					}
 				]
 			},
