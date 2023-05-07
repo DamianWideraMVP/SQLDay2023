@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "10240dad-25ef-4b9d-9f6a-c6c9cc56fc57"
+				"spark.autotune.trackingId": "821ea997-03f1-4685-9f40-b719bb8a229e"
 			}
 		},
 		"metadata": {
@@ -552,7 +552,7 @@
 					"\n",
 					"select * from order_priority"
 				],
-				"execution_count": 181
+				"execution_count": 182
 			},
 			{
 				"cell_type": "code",
@@ -568,15 +568,131 @@
 					},
 					"microsoft": {
 						"language": "sparksql"
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
 					"\n",
-					"ALTER TABLE customer ADD C_MKTSEGMENT_ID INTERSECT\n",
+					"MERGE INTO customer dest\n",
+					"USING mkt_segment src\n",
+					"ON src.C_MKTSEGMENT = dest.C_MKTSEGMENT\n",
+					"When Matched then\n",
+					"Update \n",
+					"    SET C_MKTSEGMENT_ID = src.C_MKTSEGMENT_ID\n",
 					""
 				],
-				"execution_count": 163
+				"execution_count": 186
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"ALTER TABLE customer SET TBLPROPERTIES (\n",
+					"   'delta.columnMapping.mode' = 'name',\n",
+					"   'delta.minReaderVersion' = '2',\n",
+					"   'delta.minWriterVersion' = '5')"
+				],
+				"execution_count": 190
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _drop_column (table: str, column: str):\n",
+					"    str = f\"ALTER TABLE {table} \\\n",
+					"    DROP column {column}\"\n",
+					"\n",
+					"    spark.sql(str)\n",
+					""
+				],
+				"execution_count": 188
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"_drop_column(\"customer\",\"C_MKTSEGMENT\")"
+				],
+				"execution_count": 191
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"select * from customer"
+				],
+				"execution_count": 192
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					""
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
