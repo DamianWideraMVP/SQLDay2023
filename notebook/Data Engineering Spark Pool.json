@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "0dc72cf1-373f-4075-a4c7-92fd747df5ac"
+				"spark.autotune.trackingId": "960194c5-57dd-4b3f-b67e-0423746dc1e7"
 			}
 		},
 		"metadata": {
@@ -571,9 +571,9 @@
 					}
 				},
 				"source": [
-					"df_orders.write.save(path='abfss://silver@sqlday2023.dfs.core.windows.net/orders/ML', format='csv', mode='append', sep=',')"
+					"df_orders.coalesce(1).write.save(path='abfss://silver@sqlday2023.dfs.core.windows.net/orders/ML', format='csv', mode='append', sep=',')"
 				],
-				"execution_count": 66
+				"execution_count": 104
 			},
 			{
 				"cell_type": "code",
