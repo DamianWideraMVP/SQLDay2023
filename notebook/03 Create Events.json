@@ -1,0 +1,165 @@
+{
+	"name": "03 Create Events",
+	"properties": {
+		"folder": {
+			"name": "02 Load to Delta"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "606ff006-8e52-4325-b1ba-460e25aa36d2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import pandas as pd\r\n",
+					"\r\n",
+					"from pyspark.sql.functions import monotonically_increasing_id, col, regexp_replace, upper, trim\r\n",
+					"from delta.tables import DeltaTable"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/20*/*/gdelt_events.parquet'\r\n",
+					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/event'"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df_all_events = spark.read.parquet(src_location)\r\n",
+					"\r\n",
+					"event_columns = ['GlobalEventID'\r\n",
+					",'Day'\r\n",
+					",'Actor1Code'\r\n",
+					",'Actor1Name'\r\n",
+					",'Actor2Code'\r\n",
+					",'Actor2Name'\r\n",
+					",'IsRootEvent'\r\n",
+					",'EventCode'\r\n",
+					",'EventBaseCode'\r\n",
+					",'EventRootCode'\r\n",
+					",'QuadClass'\r\n",
+					",'GoldsteinScale'\r\n",
+					",'NumMentions'\r\n",
+					",'NumSources'\r\n",
+					",'NumArticles'\r\n",
+					",'AvgTone'\r\n",
+					",'Actor1Geo_ADM1Code'\r\n",
+					",'Actor1Geo_Lat'\r\n",
+					",'Actor1Geo_Long'\r\n",
+					",'Actor1Geo_FeatureID'\r\n",
+					",'Actor2Geo_ADM1Code'\r\n",
+					",'Actor2Geo_Lat'\r\n",
+					",'Actor2Geo_Long'\r\n",
+					",'Actor2Geo_FeatureID'\r\n",
+					",'ActionGeo_ADM1Code'\r\n",
+					",'ActionGeo_Lat'\r\n",
+					",'ActionGeo_Long'\r\n",
+					",'ActionGeo_FeatureID'\r\n",
+					",'DATEADDED'\r\n",
+					",'SOURCEURL']\r\n",
+					"\r\n",
+					"df_event1 = df_all_events.select(event_columns)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_event2 = df_event1.withColumn('Actor1Code', upper(trim(col('Actor1Code')))).withColumn('Actor1Name', trim(col('Actor1Name'))).withColumn('Actor2Code', upper(trim(col('Actor2Code')))).withColumn('Actor2Name', trim(col('Actor2Name')))"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_event2 = df_event2.withColumn('Actor1Geo_Lat', regexp_replace(col('Actor1Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Actor1Geo_Long', regexp_replace(col('Actor1Geo_Long'), '[^0-9\\\\-.]', ''))\r\n",
+					"df_event2 = df_event2.withColumn('Actor2Geo_Lat', regexp_replace(col('Actor2Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Actor2Geo_Long', regexp_replace(col('Actor2Geo_Long'), '[^0-9\\\\-.]', ''))\r\n",
+					"df_event2 = df_event2.withColumn('ActionGeo_Lat', regexp_replace(col('ActionGeo_Lat'), '[^0-9\\\\-.]', '')).withColumn('ActionGeo_Long', regexp_replace(col('ActionGeo_Long'), '[^0-9\\\\-.]', ''))\r\n",
+					"\r\n",
+					"display(df_event2.limit(10))"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
