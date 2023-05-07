@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "821ea997-03f1-4685-9f40-b719bb8a229e"
+				"spark.autotune.trackingId": "95f90ae8-e03a-453c-bf06-5b657e507941"
 			}
 		},
 		"metadata": {
@@ -675,68 +675,6 @@
 					"select * from customer"
 				],
 				"execution_count": 192
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					"\n",
-					"\n",
-					"\n",
-					"\n",
-					"order_schema = StructType([\n",
-					"    StructField(\"O_ORDERKEY\", IntegerType()),\n",
-					"    StructField(\"O_CUSTKEY\", StringType()),\n",
-					"    StructField(\"O_ORDERSTATUS\", StringType()),\n",
-					"    StructField(\"O_TOTALPRICE\", DoubleType()),\n",
-					"    StructField(\"O_ORDERDATE\", DateType()),\n",
-					"    StructField(\"O_ORDERPRIORITY\", StringType()),\n",
-					"    StructField(\"O_CLERK\", StringType()),\n",
-					"    StructField(\"O_SHIPPRIORITY\", IntegerType()),\n",
-					"    StructField(\"O_COMMENT\", StringType())\n",
-					"])\n",
-					"\n",
-					"\n",
-					"cust_schema = StructType([\n",
-					"    StructField(\"C_CUSTKEY\", IntegerType()),\n",
-					"    StructField(\"C_NAME\", StringType()),\n",
-					"    StructField(\"C_ADDRESS\", StringType()),\n",
-					"    StructField(\"C_NATIONKEY\", ShortType()),\n",
-					"    StructField(\"C_PHONE\", StringType()),\n",
-					"    StructField(\"C_ACCTBAL\", DoubleType()),\n",
-					"    StructField(\"C_MKTSEGMENT\", StringType()),\n",
-					"    StructField(\"C_COMMENT\", StringType())\n",
-					"])"
-				],
-				"execution_count": null
 			}
 		]
 	}
