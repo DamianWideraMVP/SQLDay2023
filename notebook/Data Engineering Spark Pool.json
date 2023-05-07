@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4edc8b02-26f5-4651-9e18-23a2b13144c3"
+				"spark.autotune.trackingId": "8530d5d5-28bc-4d08-a351-12c94d856cc1"
 			}
 		},
 		"metadata": {
@@ -748,6 +748,175 @@
 					"_drop_column(\"orders\",\"O_ORDERPRIORITY\")"
 				],
 				"execution_count": 196
+			},
+			{
+				"cell_type": "markdown",
+				"metadata": {
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"some other transformations"
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"class TransformationException(Exception):\n",
+					"    pass"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"class MustNotModifyProtectedColumnsException (TransformationException):\n",
+					"    pass"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"PROTECTED_COLUMNS: set[str] = {\n",
+					"    \"##_RecordLoaded\",\n",
+					"    \"_source\",\n",
+					"    \"_errCode\"\n",
+					"}"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _check_protected_column (column_name: str):\n",
+					"    if column_name in PROTECTED_COLUMNS:\n",
+					"        raise MustNotModifyProtectedColumnsException\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def add_column_to_target_as_copy (df: DataFrame, sourceColumn: str, targetColumn: str) -> DataFrame:\n",
+					"    _check_protected_column(targetColumn)\n",
+					"\n",
+					"    if targetColumn in df.schema.names:\n",
+					"        df.withColumn(column=targetColumn, col=F.col(sourceColumn))\n",
+					"\n",
+					"    return df"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def rename_column (df: DataFrame, before: str, after: str)-> DataFrame:\n",
+					"    _check_protected_column(before)\n",
+					"    _check_protected_column(after)\n",
+					"\n",
+					"    columns = df.columns\n",
+					"\n",
+					"    if before not in columns:\n",
+					"        print (f'')\n",
+					"    if after in columns:\n",
+					"        print (f'')\n",
+					"\n",
+					"    return df.withColumnRenamed(before, after)    \n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def drop_column (df: DataFrame, columnName: str)-> DataFrame:\n",
+					"    _check_protected_column(column_name)\n",
+					"\n",
+					"    return df.drop(columnName)"
+				],
+				"execution_count": null
 			}
 		]
 	}
