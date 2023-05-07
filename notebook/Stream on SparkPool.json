@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "61af1ef6-3754-4018-9d4f-398174a85215"
+				"spark.autotune.trackingId": "2dc3d683-014b-4970-9c45-b79610dac5b5"
 			}
 		},
 		"metadata": {
@@ -56,7 +56,7 @@
 				"source": [
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 1
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -72,9 +72,7 @@
 					}
 				},
 				"source": [
-					"logFilePath = \"https://sqlday2023.blob.core.windows.net/raw/Logfiles/\"\n",
-					"\n",
-					""
+					"logFilePath = \"https://sqlday2023.blob.core.windows.net/raw/Logfiles/\""
 				],
 				"execution_count": null
 			},
