@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "6d539fdb-177e-4c78-bbeb-7e765f9db148"
+				"spark.autotune.trackingId": "642c736f-ad6c-485f-9ef7-1cff8fd2c66b"
 			}
 		},
 		"metadata": {
@@ -161,7 +161,7 @@
 					"account_for_abfss_silver,  path_to_mktsegment_silver = _prepare_paths_for_data_processing(account, silver_container, \"mktsegment/delta\")\n",
 					"account_for_abfss_silver,  path_to_orderpriority_silver = _prepare_paths_for_data_processing(account, silver_container, \"orderpriority/delta\")"
 				],
-				"execution_count": 14
+				"execution_count": 52
 			},
 			{
 				"cell_type": "code",
@@ -197,7 +197,7 @@
 				"source": [
 					"df_orders = spark.read.load(path_to_orders, format='parquet')"
 				],
-				"execution_count": 16
+				"execution_count": 76
 			},
 			{
 				"cell_type": "code",
@@ -234,7 +234,7 @@
 				"source": [
 					"df_customer = spark.read.load(path_to_customer, format='parquet')"
 				],
-				"execution_count": 17
+				"execution_count": 77
 			},
 			{
 				"cell_type": "code",
@@ -280,7 +280,7 @@
 					"\n",
 					"df_orders = df_orders.withColumn(\"O_ORDERPRIORITY_ID\", lit(0))"
 				],
-				"execution_count": 18
+				"execution_count": 78
 			},
 			{
 				"cell_type": "code",
@@ -317,7 +317,7 @@
 				"source": [
 					"list_segment = df_customer.select('C_MKTSEGMENT').distinct().collect()"
 				],
-				"execution_count": 19
+				"execution_count": 79
 			},
 			{
 				"cell_type": "code",
@@ -336,7 +336,7 @@
 					"df_mktsegment = spark.createDataFrame(list_segment)\n",
 					""
 				],
-				"execution_count": 20
+				"execution_count": 80
 			},
 			{
 				"cell_type": "code",
@@ -374,7 +374,7 @@
 					"list_order_priority = df_orders.select('O_ORDERPRIORITY').distinct().collect()\n",
 					"df_order_priority= spark.createDataFrame(list_order_priority)"
 				],
-				"execution_count": 21
+				"execution_count": 81
 			},
 			{
 				"cell_type": "code",
@@ -396,7 +396,7 @@
 					"df_mktsegment = df_mktsegment.withColumn(\"C_MKTSEGMENT_ID\", sf.row_number().over(Window.orderBy(sf.col(\"C_MKTSEGMENT\"))))\n",
 					"df_order_priority = df_order_priority.withColumn(\"O_ORDERPRIORITY_ID\", sf.row_number().over(Window.orderBy(sf.col(\"O_ORDERPRIORITY\"))))"
 				],
-				"execution_count": 22
+				"execution_count": 82
 			},
 			{
 				"cell_type": "code",
@@ -433,7 +433,7 @@
 				"source": [
 					"db = \"SilverDatabase\""
 				],
-				"execution_count": 23
+				"execution_count": 83
 			},
 			{
 				"cell_type": "code",
@@ -454,7 +454,7 @@
 					"    spark.sql(str)\n",
 					""
 				],
-				"execution_count": 24
+				"execution_count": 84
 			},
 			{
 				"cell_type": "code",
@@ -472,7 +472,7 @@
 				"source": [
 					"_drop_silver_database(db)"
 				],
-				"execution_count": 25
+				"execution_count": 86
 			},
 			{
 				"cell_type": "code",
@@ -497,7 +497,25 @@
 					"    str = f\"USE {db}\"\n",
 					"    spark.sql(str)"
 				],
-				"execution_count": 26
+				"execution_count": 87
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"_create_silver_database(db)"
+				],
+				"execution_count": 88
 			},
 			{
 				"cell_type": "code",
@@ -518,20 +536,26 @@
 					"df_customer .write .format(\"delta\") .mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_customer_silver)\n",
 					"df_orders.write.format(\"delta\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(path_to_orders_silver)"
 				],
-				"execution_count": 30
+				"execution_count": 89
 			},
 			{
-				"cell_type": "markdown",
+				"cell_type": "code",
 				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
 					"nteract": {
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
-					"this is for ML"
-				]
+					"display(df_orders.limit(10), True)"
+				],
+				"execution_count": 48
 			},
 			{
 				"cell_type": "code",
@@ -547,9 +571,9 @@
 					}
 				},
 				"source": [
-					"df_orders.write.format(\"csv\").mode(\"append\").option(\"overwriteSchema\", \"true\").save('abfss://silver@sqlday2023.dfs.core.windows.net/orders/ML')"
+					"df_orders.write.save(path='abfss://silver@sqlday2023.dfs.core.windows.net/orders/ML', format='csv', mode='append', sep=',')"
 				],
-				"execution_count": 36
+				"execution_count": 66
 			},
 			{
 				"cell_type": "code",
@@ -571,7 +595,7 @@
 					"    spark.sql(str)\n",
 					"    "
 				],
-				"execution_count": 32
+				"execution_count": 67
 			},
 			{
 				"cell_type": "code",
@@ -598,7 +622,7 @@
 					"\n",
 					"    spark.sql(str)"
 				],
-				"execution_count": 33
+				"execution_count": 68
 			},
 			{
 				"cell_type": "code",
@@ -620,7 +644,7 @@
 					"_create_table (\"orders\", path_to_orders_silver)\n",
 					""
 				],
-				"execution_count": 34
+				"execution_count": 90
 			},
 			{
 				"cell_type": "code",
@@ -674,7 +698,7 @@
 					"    SET C_MKTSEGMENT_ID = src.C_MKTSEGMENT_ID\n",
 					""
 				],
-				"execution_count": 37
+				"execution_count": 91
 			},
 			{
 				"cell_type": "code",
@@ -700,7 +724,7 @@
 					"   'delta.minReaderVersion' = '2',\n",
 					"   'delta.minWriterVersion' = '5')"
 				],
-				"execution_count": 40
+				"execution_count": 92
 			},
 			{
 				"cell_type": "code",
@@ -742,7 +766,7 @@
 				"source": [
 					"_drop_column(\"customer\",\"C_MKTSEGMENT\")"
 				],
-				"execution_count": 41
+				"execution_count": 93
 			},
 			{
 				"cell_type": "code",
@@ -764,9 +788,9 @@
 				"source": [
 					"%%sql\n",
 					"\n",
-					"select * from customer"
+					"select  * from customer"
 				],
-				"execution_count": 42
+				"execution_count": 96
 			},
 			{
 				"cell_type": "code",
@@ -795,7 +819,7 @@
 					"Update \n",
 					"    SET O_ORDERPRIORITY_ID = src.O_ORDERPRIORITY_ID"
 				],
-				"execution_count": 43
+				"execution_count": 98
 			},
 			{
 				"cell_type": "code",
@@ -821,7 +845,7 @@
 					"   'delta.minReaderVersion' = '2',\n",
 					"   'delta.minWriterVersion' = '5')"
 				],
-				"execution_count": 45
+				"execution_count": 100
 			},
 			{
 				"cell_type": "code",
@@ -839,7 +863,7 @@
 				"source": [
 					"_drop_column(\"orders\",\"O_ORDERPRIORITY\")"
 				],
-				"execution_count": 46
+				"execution_count": 101
 			},
 			{
 				"cell_type": "markdown",
