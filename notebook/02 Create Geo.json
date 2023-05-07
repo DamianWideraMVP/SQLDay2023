@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d27b596a-b2fd-4a66-b915-46245effa992"
+				"spark.autotune.trackingId": "b88670f5-b4ec-463b-a861-47519d6f7f2d"
 			}
 		},
 		"metadata": {
@@ -156,7 +156,10 @@
 					"\r\n",
 					"df_geo_all = df_geo1.union(df_geo2).union(df_geo3)\r\n",
 					"df_geo_all = df_geo_all.withColumn('Geo_Lat', regexp_replace(col('Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Geo_Long', regexp_replace(col('Geo_Long'), '[^0-9\\\\-.]', ''))\r\n",
-					"df_geo = df_geo_all.distinct()\r\n",
+					"df_geo = df_geo_all.dropDuplicates(['Geo_ADM1Code'\r\n",
+					",'Geo_Lat'\r\n",
+					",'Geo_Long'\r\n",
+					",'Geo_FeatureID'])\r\n",
 					"\r\n",
 					"display(df_geo.limit(10))"
 				],
