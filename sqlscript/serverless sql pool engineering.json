@@ -1,0 +1,17 @@
+{
+	"name": "serverless sql pool engineering",
+	"properties": {
+		"content": {
+			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2016/Quarter=Q3/Month=9/Day=20160930/sale-small-20160930-snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n\nSELECT\n    TransactionDate, ProductId,\n        CAST(SUM(ProfitAmount) AS decimal(18,2)) AS [(sum) Profit],\n        CAST(AVG(ProfitAmount) AS decimal(18,2)) AS [(avg) Profit],\n        SUM(Quantity) AS [(sum) Quantity]\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2016/Quarter=Q3/Month=9/Day=20160930/sale-small-20160930-snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [r] GROUP BY r.TransactionDate, r.ProductId;\n\n\n\nSELECT\n    COUNT(*)\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2019/*/*/*/*',\n        FORMAT = 'PARQUET'\n    ) AS [r] ;\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
