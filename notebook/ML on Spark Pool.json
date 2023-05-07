@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "f4d95b0b-8322-48b8-b4ce-15af4ee9cc06"
+				"spark.autotune.trackingId": "1cacbf4b-8720-4e9a-8997-47640e35d8ce"
 			}
 		},
 		"metadata": {
@@ -53,10 +53,35 @@
 		"cells": [
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"%%configure -f\n",
+					"{\n",
+					"  \"name\": \"synapseml\",\n",
+					"  \"conf\": {\n",
+					"      \"spark.dynamicAllocation.enabled\": \"false\",\n",
+					"      \"spark.jars.repositories\": \"https://mmlspark.azureedge.net/maven\"\n",
+					"  }\n",
+					"}"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
 				"source": [
 					"from synapse.ml.core.platform import *"
 				],
-				"execution_count": 1
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -84,7 +109,7 @@
 					"print(\"Schema: \")\n",
 					"df.printSchema()"
 				],
-				"execution_count": null
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -97,12 +122,13 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"display(df)"
 				],
-				"execution_count": null
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -120,7 +146,7 @@
 				"source": [
 					"train, test = df.randomSplit([0.85, 0.15], seed=1)"
 				],
-				"execution_count": null
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -142,7 +168,7 @@
 					"train_data = featurizer.transform(train)[\"target\", \"features\"]\n",
 					"test_data = featurizer.transform(test)[\"target\", \"features\"]"
 				],
-				"execution_count": null
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -155,12 +181,13 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"display(train_data.groupBy(\"target\").count())"
 				],
-				"execution_count": null
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -182,7 +209,7 @@
 					"    numPasses=20, labelCol=\"target\", featuresCol=\"features\"\n",
 					").fit(train_data)"
 				],
-				"execution_count": null
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -195,13 +222,14 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"predictions = model.transform(test_data)\n",
 					"display(predictions)"
 				],
-				"execution_count": null
+				"execution_count": 17
 			},
 			{
 				"cell_type": "code",
@@ -214,7 +242,8 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"from synapse.ml.train import ComputeModelStatistics\n",
@@ -224,7 +253,7 @@
 					").transform(predictions)\n",
 					"display(metrics)"
 				],
-				"execution_count": null
+				"execution_count": 18
 			}
 		]
 	}
