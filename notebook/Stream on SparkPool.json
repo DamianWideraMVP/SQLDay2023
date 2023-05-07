@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "4255ef53-d363-4cfa-9c71-f99e288aec88"
+				"spark.autotune.trackingId": "f37e13e1-f193-44d1-a191-28ce9561cbf4"
 			}
 		},
 		"metadata": {
@@ -79,7 +79,7 @@
 				"source": [
 					"logFilePath = \"abfss://raw@sqlday2023.dfs.core.windows.net/Logfiles/\""
 				],
-				"execution_count": 16
+				"execution_count": 2
 			},
 			{
 				"cell_type": "code",
@@ -99,7 +99,7 @@
 					"for file in files:\n",
 					"    print(file.name, file.isDir, file.isFile, file.path, file.size)"
 				],
-				"execution_count": null
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -121,10 +121,10 @@
 					"    StructField(\"IP\", StringType(), True), \n",
 					"    StructField(\"log_level\", StringType(), True),\n",
 					"    StructField(\"log_type\", StringType(), True),\n",
-					"    StructField(\"log_app\", StringType(), True), S\n",
-					"    tructField(\"log_timestamp\", TimestampType(), True) ])"
+					"    StructField(\"log_app\", StringType(), True), \n",
+					"    StructField(\"log_timestamp\", TimestampType(), True) ])"
 				],
-				"execution_count": 9
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -145,7 +145,7 @@
 					"    .appName(\"SQLDay 2023\") \\\n",
 					"    .getOrCreate()"
 				],
-				"execution_count": 13
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -168,7 +168,7 @@
 					"\n",
 					""
 				],
-				"execution_count": 17
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -185,16 +185,33 @@
 					"collapsed": false
 				},
 				"source": [
-					"from pyspark.sql.functions import *      \n",
-					"\n",
 					"logCountDF = (\n",
 					"  LogDF\n",
 					"    .groupBy(col(\"log_type\"))       \n",
 					"    .count()\n",
 					")\n",
+					""
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
 					"display(logCountDF)"
 				],
-				"execution_count": 25
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",

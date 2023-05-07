@@ -1,0 +1,285 @@
+{
+	"name": "Delta",
+	"properties": {
+		"folder": {
+			"name": "04 Azure Synapse Analytics"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "c07249e4-1172-4833-8492-9eb9aac76d6d"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "python"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"from notebookutils import mssparkutils"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"logFilePath = \"abfss://raw@sqlday2023.dfs.core.windows.net/Logfiles/\""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"mssparkutils.fs.ls(logFilePath)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"display(dbutils.fs.ls(\"/mnt/Blob/Customer/parquetFiles\"))\n",
+					"\n",
+					"\n",
+					"\n",
+					"db = \"Delta\"\n",
+					" \n",
+					"spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db}\")\n",
+					"spark.sql(f\"USE {db}\")\n",
+					" \n",
+					"spark.sql(\"SET spark.databricks.delta.formatCheck.enabled = false\")\n",
+					"spark.sql(\"SET spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite = true\")\n",
+					"\n",
+					"\n",
+					"import random\n",
+					"from datetime import datetime\n",
+					"from pyspark.sql.functions import *\n",
+					"from pyspark.sql.types import *\n",
+					"from delta.tables import *\n",
+					"\n",
+					"\n",
+					"Reading Customer parquet files from the mount point and writing to Delta tables.\n",
+					"\n",
+					"\n",
+					"We must use format(\"delta\") to save the data in delta format. \n",
+					"\n",
+					"cust_path = \"/mnt/Blob/Customer/parquetFiles\"\n",
+					" \n",
+					"df_cust = (spark.read.format(\"parquet\").load(cust_path)\n",
+					"      .withColumn(\"timestamp\", current_timestamp()))\n",
+					" \n",
+					"df_cust.write.format(\"delta\").mode(\"overwrite\").save(\"/mnt/Blob/Customer/delta\")\n",
+					"\n",
+					"\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"-- Creating Delta table \n",
+					"DROP TABLE IF EXISTS Customer;\n",
+					"CREATE TABLE Customer\n",
+					"USING delta\n",
+					"location \"/mnt/Blob/Customer/delta\"\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"describe formatted Customer\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"select * from Customer limit 10;\n",
+					"\n",
+					"\n",
+					"%fs ls /mnt/Blob/Orders/parquetFiles/\n",
+					"\n",
+					"\n",
+					"\n",
+					"#Reading Orders parquet files and adding a new column to the dataframe and writing as delta format. Creating partition on year column.\n",
+					"ord_path = \"/mnt/Blob/Orders/parquetFiles\"\n",
+					" \n",
+					"df_ord = (spark.read.format(\"parquet\").load(ord_path)\n",
+					"      .withColumn(\"timestamp\", current_timestamp())\n",
+					"      .withColumn(\"O_OrderDateYear\", year(col(\"O_OrderDate\")))\n",
+					"     )\n",
+					"\n",
+					"# df.printSchema()\n",
+					" \n",
+					"df_ord.write.format(\"delta\").partitionBy(\"O_OrderDateYear\").mode(\"overwrite\").save(\"/mnt/Gen2Source/Orders/delta\")\n",
+					"\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"DROP TABLE IF EXISTS Orders;\n",
+					"CREATE TABLE Orders\n",
+					"USING delta\n",
+					"location \"/mnt/Blob/Orders/delta\"\n",
+					"\n",
+					"\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"describe formatted Orders\n",
+					"\n",
+					"\n",
+					"\n",
+					"SELECT o.O_ORDERPRIORITY,count(o.O_CustKey) As TotalCustomer,Sum(c.C_AcctBal) As CustAcctBal\n",
+					"FROM Orders o \n",
+					"INNER JOIN Customer c on o.O_CustKey=c.C_CustKey \n",
+					"WHERE o.O_OrderDateYear>1997\n",
+					"GROUP BY o.O_OrderPriority\n",
+					"ORDER BY TotalCustomer DESC;\n",
+					"\n",
+					"\n",
+					"\n",
+					"# We can read the Delta files in Python using DeltaTable libraries as shown below \n",
+					"deltaTable = DeltaTable.forPath(spark, \"/mnt/Blob/Orders/delta/\")\n",
+					"\n",
+					"\n",
+					"#Converting to DF and viewing dataframe contents\n",
+					"dt=deltaTable.toDF()\n",
+					"dt.show()\n",
+					"\n",
+					"\n",
+					"Zmiany\n",
+					"\n",
+					"\n",
+					"We can perform DML opreations like insert,delete and updates to the Delta table.\n",
+					"\n",
+					"Zamontuj newParquetFiles + dodaj jakis plik\n",
+					"\n",
+					"\n",
+					"# Reading new data which is in the folder newParquetFiles in the same orders folder in the /nnt/Gen2Source\n",
+					"# We will see how to perform merge to insert anf update the records in the delta table.\n",
+					"\n",
+					"#Reading Orders parquet files and adding a new column to the dataframe and writing as delta format. Creating partition on year column.\n",
+					"new_ord_path = \"/mnt/Blob/Orders/newParquetFiles\"\n",
+					" \n",
+					"df_new_order = (spark.read.format(\"parquet\").load(new_ord_path)\n",
+					"      .withColumn(\"timestamp\", current_timestamp())\n",
+					"      .withColumn(\"O_OrderDateYear\", year(col(\"O_OrderDate\")))\n",
+					"     )\n",
+					"\n",
+					"# df.printSchema()\n",
+					" \n",
+					"df_new_order.write.format(\"delta\").partitionBy(\"O_OrderDateYear\").mode(\"overwrite\").save(\"/mnt/Blob/Orders/dailydata_delta\")\n",
+					"\n",
+					"\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"DROP TABLE IF EXISTS Orders_Daily;\n",
+					"CREATE TABLE Orders_Daily\n",
+					"USING delta\n",
+					"location \"/mnt/Blob/Orders/dailydata_delta\"\n",
+					"\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"-- Merging into Orders from Orders_Daily table. If records matche on OrderKey then perform update eles insert\n",
+					"MERGE INTO Orders AS o\n",
+					"USING Orders_daily AS d\n",
+					"ON o.O_ORDERKEY = D.O_ORDERKEY\n",
+					"WHEN MATCHED THEN \n",
+					"  UPDATE SET *\n",
+					"WHEN NOT MATCHED \n",
+					"  THEN INSERT *;\n",
+					"\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"-- Deleting from Delta table\n",
+					"DELETE FROM Orders WHERE O_ORDERKEY=1359427\n",
+					"\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"SELECT * FROM ORDERS WHERE O_ORDERKEY=1359427\n",
+					"\n",
+					"\n",
+					"\n",
+					"Skopiuj wszystkie orders dop nowego katalopgu \n",
+					"If you have a folder that has a lot of Parquet files, then you can run the following\n",
+					"code to implicitly convert the Parquet files to delta format and you can create\n",
+					"a Delta table pointing to that location. \n",
+					"\n",
+					"%fs ls /mnt/Blob/Orders/ParquetToDelta\n",
+					"\n",
+					"\n",
+					"%sql CONVERT TO DELTA parquet.`dbfs:/mnt/Blob/Orders/ParquetToDelta`\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"CREATE TABLE Orders_Test\n",
+					"USING DELTA\n",
+					"LOCATION \"/mnt/Blob/Orders/ParquetToDelta\"\n",
+					"\n",
+					"\n",
+					"%sql\n",
+					"describe formatted Orders_Test\n",
+					"\n",
+					"\n",
+					"\n",
+					"\n",
+					"Delta table format\n",
+					"\n",
+					" how data is stored in Delta tables and how Delta tables keep track of the history of all DML operations \n",
+					"\n",
+					"Pod customers doladowac parquetFiles1\n",
+					"parquetFiles_Daily1\n",
+					""
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
