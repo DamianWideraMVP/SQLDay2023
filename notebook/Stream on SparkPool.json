@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c08c363d-4983-4790-b8f4-4522fb9e3ef9"
+				"spark.autotune.trackingId": "8373ed97-aaf1-477b-8d56-47a7d4bcc6b5"
 			}
 		},
 		"metadata": {
@@ -72,7 +72,7 @@
 					}
 				},
 				"source": [
-					"logFilePath = \"/mnt/Blob/Logfiles/\"\n",
+					"logFilePath = \"https://sqlday2023.blob.core.windows.net/raw/Logfiles/\"\n",
 					"\n",
 					"logSchema = StructType([ StructField(\"source\", StringType(), True), StructField(\"data\", StringType(), True), StructField(\"IP\", StringType(), True), StructField(\"log_level\", StringType(), True),StructField(\"log_type\", StringType(), True),StructField(\"log_app\", StringType(), True), StructField(\"log_timestamp\", TimestampType(), True) ])\n",
 					"\n",
