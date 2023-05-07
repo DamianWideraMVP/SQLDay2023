@@ -1467,6 +1467,770 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/12 copy history to bronze no delete')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy GDELT to Silver",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": {
+										"value": "@concat(pipeline().parameters.UYear, pipeline().parameters.UMonth)",
+										"type": "Expression"
+									},
+									"wildcardFileName": "*",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings",
+									"copyBehavior": "MergeFiles"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 1
+										},
+										"sink": {
+											"name": "GlobalEventID"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 2
+										},
+										"sink": {
+											"name": "Day"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 3
+										},
+										"sink": {
+											"name": "MonthYear"
+										}
+									},
+									{
+										"source": {
+											"type": "Int16",
+											"ordinal": 4
+										},
+										"sink": {
+											"name": "Year"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 5
+										},
+										"sink": {
+											"name": "FractionDate"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 6
+										},
+										"sink": {
+											"name": "Actor1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 7
+										},
+										"sink": {
+											"name": "Actor1Name"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 8
+										},
+										"sink": {
+											"name": "Actor1CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 9
+										},
+										"sink": {
+											"name": "Actor1KnownGroupCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 10
+										},
+										"sink": {
+											"name": "Actor1EthnicCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 11
+										},
+										"sink": {
+											"name": "Actor1Religion1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 12
+										},
+										"sink": {
+											"name": "Actor1Religion2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 13
+										},
+										"sink": {
+											"name": "Actor1Type1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 14
+										},
+										"sink": {
+											"name": "Actor1Type2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 15
+										},
+										"sink": {
+											"name": "Actor1Type3Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 16
+										},
+										"sink": {
+											"name": "Actor2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 17
+										},
+										"sink": {
+											"name": "Actor2Name"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 18
+										},
+										"sink": {
+											"name": "Actor2CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 19
+										},
+										"sink": {
+											"name": "Actor2KnownGroupCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 20
+										},
+										"sink": {
+											"name": "Actor2EthnicCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 21
+										},
+										"sink": {
+											"name": "Actor2Religion1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 22
+										},
+										"sink": {
+											"name": "Actor2Religion2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 23
+										},
+										"sink": {
+											"name": "Actor2Type1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 24
+										},
+										"sink": {
+											"name": "Actor2Type2Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 25
+										},
+										"sink": {
+											"name": "Actor2Type3Code"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 26
+										},
+										"sink": {
+											"name": "IsRootEvent"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 27
+										},
+										"sink": {
+											"name": "EventCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 28
+										},
+										"sink": {
+											"name": "EventBaseCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 29
+										},
+										"sink": {
+											"name": "EventRootCode"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 30
+										},
+										"sink": {
+											"name": "QuadClass"
+										}
+									},
+									{
+										"source": {
+											"type": "Double",
+											"ordinal": 31
+										},
+										"sink": {
+											"name": "GoldsteinScale"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 32
+										},
+										"sink": {
+											"name": "NumMentions"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 33
+										},
+										"sink": {
+											"name": "NumSources"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 34
+										},
+										"sink": {
+											"name": "NumArticles"
+										}
+									},
+									{
+										"source": {
+											"type": "Single",
+											"ordinal": 35
+										},
+										"sink": {
+											"name": "AvgTone"
+										}
+									},
+									{
+										"source": {
+											"type": "Int16",
+											"ordinal": 36
+										},
+										"sink": {
+											"name": "Actor1Geo_Type"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 37
+										},
+										"sink": {
+											"name": "Actor1Geo_Fullname"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 38
+										},
+										"sink": {
+											"name": "Actor1Geo_CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 39
+										},
+										"sink": {
+											"name": "Actor1Geo_ADM1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 40
+										},
+										"sink": {
+											"name": "Actor1Geo_Lat"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 41
+										},
+										"sink": {
+											"name": "Actor1Geo_Long"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 42
+										},
+										"sink": {
+											"name": "Actor1Geo_FeatureID"
+										}
+									},
+									{
+										"source": {
+											"type": "Int16",
+											"ordinal": 43
+										},
+										"sink": {
+											"name": "Actor2Geo_Type"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 44
+										},
+										"sink": {
+											"name": "Actor2Geo_Fullname"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 45
+										},
+										"sink": {
+											"name": "Actor2Geo_CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 46
+										},
+										"sink": {
+											"name": "Actor2Geo_ADM1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 47
+										},
+										"sink": {
+											"name": "Actor2Geo_Lat"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 48
+										},
+										"sink": {
+											"name": "Actor2Geo_Long"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 49
+										},
+										"sink": {
+											"name": "Actor2Geo_FeatureID"
+										}
+									},
+									{
+										"source": {
+											"type": "Int16",
+											"ordinal": 50
+										},
+										"sink": {
+											"name": "ActionGeo_Type"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 51
+										},
+										"sink": {
+											"name": "ActionGeo_Fullname"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 52
+										},
+										"sink": {
+											"name": "ActionGeo_CountryCode"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 53
+										},
+										"sink": {
+											"name": "ActionGeo_ADM1Code"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 54
+										},
+										"sink": {
+											"name": "ActionGeo_Lat"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 55
+										},
+										"sink": {
+											"name": "ActionGeo_Long"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 56
+										},
+										"sink": {
+											"name": "ActionGeo_FeatureID"
+										}
+									},
+									{
+										"source": {
+											"type": "Int32",
+											"ordinal": 57
+										},
+										"sink": {
+											"name": "DATEADDED"
+										}
+									},
+									{
+										"source": {
+											"type": "String",
+											"ordinal": 58
+										},
+										"sink": {
+											"name": "SOURCEURL"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "src_gdelt",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "dst_gdelt",
+								"type": "DatasetReference",
+								"parameters": {
+									"DYear": {
+										"value": "@pipeline().parameters.UYear",
+										"type": "Expression"
+									},
+									"DMonth": {
+										"value": "@pipeline().parameters.UMonth",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					},
+					{
+						"name": "FileList4Src",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "Copy GDELT to Silver",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "src_dir_file",
+								"type": "DatasetReference",
+								"parameters": {
+									"DYear": {
+										"value": "@pipeline().parameters.UYear",
+										"type": "Expression"
+									},
+									"DMonth": {
+										"value": "@pipeline().parameters.UMonth",
+										"type": "Expression"
+									}
+								}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "BinaryReadSettings"
+							}
+						}
+					},
+					{
+						"name": "CopyFilez",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "FileList4Src",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('FileList4Src').output.childItems",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "CopySingleFile",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"wildcardFileName": {
+													"value": "@{item().name}",
+													"type": "Expression"
+												},
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "src_dir_file",
+											"type": "DatasetReference",
+											"parameters": {
+												"DYear": {
+													"value": "@pipeline().parameters.UYear",
+													"type": "Expression"
+												},
+												"DMonth": {
+													"value": "@pipeline().parameters.UMonth",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "dst_dir_file",
+											"type": "DatasetReference",
+											"parameters": {
+												"DAYear": {
+													"value": "@pipeline().parameters.UYear",
+													"type": "Expression"
+												},
+												"DAMonth": {
+													"value": "@pipeline().parameters.UMonth",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"UYear": {
+						"type": "string",
+						"defaultValue": "2013"
+					},
+					"UMonth": {
+						"type": "string",
+						"defaultValue": "04"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-04T00:05:41Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/src_gdelt')]",
+				"[concat(variables('factoryId'), '/datasets/dst_gdelt')]",
+				"[concat(variables('factoryId'), '/datasets/src_dir_file')]",
+				"[concat(variables('factoryId'), '/datasets/dst_dir_file')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/02 load up all history')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1991,6 +2755,206 @@
 				"[concat(variables('factoryId'), '/datasets/src_filelist')]",
 				"[concat(variables('factoryId'), '/datasets/src_dir_file_archive')]",
 				"[concat(variables('factoryId'), '/pipelines/51 copy archive folder to raw')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/02inc load up gdelt')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ListAllFolders",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "src_filelist",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "TraverseFolders",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "ListAllFolders",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('ListAllFolders').output.value",
+								"type": "Expression"
+							},
+							"isSequential": false,
+							"activities": [
+								{
+									"name": "ExecCopyFolder",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "IfAnyFiles",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "12 copy history to bronze no delete",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"UYear": {
+												"value": "@item().Byear",
+												"type": "Expression"
+											},
+											"UMonth": {
+												"value": "@item().Bmonth",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "IfAnyFiles",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "ListFiles",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@greater(length(activity('ListFiles').output.childItems), 0)",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "FailNoFiles",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": "No files in the source folder",
+													"errorCode": "5001"
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "WaitTrue",
+												"type": "Wait",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"waitTimeInSeconds": 1
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "ListFiles",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "src_dir_file",
+											"type": "DatasetReference",
+											"parameters": {
+												"DYear": {
+													"value": "@item().Byear",
+													"type": "Expression"
+												},
+												"DMonth": {
+													"value": "@item().Bmonth",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"childItems"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"enablePartitionDiscovery": false
+										},
+										"formatSettings": {
+											"type": "BinaryReadSettings"
+										}
+									}
+								},
+								{
+									"name": "WaitFalse",
+									"type": "Wait",
+									"dependsOn": [
+										{
+											"activity": "IfAnyFiles",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/src_filelist')]",
+				"[concat(variables('factoryId'), '/pipelines/12 copy history to bronze no delete')]",
+				"[concat(variables('factoryId'), '/datasets/src_dir_file')]"
 			]
 		}
 	]
