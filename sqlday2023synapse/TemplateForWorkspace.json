@@ -240,17 +240,17 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/broze vs raw compare')]",
+			"name": "[concat(parameters('workspaceName'), '/1 serverless sql pool engineering')]",
 			"type": "Microsoft.Synapse/workspaces/sqlscripts",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "-- This is auto-generated code\nSELECT\n     COUNT(*)\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/bronze/customer/*.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\nGO\nSELECT\n    COUNT(*) \nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/customer/*.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]\n",
+					"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2016/Quarter=Q3/Month=9/Day=20160930/sale-small-20160930-snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n\nSELECT\n    TransactionDate, ProductId,\n        CAST(SUM(ProfitAmount) AS decimal(18,2)) AS [(sum) Profit],\n        CAST(AVG(ProfitAmount) AS decimal(18,2)) AS [(avg) Profit],\n        SUM(Quantity) AS [(sum) Quantity]\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2016/Quarter=Q3/Month=9/Day=20160930/sale-small-20160930-snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [r] GROUP BY r.TransactionDate, r.ProductId;\n\n\n\nSELECT\n    COUNT(*)\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2019/*/*/*/*',\n        FORMAT = 'PARQUET'\n    ) AS [r] ;\n\n\n\nGO\n\ncreate DATABASE demo_serverless\nGO\n\n\nuse demo_serverless\nGO\n\n--wyklikac external table\n\nIF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'raw_sqlday2023_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [raw_sqlday2023_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://raw@sqlday2023.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.All2019Sales (\n\t[TransactionId] nvarchar(4000),\n\t[CustomerId] int,\n\t[ProductId] smallint,\n\t[Quantity] smallint,\n\t[Price] numeric(38,18),\n\t[TotalAmount] numeric(38,18),\n\t[TransactionDate] int,\n\t[ProfitAmount] numeric(38,18),\n\t[Hour] smallint,\n\t[Minute] smallint,\n\t[StoreId] smallint\n\t)\n\tWITH (\n\tLOCATION = 'sale-small/Year=2019/*/*/*/*.parquet',\n\tDATA_SOURCE = [raw_sqlday2023_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.All2019Sales\nGO\n\n\n\n--external data \n\nIF NOT EXISTS (SELECT * FROM sys.symmetric_keys) BEGIN\n    declare @pasword nvarchar(400) = CAST(newid() as VARCHAR(400));\n    EXEC('CREATE MASTER KEY ENCRYPTION BY PASSWORD = ''' + @pasword + '''')\nEND\n\nCREATE DATABASE SCOPED CREDENTIAL [sqlondemand]\nWITH IDENTITY='SHARED ACCESS SIGNATURE',  \nSECRET = 'sv=2018-03-28&ss=bf&srt=sco&sp=rl&st=2019-10-14T12%3A10%3A25Z&se=2061-12-31T12%3A10%3A00Z&sig=KlSU2ullCscyTS0An0nozEpo4tO5JAgGBvw%2FJX2lguw%3D'\nGO\n\n-- Create external data source secured using credential\nCREATE EXTERNAL DATA SOURCE SqlOnDemandDemo WITH (\n    LOCATION = 'https://sqlondemandstorage.blob.core.windows.net',\n    CREDENTIAL = sqlondemand\n);\nGO\n\nCREATE EXTERNAL FILE FORMAT QuotedCsvWithHeader\nWITH (  \n    FORMAT_TYPE = DELIMITEDTEXT,\n    FORMAT_OPTIONS (\n        FIELD_TERMINATOR = ',',\n        STRING_DELIMITER = '\"',\n        FIRST_ROW = 2\n    )\n);\nGO\n\nCREATE EXTERNAL TABLE [population]\n(\n    [country_code] VARCHAR (5) COLLATE Latin1_General_BIN2,\n    [country_name] VARCHAR (100) COLLATE Latin1_General_BIN2,\n    [year] smallint,\n    [population] bigint\n)\nWITH (\n    LOCATION = 'csv/population/population.csv',\n    DATA_SOURCE = SqlOnDemandDemo,\n    FILE_FORMAT = QuotedCsvWithHeader\n);\nGO\n\n\n\nSELECT [country_code]\n    ,[country_name]\n    ,[year]\n    ,[population]\nFROM [dbo].[population]\nWHERE [year] = 2019 and population > 100000000\n\n\n\n\n--view \n\n\nCREATE VIEW [dbo].[Sales2019ByProduct]\n\tAS \n    SELECT [ProductId], SUM([TotalAmount]) as Total \n    FROM [dbo].[All2019Sales]\n    GROUP BY ProductId\n\n\nSELECT * FROM [dbo].[Sales2019ByProduct]\n\n\n\n--db created in spark\nUSE silverdatabase\ngo\n\nSELECT TOP (100) * FROM [dbo].[orders]\n\n\n\nCREATE VIEW dbo.UrgentOrders_View\nAS\nSELECT  O.* \nFROM [dbo].[orders] O join dbo.order_priority OP\nON O.O_ORDERPRIORITY_ID = OP.O_ORDERPRIORITY_ID\nWHERE OP.O_ORDERPRIORITY LIKE  '%URGENT'\n\n\n\nuse demo_serverless\nGO\n\nSELECT TOP (100) * FROM [silverdatabase].[dbo].[orders]\n\n\n\nCREATE VIEW dbo.UrgentOrders_View\nAS\nSELECT  O.* \nFROM [silverdatabase].[dbo].[orders] O join [silverdatabase].dbo.order_priority OP\nON O.O_ORDERPRIORITY_ID = OP.O_ORDERPRIORITY_ID\nWHERE OP.O_ORDERPRIORITY LIKE  '%URGENT'\n\n\n\nselect * from dbo.UrgentOrders_View\n",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
-						"databaseName": "master",
+						"databaseName": "demo_serverless",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -285,13 +285,33 @@
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"content": {
-					"query": "-- import very large parquet file\n\n/*\nThere is often a level of orchestration involved when moving data into a data warehouse, \ncoordinating movement from one or more data sources and sometimes some level of transformation. \n\nThe transformation step can occur during (extract-transform-load - ETL) or after (extract-load-transform - ELT) data movement. \nAny modern data platform must provide a seamless experience for all the typical data wrangling actions \nlike extractions, parsing, joining, standardizing, augmenting, cleansing, consolidating, and filtering. \n\nAzure Synapse Analytics provides two significant categories of features \n- data flows and data orchestrations (implemented as pipelines).\n*/\n\n\nIF EXISTS (SELECT * FROM sys.workload_management_workload_classifiers WHERE [name] = 'HeavyLoader')\nBEGIN\n    DROP WORKLOAD CLASSIFIER HeavyLoader\nEND;\n\nIF EXISTS (SELECT * FROM sys.workload_management_workload_groups WHERE name = 'BigDataLoad')\nBEGIN\n    DROP WORKLOAD GROUP BigDataLoad\nEND;\n\n--Create workload group\nCREATE WORKLOAD GROUP BigDataLoad WITH\n  (\n      MIN_PERCENTAGE_RESOURCE = 50, -- integer value\n      REQUEST_MIN_RESOURCE_GRANT_PERCENT = 25, --  (guaranteed min 4 concurrency)\n      CAP_PERCENTAGE_RESOURCE = 100\n  );\n\n-- Create workload classifier\nCREATE WORKLOAD Classifier HeavyLoader WITH\n(\n    Workload_Group ='BigDataLoad',\n    MemberName='asa.sql.import01',\n    IMPORTANCE = HIGH\n);\n\n-- View classifiers\nSELECT * FROM sys.workload_management_workload_classifiers",
+					"query": "-- import very large parquet file\n\n/*\nThere is often a level of orchestration involved when moving data into a data warehouse, \ncoordinating movement from one or more data sources and sometimes some level of transformation. \n\nThe transformation step can occur during (extract-transform-load - ETL) or after (extract-load-transform - ELT) data movement. \nAny modern data platform must provide a seamless experience for all the typical data wrangling actions \nlike extractions, parsing, joining, standardizing, augmenting, cleansing, consolidating, and filtering. \n\nAzure Synapse Analytics provides two significant categories of features \n- data flows and data orchestrations (implemented as pipelines).\n*/\n\n--master\n\ncreate login [asa.sql.workload01] with password = '1qaz@WSX3edc$RFV'\ncreate login [asa.sql.workload02] with password = '1qaz@WSX3edc$RFV'\ncreate login [asa.sql.import01] with password = '1qaz@WSX3edc$RFV'\ncreate login [asa.sql.import02] with password = '1qaz@WSX3edc$RFV'\ncreate login [asa.sql.highperf] with password = '1qaz@WSX3edc$RFV'\n\n--sqlpool\ncreate user [asa.sql.workload01] for login [asa.sql.workload01]\ncreate user [asa.sql.workload02] for login [asa.sql.workload02]\nexecute sp_addrolemember 'db_datareader', 'asa.sql.workload01' \nexecute sp_addrolemember 'db_datareader', 'asa.sql.workload02'\n\n\ncreate user [asa.sql.import01] for login [asa.sql.import01]\ncreate user [asa.sql.import02] for login [asa.sql.import02]\nexecute sp_addrolemember 'db_owner', 'asa.sql.import01'  \nexecute sp_addrolemember 'db_owner', 'asa.sql.import02' \n\n\ncreate user [asa.sql.highperf] for login [asa.sql.highperf]\nexecute sp_addrolemember 'db_owner', 'asa.sql.highperf' \nexecute sp_addrolemember 'staticrc80', 'asa.sql.highperf' \n\n\n\nIF EXISTS (SELECT * FROM sys.workload_management_workload_classifiers WHERE [name] = 'HeavyLoader')\nBEGIN\n    DROP WORKLOAD CLASSIFIER HeavyLoader\nEND;\n\nIF EXISTS (SELECT * FROM sys.workload_management_workload_groups WHERE name = 'BigDataLoad')\nBEGIN\n    DROP WORKLOAD GROUP BigDataLoad\nEND;\n\n--Create workload group\nCREATE WORKLOAD GROUP BigDataLoad WITH\n  (\n      MIN_PERCENTAGE_RESOURCE = 50, -- integer value\n      REQUEST_MIN_RESOURCE_GRANT_PERCENT = 25, --  (guaranteed min 4 concurrency)\n      CAP_PERCENTAGE_RESOURCE = 100\n  );\n\n-- Create workload classifier\nCREATE WORKLOAD Classifier HeavyLoader WITH\n(\n    Workload_Group ='BigDataLoad',\n    MemberName='asa.sql.import01',\n    IMPORTANCE = HIGH\n);\n\n-- View classifiers\nSELECT * FROM sys.workload_management_workload_classifiers",
 					"metadata": {
 						"language": "sql"
 					},
 					"currentConnection": {
 						"databaseName": "sqlpool",
 						"poolName": "sqlpool"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/broze vs raw compare')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "-- This is auto-generated code\nSELECT\n     COUNT(*)\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/bronze/customer/*.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\nGO\nSELECT\n    COUNT(*) \nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/customer/*.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0'\n    ) AS [result]\n",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "master",
+						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
 				},
@@ -311,26 +331,6 @@
 					},
 					"currentConnection": {
 						"databaseName": "master",
-						"poolName": "Built-in"
-					},
-					"resultLimit": 5000
-				},
-				"type": "SqlQuery"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/1 serverless sql pool engineering')]",
-			"type": "Microsoft.Synapse/workspaces/sqlscripts",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"content": {
-					"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2016/Quarter=Q3/Month=9/Day=20160930/sale-small-20160930-snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n\nSELECT\n    TransactionDate, ProductId,\n        CAST(SUM(ProfitAmount) AS decimal(18,2)) AS [(sum) Profit],\n        CAST(AVG(ProfitAmount) AS decimal(18,2)) AS [(avg) Profit],\n        SUM(Quantity) AS [(sum) Quantity]\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2016/Quarter=Q3/Month=9/Day=20160930/sale-small-20160930-snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [r] GROUP BY r.TransactionDate, r.ProductId;\n\n\n\nSELECT\n    COUNT(*)\nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/raw/sale-small/Year=2019/*/*/*/*',\n        FORMAT = 'PARQUET'\n    ) AS [r] ;\n\n\n\nGO\n\ncreate DATABASE demo_serverless\nGO\n\n\nuse demo_serverless\nGO\n\n--wyklikac external table\n\nIF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'raw_sqlday2023_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [raw_sqlday2023_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://raw@sqlday2023.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.All2019Sales (\n\t[TransactionId] nvarchar(4000),\n\t[CustomerId] int,\n\t[ProductId] smallint,\n\t[Quantity] smallint,\n\t[Price] numeric(38,18),\n\t[TotalAmount] numeric(38,18),\n\t[TransactionDate] int,\n\t[ProfitAmount] numeric(38,18),\n\t[Hour] smallint,\n\t[Minute] smallint,\n\t[StoreId] smallint\n\t)\n\tWITH (\n\tLOCATION = 'sale-small/Year=2019/*/*/*/*.parquet',\n\tDATA_SOURCE = [raw_sqlday2023_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.All2019Sales\nGO\n\n\n\n--external data \n\nIF NOT EXISTS (SELECT * FROM sys.symmetric_keys) BEGIN\n    declare @pasword nvarchar(400) = CAST(newid() as VARCHAR(400));\n    EXEC('CREATE MASTER KEY ENCRYPTION BY PASSWORD = ''' + @pasword + '''')\nEND\n\nCREATE DATABASE SCOPED CREDENTIAL [sqlondemand]\nWITH IDENTITY='SHARED ACCESS SIGNATURE',  \nSECRET = 'sv=2018-03-28&ss=bf&srt=sco&sp=rl&st=2019-10-14T12%3A10%3A25Z&se=2061-12-31T12%3A10%3A00Z&sig=KlSU2ullCscyTS0An0nozEpo4tO5JAgGBvw%2FJX2lguw%3D'\nGO\n\n-- Create external data source secured using credential\nCREATE EXTERNAL DATA SOURCE SqlOnDemandDemo WITH (\n    LOCATION = 'https://sqlondemandstorage.blob.core.windows.net',\n    CREDENTIAL = sqlondemand\n);\nGO\n\nCREATE EXTERNAL FILE FORMAT QuotedCsvWithHeader\nWITH (  \n    FORMAT_TYPE = DELIMITEDTEXT,\n    FORMAT_OPTIONS (\n        FIELD_TERMINATOR = ',',\n        STRING_DELIMITER = '\"',\n        FIRST_ROW = 2\n    )\n);\nGO\n\nCREATE EXTERNAL TABLE [population]\n(\n    [country_code] VARCHAR (5) COLLATE Latin1_General_BIN2,\n    [country_name] VARCHAR (100) COLLATE Latin1_General_BIN2,\n    [year] smallint,\n    [population] bigint\n)\nWITH (\n    LOCATION = 'csv/population/population.csv',\n    DATA_SOURCE = SqlOnDemandDemo,\n    FILE_FORMAT = QuotedCsvWithHeader\n);\nGO\n\n\n\nSELECT [country_code]\n    ,[country_name]\n    ,[year]\n    ,[population]\nFROM [dbo].[population]\nWHERE [year] = 2019 and population > 100000000\n\n\n\n\n--view \n\n\nCREATE VIEW [dbo].[Sales2019ByProduct]\n\tAS \n    SELECT [ProductId], SUM([TotalAmount]) as Total \n    FROM [dbo].[All2019Sales]\n    GROUP BY ProductId\n\n\nSELECT * FROM [dbo].[Sales2019ByProduct]\n\n\n\n--db created in spark\nUSE silverdatabase\ngo\n\nSELECT TOP (100) * FROM [dbo].[orders]\n\n\n\nCREATE VIEW dbo.UrgentOrders_View\nAS\nSELECT  O.* \nFROM [dbo].[orders] O join dbo.order_priority OP\nON O.O_ORDERPRIORITY_ID = OP.O_ORDERPRIORITY_ID\nWHERE OP.O_ORDERPRIORITY LIKE  '%URGENT'\n\n\n\nuse demo_serverless\nGO\n\nSELECT TOP (100) * FROM [silverdatabase].[dbo].[orders]\n\n\n\nCREATE VIEW dbo.UrgentOrders_View\nAS\nSELECT  O.* \nFROM [silverdatabase].[dbo].[orders] O join [silverdatabase].dbo.order_priority OP\nON O.O_ORDERPRIORITY_ID = OP.O_ORDERPRIORITY_ID\nWHERE OP.O_ORDERPRIORITY LIKE  '%URGENT'\n\n\n\nselect * from dbo.UrgentOrders_View\n",
-					"metadata": {
-						"language": "sql"
-					},
-					"currentConnection": {
-						"databaseName": "demo_serverless",
 						"poolName": "Built-in"
 					},
 					"resultLimit": 5000
@@ -1718,7 +1718,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "45df2da5-57e3-46bd-a610-a72cb90f6e54"
+						"spark.autotune.trackingId": "998a61ee-e3d4-4fd0-bd1f-0c1e3ed25b56"
 					}
 				},
 				"metadata": {
@@ -1743,15 +1743,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 							"import os\n",
@@ -4190,15 +4188,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 60
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\r\n",
 							"import requests\r\n",
@@ -5320,7 +5316,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "f75dee9a-cb0a-4580-ac49-4d4f58fcc6ec"
+						"spark.autotune.trackingId": "c5f61e20-7092-41d6-bb1e-875fff548485"
 					}
 				},
 				"metadata": {
@@ -5345,15 +5341,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"from notebookutils import mssparkutils\n",
@@ -5440,7 +5434,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "d7dd504d-9e97-4148-83a6-b1f67f1abdb1"
+						"spark.autotune.trackingId": "448db812-343c-4e3f-bb8d-f8908020aeca"
 					}
 				},
 				"metadata": {
@@ -5465,8 +5459,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -6070,8 +6063,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -6390,8 +6382,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -6700,7 +6691,7 @@
 			"properties": {
 				"autoPause": {
 					"enabled": true,
-					"delayInMinutes": 15
+					"delayInMinutes": 60
 				},
 				"autoScale": {
 					"enabled": true,
