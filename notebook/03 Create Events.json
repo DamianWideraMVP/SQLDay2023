@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "79aad073-410e-41a0-b8c4-d170033a2a0f"
+				"spark.autotune.trackingId": "aecba653-6436-4706-84b5-8743c052e508"
 			}
 		},
 		"metadata": {
@@ -253,7 +253,7 @@
 				"source": [
 					"db = \"gdeltdb\""
 				],
-				"execution_count": null
+				"execution_count": 50
 			},
 			{
 				"cell_type": "code",
@@ -274,7 +274,7 @@
 					"    spark.sql(str)\r\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 51
 			},
 			{
 				"cell_type": "code",
@@ -292,7 +292,7 @@
 				"source": [
 					"_drop_gdelt_database(db)"
 				],
-				"execution_count": null
+				"execution_count": 52
 			},
 			{
 				"cell_type": "code",
@@ -317,7 +317,7 @@
 					"    str = f\"USE {db}\"\r\n",
 					"    spark.sql(str)"
 				],
-				"execution_count": null
+				"execution_count": 53
 			},
 			{
 				"cell_type": "code",
@@ -335,7 +335,7 @@
 				"source": [
 					"_create_gdelt_database(db)"
 				],
-				"execution_count": null
+				"execution_count": 54
 			},
 			{
 				"cell_type": "code",
@@ -351,10 +351,10 @@
 					}
 				},
 				"source": [
-					"df_eventnokeyes.write.format(\"delta\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(dst_location)\r\n",
-					"display(df_eventnokeyes.limit(10), True)"
+					"df_event5.write.format(\"delta\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(dst_location)\r\n",
+					"display(df_event5.limit(10), True)"
 				],
-				"execution_count": null
+				"execution_count": 56
 			},
 			{
 				"cell_type": "code",
