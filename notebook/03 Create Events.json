@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "11423ae7-6015-4e60-b359-eddfa5c81394"
+				"spark.autotune.trackingId": "46024c54-fd22-44b5-bb72-42fa7c037f30"
 			}
 		},
 		"metadata": {
@@ -442,7 +442,7 @@
 				},
 				"source": [
 					"%%pyspark\r\n",
-					"df_event5.createOrReplaceTempView('EventNoKeysSrc')"
+					"## df_event5.createOrReplaceTempView('EventNoKeysSrc')"
 				],
 				"execution_count": null
 			},
