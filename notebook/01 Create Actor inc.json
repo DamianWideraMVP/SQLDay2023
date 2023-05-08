@@ -21,7 +21,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "073c763a-33f6-4cb3-b52d-c0266efe842a"
+				"spark.autotune.trackingId": "920b0e37-a5ab-4adf-aa20-eafc32eb09f2"
 			}
 		},
 		"metadata": {
@@ -71,7 +71,7 @@
 					"from pyspark.sql.functions import monotonically_increasing_id, col, upper, trim\r\n",
 					"from delta.tables import DeltaTable"
 				],
-				"execution_count": 12
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -86,7 +86,7 @@
 					"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/2023/05/gdelt_events.parquet'\r\n",
 					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actorinc'"
 				],
-				"execution_count": 13
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -160,7 +160,7 @@
 					"\r\n",
 					"display(df_actor.limit(10))"
 				],
-				"execution_count": 14
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -184,7 +184,7 @@
 					"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
 					"delta_table.delete()"
 				],
-				"execution_count": 15
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -207,7 +207,7 @@
 					"df_actor_wkey = df_actor.withColumn('ActorID', monotonically_increasing_id())\r\n",
 					"df_actor_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 				],
-				"execution_count": 16
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -283,7 +283,7 @@
 					",'SOURCEURL') \"\"\"\r\n",
 					""
 				],
-				"execution_count": 17
+				"execution_count": null
 			}
 		]
 	}
