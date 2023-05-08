@@ -155,6 +155,20 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/PowerBIWorkspace1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "PowerBIWorkspace",
+				"typeProperties": {
+					"workspaceID": "32da927f-d90b-4c51-a4b2-b75f283f5e90",
+					"tenantID": "df754217-29e5-4804-8f67-a71311a3cd0f"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/SQLDay_AKV')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -404,7 +418,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b30bda5f-da21-44c4-8f07-7c303d48fd1b"
+						"spark.autotune.trackingId": "7f7117c6-71d9-4f48-ad30-9aca9312f306"
 					}
 				},
 				"metadata": {
@@ -454,7 +468,7 @@
 							"from delta.tables import DeltaTable"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 25
 					},
 					{
 						"cell_type": "code",
@@ -470,7 +484,7 @@
 							"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actorinc'"
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 26
 					},
 					{
 						"cell_type": "code",
@@ -545,7 +559,7 @@
 							"display(df_actor.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 3
+						"execution_count": 27
 					},
 					{
 						"cell_type": "code",
@@ -567,11 +581,10 @@
 							"%%pyspark\r\n",
 							"## full reload\r\n",
 							"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
-							"delta_table.delete()\r\n",
-							"delta_table.vacuum()"
+							"delta_table.delete()"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 28
 					},
 					{
 						"cell_type": "code",
@@ -595,7 +608,7 @@
 							"df_actor_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 29
 					},
 					{
 						"cell_type": "code",
@@ -672,7 +685,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 30
 					}
 				]
 			},
@@ -1001,7 +1014,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "cd8bbb54-5579-4248-a4fe-bb49c47cda14"
+						"spark.autotune.trackingId": "dc776365-37b7-4f42-b29a-cd61b3568b45"
 					}
 				},
 				"metadata": {
@@ -1167,9 +1180,8 @@
 						"source": [
 							"%%pyspark\r\n",
 							"## full reload\r\n",
-							"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
-							"delta_table.delete()\r\n",
-							"delta_table.vacuum()"
+							"## delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
+							"## delta_table.delete()"
 						],
 						"outputs": [],
 						"execution_count": 4
@@ -2215,12 +2227,12 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Data Engineering Spark Pool')]",
+			"name": "[concat(parameters('workspaceName'), '/11 Actor Silver Table')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
 				"folder": {
-					"name": "04 Azure Synapse Analytics"
+					"name": "02 Load to Delta"
 				},
 				"nbformat": 4,
 				"nbformat_minor": 2,
@@ -2238,7 +2250,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "998a61ee-e3d4-4fd0-bd1f-0c1e3ed25b56"
+						"spark.autotune.trackingId": "f55475d5-b0b6-44c6-8932-70250bba8b16"
 					}
 				},
 				"metadata": {
@@ -2271,12 +2283,462 @@
 					{
 						"cell_type": "code",
 						"source": [
+							"import pandas as pd\r\n",
+							"\r\n",
+							"from pyspark.sql.functions import monotonically_increasing_id, col, upper, trim\r\n",
+							"from delta.tables import DeltaTable"
+						],
+						"outputs": [],
+						"execution_count": 1
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'\r\n",
+							"##dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdelt2/actor'"
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"db = \"gdeltdb\""
+						],
+						"outputs": [],
+						"execution_count": 3
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _create_gdelt_database(db: str):\r\n",
+							"    str = f\"CREATE DATABASE IF NOT EXISTS {db}\"\r\n",
+							"    spark.sql(str)\r\n",
+							"\r\n",
+							"    str = f\"USE {db}\"\r\n",
+							"    spark.sql(str)"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_create_gdelt_database(db)"
+						],
+						"outputs": [],
+						"execution_count": 5
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _drop_table (folder: str):\r\n",
+							"    \r\n",
+							"    str = f\"DROP TABLE IF EXISTS {folder}; \"\r\n",
+							"    spark.sql(str)\r\n",
+							"    "
+						],
+						"outputs": [],
+						"execution_count": 6
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _create_table (folder: str, path_to_table:str):\r\n",
+							"    \r\n",
+							"    _drop_table(folder)\r\n",
+							"    \r\n",
+							"    str = f\"CREATE TABLE {folder} \\\r\n",
+							"    USING delta \\\r\n",
+							"    location '{path_to_table}'\"\r\n",
+							"\r\n",
+							"    spark.sql(str)"
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_create_table (\"actors\", dst_location)"
+						],
+						"outputs": [],
+						"execution_count": 8
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/11 Geo Silver Table')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "02 Load to Delta"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "776ed018-bb15-4431-b836-44788e4e3d5d"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"source": [
+							"import pandas as pd\r\n",
+							"\r\n",
+							"from pyspark.sql.functions import monotonically_increasing_id, col, upper, trim\r\n",
+							"from delta.tables import DeltaTable"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'\r\n",
+							"##dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdelt2/actor'"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"db = \"gdeltdb\""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _create_gdelt_database(db: str):\r\n",
+							"    str = f\"CREATE DATABASE IF NOT EXISTS {db}\"\r\n",
+							"    spark.sql(str)\r\n",
+							"\r\n",
+							"    str = f\"USE {db}\"\r\n",
+							"    spark.sql(str)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_create_gdelt_database(db)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _drop_table (folder: str):\r\n",
+							"    \r\n",
+							"    str = f\"DROP TABLE IF EXISTS {folder}; \"\r\n",
+							"    spark.sql(str)\r\n",
+							"    "
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _create_table (folder: str, path_to_table:str):\r\n",
+							"    \r\n",
+							"    _drop_table(folder)\r\n",
+							"    \r\n",
+							"    str = f\"CREATE TABLE {folder} \\\r\n",
+							"    USING delta \\\r\n",
+							"    location '{path_to_table}'\"\r\n",
+							"\r\n",
+							"    spark.sql(str)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_create_table (\"geo\", dst_location)"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Data Engineering Spark Pool')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "04 Azure Synapse Analytics"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "40275486-ef34-49b8-a28a-a1daeb06ee78"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": true
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 							"import os\n",
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 1
 					},
 					{
 						"cell_type": "code",
@@ -2295,7 +2757,7 @@
 							"%run \"04 Azure Synapse Analytics/configuration/configuration_paramaters_bronze_silver\""
 						],
 						"outputs": [],
-						"execution_count": 10
+						"execution_count": 2
 					},
 					{
 						"cell_type": "code",
@@ -2316,7 +2778,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 11
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -2340,7 +2802,7 @@
 							"    return account_for_abfss, path_to_blob"
 						],
 						"outputs": [],
-						"execution_count": 12
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -2360,7 +2822,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -2384,7 +2846,7 @@
 							"account_for_abfss_silver,  path_to_orderpriority_silver = _prepare_paths_for_data_processing(account, silver_container, \"orderpriority/delta\")"
 						],
 						"outputs": [],
-						"execution_count": 52
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -2403,7 +2865,7 @@
 							"account_for_abfss,  path_to_orders, path_to_customer, path_to_customer_silver, path_to_orders_silver, path_to_mktsegment_silver, path_to_orderpriority_silver"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -2422,7 +2884,7 @@
 							"df_orders = spark.read.load(path_to_orders, format='parquet')"
 						],
 						"outputs": [],
-						"execution_count": 76
+						"execution_count": 8
 					},
 					{
 						"cell_type": "code",
@@ -2442,7 +2904,7 @@
 							"display(df_orders.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 165
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -2461,7 +2923,7 @@
 							"df_customer = spark.read.load(path_to_customer, format='parquet')"
 						],
 						"outputs": [],
-						"execution_count": 77
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -2509,7 +2971,7 @@
 							"df_orders = df_orders.withColumn(\"O_ORDERPRIORITY_ID\", lit(0))"
 						],
 						"outputs": [],
-						"execution_count": 78
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -2548,7 +3010,7 @@
 							"list_segment = df_customer.select('C_MKTSEGMENT').distinct().collect()"
 						],
 						"outputs": [],
-						"execution_count": 79
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -2568,7 +3030,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 80
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -2608,7 +3070,7 @@
 							"df_order_priority= spark.createDataFrame(list_order_priority)"
 						],
 						"outputs": [],
-						"execution_count": 81
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -2631,7 +3093,7 @@
 							"df_order_priority = df_order_priority.withColumn(\"O_ORDERPRIORITY_ID\", sf.row_number().over(Window.orderBy(sf.col(\"O_ORDERPRIORITY\"))))"
 						],
 						"outputs": [],
-						"execution_count": 82
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -2670,7 +3132,7 @@
 							"db = \"SilverDatabase\""
 						],
 						"outputs": [],
-						"execution_count": 83
+						"execution_count": 16
 					},
 					{
 						"cell_type": "code",
@@ -4020,7 +4482,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e3009e28-4cea-4d8f-af78-8417e12f40ea"
+						"spark.autotune.trackingId": "450c7cca-8474-49b8-a313-4f8be724d1ed"
 					}
 				},
 				"metadata": {
@@ -4045,15 +4507,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 							"import os\n",
