@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "cd8bbb54-5579-4248-a4fe-bb49c47cda14"
+				"spark.autotune.trackingId": "dc776365-37b7-4f42-b29a-cd61b3568b45"
 			}
 		},
 		"metadata": {
@@ -184,9 +184,8 @@
 				"source": [
 					"%%pyspark\r\n",
 					"## full reload\r\n",
-					"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
-					"delta_table.delete()\r\n",
-					"delta_table.vacuum()"
+					"## delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
+					"## delta_table.delete()"
 				],
 				"execution_count": 4
 			},
