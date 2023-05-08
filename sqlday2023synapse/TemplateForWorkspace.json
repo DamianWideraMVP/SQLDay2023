@@ -927,7 +927,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "173e7eeb-c9a8-40c6-b487-71d742af5520"
+						"spark.autotune.trackingId": "9961a63f-68df-400a-ad85-c0fc2e66f9f1"
 					}
 				},
 				"metadata": {
@@ -988,12 +988,15 @@
 							"%%pyspark\r\n",
 							"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/20*/*/gdelt_events.parquet'\r\n",
 							"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/event'\r\n",
+							"dst_eventa_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventa'\r\n",
+							"dst_eventag_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventag'\r\n",
+							"\r\n",
 							"actor_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'\r\n",
 							"geo_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'\r\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": 7
+						"execution_count": 32
 					},
 					{
 						"cell_type": "code",
@@ -1168,7 +1171,7 @@
 							"df_geo.createOrReplaceTempView('Geo')"
 						],
 						"outputs": [],
-						"execution_count": 20
+						"execution_count": 23
 					},
 					{
 						"cell_type": "code",
@@ -1188,10 +1191,10 @@
 						},
 						"source": [
 							"%%pyspark\r\n",
-							"df_event5.createOrReplaceTempView('Geo')"
+							"df_event5.createOrReplaceTempView('EventNoKeys')"
 						],
 						"outputs": [],
-						"execution_count": 21
+						"execution_count": 30
 					},
 					{
 						"cell_type": "code",
@@ -1213,11 +1216,151 @@
 						"source": [
 							"%%sql\r\n",
 							"SELECT *\r\n",
-							"FROM Actor\r\n",
+							"FROM EventNoKeys\r\n",
 							"LIMIT 10"
 						],
 						"outputs": [],
-						"execution_count": 22
+						"execution_count": 31
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df_events_wactorkeys = spark.sql(\"\"\"SELECT GlobalEventID\r\n",
+							"        ,Day\r\n",
+							"        ,a1.ActorID AS Actor1ID\r\n",
+							"        ,Actor2Code\r\n",
+							"        ,Actor2Name\r\n",
+							"        ,IsRootEvent\r\n",
+							"        ,EventCode\r\n",
+							"        ,EventBaseCode\r\n",
+							"        ,EventRootCode\r\n",
+							"        ,QuadClass\r\n",
+							"        ,GoldsteinScale\r\n",
+							"        ,NumMentions\r\n",
+							"        ,NumSources\r\n",
+							"        ,NumArticles\r\n",
+							"        ,AvgTone\r\n",
+							"        ,Actor1Geo_ADM1Code\r\n",
+							"        ,Actor1Geo_Lat\r\n",
+							"        ,Actor1Geo_Long\r\n",
+							"        ,Actor1Geo_FeatureID\r\n",
+							"        ,Actor2Geo_ADM1Code\r\n",
+							"        ,Actor2Geo_Lat\r\n",
+							"        ,Actor2Geo_Long\r\n",
+							"        ,Actor2Geo_FeatureID\r\n",
+							"        ,ActionGeo_ADM1Code\r\n",
+							"        ,ActionGeo_Lat\r\n",
+							"        ,ActionGeo_Long\r\n",
+							"        ,ActionGeo_FeatureID\r\n",
+							"        ,DATEADDED\r\n",
+							"        ,SOURCEURL\r\n",
+							"    FROM EventNoKeys e\r\n",
+							"    LEFT JOIN Actor a1\r\n",
+							"        ON e.Actor1Code = a1.ActorCode\r\n",
+							"        AND e.Actor1Name = a1.ActorName\r\n",
+							"    LIMIT 10\r\n",
+							"\"\"\")\r\n",
+							"\r\n",
+							"df_events_wactorkeys.createOrReplaceTempView('EventNoGeoKeys1')\r\n",
+							"\r\n",
+							"display(df_events_wkeys)"
+						],
+						"outputs": [],
+						"execution_count": 34
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df_events_wactorkeys = spark.sql(\"\"\"SELECT GlobalEventID\r\n",
+							"        ,Day\r\n",
+							"        ,a1.ActorID AS Actor1ID\r\n",
+							"        ,a2.ActorID AS Actor2ID\r\n",
+							"        ,IsRootEvent\r\n",
+							"        ,EventCode\r\n",
+							"        ,EventBaseCode\r\n",
+							"        ,EventRootCode\r\n",
+							"        ,QuadClass\r\n",
+							"        ,GoldsteinScale\r\n",
+							"        ,NumMentions\r\n",
+							"        ,NumSources\r\n",
+							"        ,NumArticles\r\n",
+							"        ,AvgTone\r\n",
+							"        ,Actor1Geo_ADM1Code\r\n",
+							"        ,Actor1Geo_Lat\r\n",
+							"        ,Actor1Geo_Long\r\n",
+							"        ,Actor1Geo_FeatureID\r\n",
+							"        ,Actor2Geo_ADM1Code\r\n",
+							"        ,Actor2Geo_Lat\r\n",
+							"        ,Actor2Geo_Long\r\n",
+							"        ,Actor2Geo_FeatureID\r\n",
+							"        ,ActionGeo_ADM1Code\r\n",
+							"        ,ActionGeo_Lat\r\n",
+							"        ,ActionGeo_Long\r\n",
+							"        ,ActionGeo_FeatureID\r\n",
+							"        ,DATEADDED\r\n",
+							"        ,SOURCEURL\r\n",
+							"    FROM EventNoKeys e\r\n",
+							"    LEFT JOIN Actor a1\r\n",
+							"        ON e.Actor1Code = a1.ActorCode\r\n",
+							"        AND e.Actor1Name = a1.ActorName\r\n",
+							"    LEFT JOIN Actor a2\r\n",
+							"        ON e.Actor2Code = a2.ActorCode\r\n",
+							"        AND e.Actor2Name = a2.ActorName\r\n",
+							"    LEFT JOIN Geo ga1\r\n",
+							"        ON e.Actor1Geo_Lat = ga1.Geo_Lat\r\n",
+							"        AND e.Actor1Geo_Long = ga1.Geo_Long\r\n",
+							"        AND e.Actor1Geo_ADM1Code = ga1.Geo_ADM1Code\r\n",
+							"        AND e.Actor1Geo_FeatureID = ga1.Geo_FeatureID\r\n",
+							"    LEFT JOIN Geo ga2\r\n",
+							"        ON e.Actor2Geo_Lat = ga2.Geo_Lat\r\n",
+							"        AND e.Actor2Geo_Long = ga2.Geo_Long\r\n",
+							"        AND e.Actor2Geo_ADM1Code = ga2.Geo_ADM1Code\r\n",
+							"        AND e.Actor2Geo_FeatureID = ga2.Geo_FeatureID\r\n",
+							"    LEFT JOIN Geo ga\r\n",
+							"        ON e.ActionGeo_Lat = ga.Geo_Lat\r\n",
+							"        AND e.ActionGeo_Long = ga.Geo_Long\r\n",
+							"        AND e.ActionGeo_ADM1Code = ga.Geo_ADM1Code\r\n",
+							"        AND e.ActionGeo_FeatureID = ga.Geo_FeatureID\r\n",
+							"    LIMIT 10\r\n",
+							"\"\"\")\r\n",
+							"\r\n",
+							"df_events_wactorkeys.createOrReplaceTempView('EventNoGeoKeys')\r\n",
+							"\r\n",
+							"display(df_events_wkeys)"
+						],
+						"outputs": [],
+						"execution_count": null
 					}
 				]
 			},
@@ -1247,7 +1390,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "960194c5-57dd-4b3f-b67e-0423746dc1e7"
+						"spark.autotune.trackingId": "998a61ee-e3d4-4fd0-bd1f-0c1e3ed25b56"
 					}
 				},
 				"metadata": {
@@ -2131,6 +2274,54 @@
 						"execution_count": 101
 					},
 					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"DELETE FROM orders WHERE O_ORDERKEY=1359427\n",
+							"\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"SELECT * FROM orders WHERE O_ORDERKEY=1359427"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
 						"cell_type": "markdown",
 						"metadata": {
 							"nteract": {
@@ -2305,6 +2496,654 @@
 						],
 						"outputs": [],
 						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Delta')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "04 Azure Synapse Analytics"
+				},
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "smallpool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 1,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "true",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "2327bd4f-567f-440e-aebe-ebea8c32dfa2"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+						"name": "smallpool",
+						"type": "Spark",
+						"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.3",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": true
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"from notebookutils import mssparkutils"
+						],
+						"outputs": [],
+						"execution_count": 19
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"customer_path = \"abfss://raw@sqlday2023.dfs.core.windows.net/init/Customer\""
+						],
+						"outputs": [],
+						"execution_count": 43
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"mssparkutils.fs.ls(customer_path)"
+						],
+						"outputs": [],
+						"execution_count": 44
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"db = \"Delta\"\n",
+							" \n",
+							"spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db}\")\n",
+							"spark.sql(f\"USE {db}\")\n",
+							" \n",
+							"spark.sql(\"SET spark.databricks.delta.formatCheck.enabled = false\")\n",
+							"spark.sql(\"SET spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite = true\")"
+						],
+						"outputs": [],
+						"execution_count": 24
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"DROP TABLE IF EXISTS customer;\n",
+							"CREATE TABLE customer(\n",
+							"  C_CUSTKEY INT NOT NULL,\n",
+							"  C_NAME STRING NOT NULL,\n",
+							"  C_ADDRESS STRING,\n",
+							"  C_NATIONKEY INT,\n",
+							"  C_PHONE STRING,\n",
+							"  C_ACCTBAL Double,\n",
+							"  C_MKTSEGMENT STRING,\n",
+							"  C_COMMENT STRING\n",
+							") USING DELTA;"
+						],
+						"outputs": [],
+						"execution_count": 42
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"file_with_nulls = customer_path + '/CustomerNULL.csv'\n",
+							"df_cust = spark.read.format(\"csv\").option(\"header\",True).option(\"inferSchema\",True).load(file_with_nulls)\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 45
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_cust.count()\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 46
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_cust.write.format(\"delta\").mode(\"append\").saveAsTable(\"customer\")\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 47
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"ALTER TABLE customer CHANGE COLUMN C_NAME DROP NOT NULL;\n",
+							"ALTER TABLE customer CHANGE COLUMN C_CUSTKEY DROP NOT NULL;\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 48
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_cust.write.format(\"delta\").mode(\"append\").saveAsTable(\"customer\")"
+						],
+						"outputs": [],
+						"execution_count": 49
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"SELECT * FROM customer limit 10\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 51
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							}
+						},
+						"source": [
+							"%%sql\n",
+							"ALTER TABLE customer CHANGE COLUMN C_NAME SET NOT NULL;\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 52
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"DROP TABLE IF EXISTS customer;\n",
+							"CREATE TABLE customer(\n",
+							"  C_CUSTKEY INT,\n",
+							"  C_NAME STRING ,\n",
+							"  C_ADDRESS STRING,\n",
+							"  C_NATIONKEY INT,\n",
+							"  C_PHONE STRING,\n",
+							"  C_ACCTBAL DOUBLE,\n",
+							"  C_MKTSEGMENT STRING,\n",
+							"  C_COMMENT STRING\n",
+							") USING DELTA;\n",
+							"\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 53
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql \n",
+							"ALTER TABLE customer ADD CONSTRAINT MKTSEGMENT CHECK (C_MKTSEGMENT = 'FURNITURE');"
+						],
+						"outputs": [],
+						"execution_count": 54
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_cust.write.format(\"delta\").mode(\"append\").saveAsTable(\"customer\")\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 55
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"DESCRIBE DETAIL customer;"
+						],
+						"outputs": [],
+						"execution_count": 56
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"ALTER TABLE customer DROP CONSTRAINT MKTSEGMENT;\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 57
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df_cust.write.format(\"delta\").mode(\"append\").saveAsTable(\"customer\")\n",
+							"\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 58
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"#Use the DESCRIBE HISTORY command to get the history of changes in the table. \n",
+							"display(spark.sql(\"DESCRIBE HISTORY customer\"))\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 60
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"UPDATE customer\n",
+							"SET C_NATIONKEY = 666"
+						],
+						"outputs": [],
+						"execution_count": 63
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"#Use the DESCRIBE HISTORY command to get the history of changes in the table. \n",
+							"display(spark.sql(\"DESCRIBE HISTORY customer\"))"
+						],
+						"outputs": [],
+						"execution_count": 64
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"SELECT * FROM customer LIMIT 10"
+						],
+						"outputs": [],
+						"execution_count": 65
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"\n",
+							"SELECT * FROM customer TIMESTAMP AS OF \"2023-05-08 00:18:50.568\" limit 10;\n",
+							"\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 66
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"print(df.count())"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\n",
+							"SELECT *  FROM customer VERSION AS OF  3;\n",
+							"\n",
+							"\n",
+							"\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 68
 					}
 				]
 			},
@@ -3290,7 +4129,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "5371d833-76c0-4daa-9852-62f8081cd6dc"
+						"spark.autotune.trackingId": "f37e13e1-f193-44d1-a191-28ce9561cbf4"
 					}
 				},
 				"metadata": {
@@ -3315,15 +4154,13 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"from notebookutils import mssparkutils\n",
 							"\n",
@@ -5613,299 +6450,6 @@
 			},
 			"dependsOn": [],
 			"location": "westeurope"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Delta')]",
-			"type": "Microsoft.Synapse/workspaces/notebooks",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"folder": {
-					"name": "04 Azure Synapse Analytics"
-				},
-				"nbformat": 4,
-				"nbformat_minor": 2,
-				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 2,
-					"conf": {
-						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9b374eac-af8a-48bb-85fc-757feac5194d"
-					}
-				},
-				"metadata": {
-					"saveOutput": true,
-					"enableDebugMode": false,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "python"
-					},
-					"language_info": {
-						"name": "python"
-					},
-					"sessionKeepAliveTimeout": 30
-				},
-				"cells": [
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"from notebookutils import mssparkutils"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"logFilePath = \"abfss://raw@sqlday2023.dfs.core.windows.net/Logfiles/\""
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"mssparkutils.fs.ls(logFilePath)"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {},
-						"source": [
-							"display(dbutils.fs.ls(\"/mnt/Blob/Customer/parquetFiles\"))\n",
-							"\n",
-							"\n",
-							"\n",
-							"db = \"Delta\"\n",
-							" \n",
-							"spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db}\")\n",
-							"spark.sql(f\"USE {db}\")\n",
-							" \n",
-							"spark.sql(\"SET spark.databricks.delta.formatCheck.enabled = false\")\n",
-							"spark.sql(\"SET spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite = true\")\n",
-							"\n",
-							"\n",
-							"import random\n",
-							"from datetime import datetime\n",
-							"from pyspark.sql.functions import *\n",
-							"from pyspark.sql.types import *\n",
-							"from delta.tables import *\n",
-							"\n",
-							"\n",
-							"Reading Customer parquet files from the mount point and writing to Delta tables.\n",
-							"\n",
-							"\n",
-							"We must use format(\"delta\") to save the data in delta format. \n",
-							"\n",
-							"cust_path = \"/mnt/Blob/Customer/parquetFiles\"\n",
-							" \n",
-							"df_cust = (spark.read.format(\"parquet\").load(cust_path)\n",
-							"      .withColumn(\"timestamp\", current_timestamp()))\n",
-							" \n",
-							"df_cust.write.format(\"delta\").mode(\"overwrite\").save(\"/mnt/Blob/Customer/delta\")\n",
-							"\n",
-							"\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"-- Creating Delta table \n",
-							"DROP TABLE IF EXISTS Customer;\n",
-							"CREATE TABLE Customer\n",
-							"USING delta\n",
-							"location \"/mnt/Blob/Customer/delta\"\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"describe formatted Customer\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"select * from Customer limit 10;\n",
-							"\n",
-							"\n",
-							"%fs ls /mnt/Blob/Orders/parquetFiles/\n",
-							"\n",
-							"\n",
-							"\n",
-							"#Reading Orders parquet files and adding a new column to the dataframe and writing as delta format. Creating partition on year column.\n",
-							"ord_path = \"/mnt/Blob/Orders/parquetFiles\"\n",
-							" \n",
-							"df_ord = (spark.read.format(\"parquet\").load(ord_path)\n",
-							"      .withColumn(\"timestamp\", current_timestamp())\n",
-							"      .withColumn(\"O_OrderDateYear\", year(col(\"O_OrderDate\")))\n",
-							"     )\n",
-							"\n",
-							"# df.printSchema()\n",
-							" \n",
-							"df_ord.write.format(\"delta\").partitionBy(\"O_OrderDateYear\").mode(\"overwrite\").save(\"/mnt/Gen2Source/Orders/delta\")\n",
-							"\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"DROP TABLE IF EXISTS Orders;\n",
-							"CREATE TABLE Orders\n",
-							"USING delta\n",
-							"location \"/mnt/Blob/Orders/delta\"\n",
-							"\n",
-							"\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"describe formatted Orders\n",
-							"\n",
-							"\n",
-							"\n",
-							"SELECT o.O_ORDERPRIORITY,count(o.O_CustKey) As TotalCustomer,Sum(c.C_AcctBal) As CustAcctBal\n",
-							"FROM Orders o \n",
-							"INNER JOIN Customer c on o.O_CustKey=c.C_CustKey \n",
-							"WHERE o.O_OrderDateYear>1997\n",
-							"GROUP BY o.O_OrderPriority\n",
-							"ORDER BY TotalCustomer DESC;\n",
-							"\n",
-							"\n",
-							"\n",
-							"# We can read the Delta files in Python using DeltaTable libraries as shown below \n",
-							"deltaTable = DeltaTable.forPath(spark, \"/mnt/Blob/Orders/delta/\")\n",
-							"\n",
-							"\n",
-							"#Converting to DF and viewing dataframe contents\n",
-							"dt=deltaTable.toDF()\n",
-							"dt.show()\n",
-							"\n",
-							"\n",
-							"Zmiany\n",
-							"\n",
-							"\n",
-							"We can perform DML opreations like insert,delete and updates to the Delta table.\n",
-							"\n",
-							"Zamontuj newParquetFiles + dodaj jakis plik\n",
-							"\n",
-							"\n",
-							"# Reading new data which is in the folder newParquetFiles in the same orders folder in the /nnt/Gen2Source\n",
-							"# We will see how to perform merge to insert anf update the records in the delta table.\n",
-							"\n",
-							"#Reading Orders parquet files and adding a new column to the dataframe and writing as delta format. Creating partition on year column.\n",
-							"new_ord_path = \"/mnt/Blob/Orders/newParquetFiles\"\n",
-							" \n",
-							"df_new_order = (spark.read.format(\"parquet\").load(new_ord_path)\n",
-							"      .withColumn(\"timestamp\", current_timestamp())\n",
-							"      .withColumn(\"O_OrderDateYear\", year(col(\"O_OrderDate\")))\n",
-							"     )\n",
-							"\n",
-							"# df.printSchema()\n",
-							" \n",
-							"df_new_order.write.format(\"delta\").partitionBy(\"O_OrderDateYear\").mode(\"overwrite\").save(\"/mnt/Blob/Orders/dailydata_delta\")\n",
-							"\n",
-							"\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"DROP TABLE IF EXISTS Orders_Daily;\n",
-							"CREATE TABLE Orders_Daily\n",
-							"USING delta\n",
-							"location \"/mnt/Blob/Orders/dailydata_delta\"\n",
-							"\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"-- Merging into Orders from Orders_Daily table. If records matche on OrderKey then perform update eles insert\n",
-							"MERGE INTO Orders AS o\n",
-							"USING Orders_daily AS d\n",
-							"ON o.O_ORDERKEY = D.O_ORDERKEY\n",
-							"WHEN MATCHED THEN \n",
-							"  UPDATE SET *\n",
-							"WHEN NOT MATCHED \n",
-							"  THEN INSERT *;\n",
-							"\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"-- Deleting from Delta table\n",
-							"DELETE FROM Orders WHERE O_ORDERKEY=1359427\n",
-							"\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"SELECT * FROM ORDERS WHERE O_ORDERKEY=1359427\n",
-							"\n",
-							"\n",
-							"\n",
-							"Skopiuj wszystkie orders dop nowego katalopgu \n",
-							"If you have a folder that has a lot of Parquet files, then you can run the following\n",
-							"code to implicitly convert the Parquet files to delta format and you can create\n",
-							"a Delta table pointing to that location. \n",
-							"\n",
-							"%fs ls /mnt/Blob/Orders/ParquetToDelta\n",
-							"\n",
-							"\n",
-							"%sql CONVERT TO DELTA parquet.`dbfs:/mnt/Blob/Orders/ParquetToDelta`\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"CREATE TABLE Orders_Test\n",
-							"USING DELTA\n",
-							"LOCATION \"/mnt/Blob/Orders/ParquetToDelta\"\n",
-							"\n",
-							"\n",
-							"%sql\n",
-							"describe formatted Orders_Test\n",
-							"\n",
-							"\n",
-							"\n",
-							"\n",
-							"Delta table format\n",
-							"\n",
-							" how data is stored in Delta tables and how Delta tables keep track of the history of all DML operations \n",
-							"\n",
-							"Pod customers doladowac parquetFiles1\n",
-							"parquetFiles_Daily1\n",
-							""
-						],
-						"outputs": [],
-						"execution_count": null
-					}
-				]
-			},
-			"dependsOn": []
 		}
 	]
 }
