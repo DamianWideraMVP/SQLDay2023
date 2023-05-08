@@ -4163,7 +4163,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "440f54d0-76fa-4fab-8ab8-916e51bd1530"
+						"spark.autotune.trackingId": "287145da-a4aa-40cc-9513-a3497550e6b8"
 					}
 				},
 				"metadata": {
@@ -4206,7 +4206,7 @@
 							"from datetime import datetime, timedelta"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 12
 					},
 					{
 						"cell_type": "code",
@@ -4229,7 +4229,7 @@
 							"file_extension = 'csv'"
 						],
 						"outputs": [],
-						"execution_count": 16
+						"execution_count": 13
 					},
 					{
 						"cell_type": "code",
@@ -4253,7 +4253,7 @@
 							"    return blob_service_client"
 						],
 						"outputs": [],
-						"execution_count": 17
+						"execution_count": 14
 					},
 					{
 						"cell_type": "code",
@@ -4293,7 +4293,7 @@
 							"        blob_client = container_client.upload_blob(name=file, data=content, overwrite=True, blob_type=\"BlockBlob\")"
 						],
 						"outputs": [],
-						"execution_count": 18
+						"execution_count": 15
 					},
 					{
 						"cell_type": "code",
@@ -4316,7 +4316,7 @@
 							"    "
 						],
 						"outputs": [],
-						"execution_count": 19
+						"execution_count": 16
 					},
 					{
 						"cell_type": "code",
@@ -4343,7 +4343,7 @@
 							"        send_data_to_blob(container_client,dt_str)"
 						],
 						"outputs": [],
-						"execution_count": 20
+						"execution_count": 17
 					},
 					{
 						"cell_type": "code",
@@ -4370,7 +4370,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 21
+						"execution_count": 18
 					},
 					{
 						"cell_type": "code",
@@ -4389,7 +4389,7 @@
 							"bsc = get_blob_service_client_sas(account,sas_token)"
 						],
 						"outputs": [],
-						"execution_count": 23
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -4408,7 +4408,7 @@
 							"#upload_blob_file_for_dates(bsc,unizpped_container,'2023-03-24','2023-03-31')"
 						],
 						"outputs": [],
-						"execution_count": 46
+						"execution_count": 20
 					},
 					{
 						"cell_type": "code",
@@ -4427,7 +4427,7 @@
 							"upload_last_X_days(bsc,unizpped_container,7)"
 						],
 						"outputs": [],
-						"execution_count": 24
+						"execution_count": 21
 					}
 				]
 			},
@@ -5318,7 +5318,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "4d38f5c3-5e48-4942-9d14-077f52df705e"
+						"spark.autotune.trackingId": "f75dee9a-cb0a-4580-ac49-4d4f58fcc6ec"
 					}
 				},
 				"metadata": {
@@ -5343,38 +5343,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"from pyspark.sql import SparkSession\n",
-							"\n",
-							"\n",
-							"spark = SparkSession \\\n",
-							".builder \\\n",
-							".appName(\"SQLDay 2023\") \\\n",
-							".getOrCreate()"
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from dataclasses import dataclass\n",
 							"from notebookutils import mssparkutils\n",
@@ -5461,7 +5438,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "90430787-7f59-4710-879f-853c6585410b"
+						"spark.autotune.trackingId": "ebd71369-a686-4fed-bc02-16405afd84e2"
 					}
 				},
 				"metadata": {
@@ -5486,36 +5463,12 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							"from pyspark.sql import SparkSession\n",
-							"\n",
-							"\n",
-							"spark = SparkSession \\\n",
-							".builder \\\n",
-							".appName(\"SQLDay 2023\") \\\n",
-							".getOrCreate()"
-						],
-						"outputs": [],
-						"execution_count": 3
-					},
 					{
 						"cell_type": "code",
 						"metadata": {
