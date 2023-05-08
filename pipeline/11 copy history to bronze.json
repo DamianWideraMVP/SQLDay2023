@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy GDELT to Silver",
+				"name": "Copy GDELT to Bronze",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -603,7 +603,7 @@
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "Copy GDELT to Silver",
+						"activity": "Copy GDELT to Bronze",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -637,6 +637,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
