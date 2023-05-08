@@ -6,17 +6,21 @@
 		},
 		"nbformat": 4,
 		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "smallpool",
+			"type": "BigDataPoolReference"
+		},
 		"sessionProperties": {
 			"driverMemory": "28g",
 			"driverCores": 4,
 			"executorMemory": "28g",
 			"executorCores": 4,
-			"numExecutors": 2,
+			"numExecutors": 1,
 			"conf": {
-				"spark.dynamicAllocation.enabled": "false",
-				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "c07249e4-1172-4833-8492-9eb9aac76d6d"
+				"spark.autotune.trackingId": "69aa64e5-54df-4e89-a154-5406fa070924"
 			}
 		},
 		"metadata": {
@@ -24,10 +28,25 @@
 			"enableDebugMode": false,
 			"kernelspec": {
 				"name": "synapse_pyspark",
-				"display_name": "python"
+				"display_name": "Synapse PySpark"
 			},
 			"language_info": {
 				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+				"name": "smallpool",
+				"type": "Spark",
+				"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": true
 			},
 			"sessionKeepAliveTimeout": 30
 		},
@@ -48,7 +67,7 @@
 				"source": [
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": null
+				"execution_count": 19
 			},
 			{
 				"cell_type": "code",
@@ -64,9 +83,9 @@
 					}
 				},
 				"source": [
-					"logFilePath = \"abfss://raw@sqlday2023.dfs.core.windows.net/Logfiles/\""
+					"customer_path = \"abfss://raw@sqlday2023.dfs.core.windows.net/init/Customer/parquetFiles\""
 				],
-				"execution_count": null
+				"execution_count": 22
 			},
 			{
 				"cell_type": "code",
@@ -82,69 +101,186 @@
 					}
 				},
 				"source": [
-					"mssparkutils.fs.ls(logFilePath)"
+					"mssparkutils.fs.ls(customer_path)"
 				],
-				"execution_count": null
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
 				"source": [
-					"display(dbutils.fs.ls(\"/mnt/Blob/Customer/parquetFiles\"))\n",
-					"\n",
-					"\n",
-					"\n",
 					"db = \"Delta\"\n",
 					" \n",
 					"spark.sql(f\"CREATE DATABASE IF NOT EXISTS {db}\")\n",
 					"spark.sql(f\"USE {db}\")\n",
 					" \n",
 					"spark.sql(\"SET spark.databricks.delta.formatCheck.enabled = false\")\n",
-					"spark.sql(\"SET spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite = true\")\n",
-					"\n",
-					"\n",
+					"spark.sql(\"SET spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite = true\")"
+				],
+				"execution_count": 24
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
 					"import random\n",
 					"from datetime import datetime\n",
 					"from pyspark.sql.functions import *\n",
 					"from pyspark.sql.types import *\n",
 					"from delta.tables import *\n",
+					""
+				],
+				"execution_count": 25
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_cust = (spark.read.format(\"parquet\").load(customer_path).withColumn(\"timestamp\", current_timestamp()))\n",
 					"\n",
-					"\n",
-					"Reading Customer parquet files from the mount point and writing to Delta tables.\n",
-					"\n",
-					"\n",
-					"We must use format(\"delta\") to save the data in delta format. \n",
-					"\n",
-					"cust_path = \"/mnt/Blob/Customer/parquetFiles\"\n",
+					""
+				],
+				"execution_count": 26
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"customer_path_delta = customer_path +'/delta'\n",
 					" \n",
-					"df_cust = (spark.read.format(\"parquet\").load(cust_path)\n",
-					"      .withColumn(\"timestamp\", current_timestamp()))\n",
-					" \n",
-					"df_cust.write.format(\"delta\").mode(\"overwrite\").save(\"/mnt/Blob/Customer/delta\")\n",
-					"\n",
-					"\n",
-					"\n",
-					"\n",
-					"%sql\n",
-					"-- Creating Delta table \n",
-					"DROP TABLE IF EXISTS Customer;\n",
-					"CREATE TABLE Customer\n",
-					"USING delta\n",
-					"location \"/mnt/Blob/Customer/delta\"\n",
-					"\n",
-					"\n",
-					"%sql\n",
-					"describe formatted Customer\n",
-					"\n",
-					"\n",
-					"%sql\n",
-					"select * from Customer limit 10;\n",
-					"\n",
-					"\n",
-					"%fs ls /mnt/Blob/Orders/parquetFiles/\n",
-					"\n",
-					"\n",
-					"\n",
-					"#Reading Orders parquet files and adding a new column to the dataframe and writing as delta format. Creating partition on year column.\n",
+					"df_cust.write.format(\"delta\").mode(\"overwrite\").save(customer_path_delta)"
+				],
+				"execution_count": 28
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": false
+				},
+				"source": [
+					"spark.sql(f\"DROP TABLE IF EXISTS Customer; \")\n",
+					""
+				],
+				"execution_count": 33
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"spark.sql(f\"CREATE TABLE Customer \\\n",
+					"USING delta \\\n",
+					"location '{customer_path_delta}'\")"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"describe formatted Customer"
+				],
+				"execution_count": 36
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"select * from Customer limit 10;"
+				],
+				"execution_count": 37
+			},
+			{
+				"cell_type": "code",
+				"source": [
 					"ord_path = \"/mnt/Blob/Orders/parquetFiles\"\n",
 					" \n",
 					"df_ord = (spark.read.format(\"parquet\").load(ord_path)\n",

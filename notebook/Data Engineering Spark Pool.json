@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "960194c5-57dd-4b3f-b67e-0423746dc1e7"
+				"spark.autotune.trackingId": "998a61ee-e3d4-4fd0-bd1f-0c1e3ed25b56"
 			}
 		},
 		"metadata": {
@@ -864,6 +864,52 @@
 					"_drop_column(\"orders\",\"O_ORDERPRIORITY\")"
 				],
 				"execution_count": 101
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"DELETE FROM orders WHERE O_ORDERKEY=1359427\n",
+					"\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "sparksql"
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"SELECT * FROM orders WHERE O_ORDERKEY=1359427"
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
