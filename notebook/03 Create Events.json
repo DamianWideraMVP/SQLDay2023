@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "fce5985e-651b-4b28-95bd-5da96803b717"
+				"spark.autotune.trackingId": "5797b877-8f0c-4775-8302-af5a2cc99217"
 			}
 		},
 		"metadata": {
@@ -59,7 +59,7 @@
 					"from pyspark.sql.functions import monotonically_increasing_id, col, regexp_replace, upper, trim\r\n",
 					"from delta.tables import DeltaTable"
 				],
-				"execution_count": 6
+				"execution_count": 42
 			},
 			{
 				"cell_type": "code",
@@ -236,6 +236,192 @@
 					"display(df_event5.limit(10))"
 				],
 				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"db = \"gdeltdb\""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _drop_gdelt_database(db: str):\r\n",
+					"    str = f\"DROP DATABASE IF EXISTS {db} CASCADE\"\r\n",
+					"    spark.sql(str)\r\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"_drop_gdelt_database(db)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _create_gdelt_database(db: str):\r\n",
+					"    _drop_gdelt_database(db)\r\n",
+					"\r\n",
+					"    str = f\"CREATE DATABASE IF NOT EXISTS {db}\"\r\n",
+					"    spark.sql(str)\r\n",
+					"\r\n",
+					"    str = f\"USE {db}\"\r\n",
+					"    spark.sql(str)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"_create_gdelt_database(db)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"df_eventnokeyes.write.format(\"delta\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(dst_location)\r\n",
+					"display(df_eventnokeyes.limit(10), True)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _drop_table (folder: str):\r\n",
+					"    \r\n",
+					"    str = f\"DROP TABLE IF EXISTS {folder}; \"\r\n",
+					"    spark.sql(str)\r\n",
+					"    "
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _create_table (folder: str, path_to_table:str):\r\n",
+					"    \r\n",
+					"    _drop_table(folder)\r\n",
+					"    \r\n",
+					"    str = f\"CREATE TABLE {folder} \\\r\n",
+					"    USING delta \\\r\n",
+					"    location '{path_to_table}'\"\r\n",
+					"\r\n",
+					"    spark.sql(str)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"_create_table (\"eventnokeyes\", dst_location)\r\n",
+					""
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
