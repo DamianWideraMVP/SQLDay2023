@@ -1,0 +1,218 @@
+{
+	"name": "02 Create Geo inc",
+	"properties": {
+		"folder": {
+			"name": "02 Load to Delta"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "smallpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "cd8bbb54-5579-4248-a4fe-bb49c47cda14"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+				"name": "smallpool",
+				"type": "Spark",
+				"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": true
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import pandas as pd\r\n",
+					"\r\n",
+					"from pyspark.sql.functions import monotonically_increasing_id, col, regexp_replace\r\n",
+					"from delta.tables import DeltaTable"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/2023/05/gdelt_events.parquet'\r\n",
+					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geoinc'"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df_all_events = spark.read.parquet(src_location)\r\n",
+					"\r\n",
+					"geo_columns1 = ['Actor1Geo_Type'\r\n",
+					",'Actor1Geo_Fullname'\r\n",
+					",'Actor1Geo_CountryCode'\r\n",
+					",'Actor1Geo_ADM1Code'\r\n",
+					",'Actor1Geo_Lat'\r\n",
+					",'Actor1Geo_Long'\r\n",
+					",'Actor1Geo_FeatureID']\r\n",
+					"geo_columns2 = ['Actor2Geo_Type'\r\n",
+					",'Actor2Geo_Fullname'\r\n",
+					",'Actor2Geo_CountryCode'\r\n",
+					",'Actor2Geo_ADM1Code'\r\n",
+					",'Actor2Geo_Lat'\r\n",
+					",'Actor2Geo_Long'\r\n",
+					",'Actor2Geo_FeatureID']\r\n",
+					"geo_columns3 = ['ActionGeo_Type'\r\n",
+					",'ActionGeo_Fullname'\r\n",
+					",'ActionGeo_CountryCode'\r\n",
+					",'ActionGeo_ADM1Code'\r\n",
+					",'ActionGeo_Lat'\r\n",
+					",'ActionGeo_Long'\r\n",
+					",'ActionGeo_FeatureID']\r\n",
+					"\r\n",
+					"df_geo1 = df_all_events.select(geo_columns1)\r\n",
+					"df_geo2 = df_all_events.select(geo_columns2)\r\n",
+					"df_geo3 = df_all_events.select(geo_columns3)\r\n",
+					"\r\n",
+					"df_geo1 = df_geo1.toDF('Geo_Type'\r\n",
+					",'Geo_Fullname'\r\n",
+					",'Geo_CountryCode'\r\n",
+					",'Geo_ADM1Code'\r\n",
+					",'Geo_Lat'\r\n",
+					",'Geo_Long'\r\n",
+					",'Geo_FeatureID')\r\n",
+					"df_geo2 = df_geo2.toDF('Geo_Type'\r\n",
+					",'Geo_Fullname'\r\n",
+					",'Geo_CountryCode'\r\n",
+					",'Geo_ADM1Code'\r\n",
+					",'Geo_Lat'\r\n",
+					",'Geo_Long'\r\n",
+					",'Geo_FeatureID')\r\n",
+					"df_geo3 = df_geo3.toDF('Geo_Type'\r\n",
+					",'Geo_Fullname'\r\n",
+					",'Geo_CountryCode'\r\n",
+					",'Geo_ADM1Code'\r\n",
+					",'Geo_Lat'\r\n",
+					",'Geo_Long'\r\n",
+					",'Geo_FeatureID')\r\n",
+					"\r\n",
+					"\r\n",
+					"df_geo_all = df_geo1.union(df_geo2).union(df_geo3)\r\n",
+					"df_geo_all = df_geo_all.withColumn('Geo_Lat', regexp_replace(col('Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Geo_Long', regexp_replace(col('Geo_Long'), '[^0-9\\\\-.]', ''))\r\n",
+					"df_geo = df_geo_all.dropDuplicates(['Geo_ADM1Code'\r\n",
+					",'Geo_Lat'\r\n",
+					",'Geo_Long'\r\n",
+					",'Geo_FeatureID'])\r\n",
+					"\r\n",
+					"display(df_geo.limit(10))"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"## full reload\r\n",
+					"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
+					"delta_table.delete()\r\n",
+					"delta_table.vacuum()"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df_geo_wkey = df_geo.withColumn('GeoID', monotonically_increasing_id())\r\n",
+					"df_geo_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
+				],
+				"execution_count": 5
+			}
+		]
+	}
+}

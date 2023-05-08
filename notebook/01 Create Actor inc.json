@@ -1,0 +1,291 @@
+{
+	"name": "01 Create Actor inc",
+	"properties": {
+		"folder": {
+			"name": "02 Load to Delta"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "smallpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1,
+			"runAsWorkspaceSystemIdentity": false,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "b30bda5f-da21-44c4-8f07-7c303d48fd1b"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+				"name": "smallpool",
+				"type": "Spark",
+				"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": true
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"import pandas as pd\r\n",
+					"\r\n",
+					"from pyspark.sql.functions import monotonically_increasing_id, col, upper, trim\r\n",
+					"from delta.tables import DeltaTable"
+				],
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/2023/05/gdelt_events.parquet'\r\n",
+					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actorinc'"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df_all_events = spark.read.parquet(src_location)\r\n",
+					"\r\n",
+					"actor_columns1 = ['Actor1Code'\r\n",
+					",'Actor1Name'\r\n",
+					",'Actor1CountryCode'\r\n",
+					",'Actor1KnownGroupCode'\r\n",
+					",'Actor1EthnicCode'\r\n",
+					",'Actor1Religion1Code'\r\n",
+					",'Actor1Religion2Code'\r\n",
+					",'Actor1Type1Code'\r\n",
+					",'Actor1Type2Code'\r\n",
+					",'Actor1Type3Code']\r\n",
+					"actor_columns2 = ['Actor2Code'\r\n",
+					",'Actor2Name'\r\n",
+					",'Actor2CountryCode'\r\n",
+					",'Actor2KnownGroupCode'\r\n",
+					",'Actor2EthnicCode'\r\n",
+					",'Actor2Religion1Code'\r\n",
+					",'Actor2Religion2Code'\r\n",
+					",'Actor2Type1Code'\r\n",
+					",'Actor2Type2Code'\r\n",
+					",'Actor2Type3Code']\r\n",
+					"\r\n",
+					"df_actor1 = df_all_events.select(actor_columns1)\r\n",
+					"df_actor2 = df_all_events.select(actor_columns2)\r\n",
+					"\r\n",
+					"df_actor1 = df_actor1.toDF('ActorCode'\r\n",
+					",'ActorName'\r\n",
+					",'ActorCountryCode'\r\n",
+					",'ActorKnownGroupCode'\r\n",
+					",'ActorEthnicCode'\r\n",
+					",'ActorReligion1Code'\r\n",
+					",'ActorReligion2Code'\r\n",
+					",'ActorType1Code'\r\n",
+					",'ActorType2Code'\r\n",
+					",'ActorType3Code')\r\n",
+					"df_actor2 = df_actor2.toDF('ActorCode'\r\n",
+					",'ActorName'\r\n",
+					",'ActorCountryCode'\r\n",
+					",'ActorKnownGroupCode'\r\n",
+					",'ActorEthnicCode'\r\n",
+					",'ActorReligion1Code'\r\n",
+					",'ActorReligion2Code'\r\n",
+					",'ActorType1Code'\r\n",
+					",'ActorType2Code'\r\n",
+					",'ActorType3Code')\r\n",
+					"\r\n",
+					"df_actor_all = df_actor1.union(df_actor2).dropDuplicates(['ActorCode'\r\n",
+					",'ActorName'])\r\n",
+					"df_actor = df_actor_all.withColumn('ActorCode', upper(trim(col('ActorCode')))).withColumn('ActorName', trim(col('ActorName')))\r\n",
+					"\r\n",
+					"display(df_actor.limit(10))"
+				],
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"## full reload\r\n",
+					"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
+					"delta_table.delete()\r\n",
+					"delta_table.vacuum()"
+				],
+				"execution_count": 4
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df_actor_wkey = df_actor.withColumn('ActorID', monotonically_increasing_id())\r\n",
+					"df_actor_wkey.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"\"\"\" df_events = df_events.toDF('GlobalEventID'\r\n",
+					",'Day'\r\n",
+					",'MonthYear'\r\n",
+					",'Year'\r\n",
+					",'FractionDate'\r\n",
+					",'Actor1Code'\r\n",
+					",'Actor1Name'\r\n",
+					",'Actor1CountryCode'\r\n",
+					",'Actor1KnownGroupCode'\r\n",
+					",'Actor1EthnicCode'\r\n",
+					",'Actor1Religion1Code'\r\n",
+					",'Actor1Religion2Code'\r\n",
+					",'Actor1Type1Code'\r\n",
+					",'Actor1Type2Code'\r\n",
+					",'Actor1Type3Code'\r\n",
+					",'Actor2Code'\r\n",
+					",'Actor2Name'\r\n",
+					",'Actor2CountryCode'\r\n",
+					",'Actor2KnownGroupCode'\r\n",
+					",'Actor2EthnicCode'\r\n",
+					",'Actor2Religion1Code'\r\n",
+					",'Actor2Religion2Code'\r\n",
+					",'Actor2Type1Code'\r\n",
+					",'Actor2Type2Code'\r\n",
+					",'Actor2Type3Code'\r\n",
+					",'IsRootEvent'\r\n",
+					",'EventCode'\r\n",
+					",'EventBaseCode'\r\n",
+					",'EventRootCode'\r\n",
+					",'QuadClass'\r\n",
+					",'GoldsteinScale'\r\n",
+					",'NumMentions'\r\n",
+					",'NumSources'\r\n",
+					",'NumArticles'\r\n",
+					",'AvgTone'\r\n",
+					",'Actor1Geo_Type'\r\n",
+					",'Actor1Geo_Fullname'\r\n",
+					",'Actor1Geo_CountryCode'\r\n",
+					",'Actor1Geo_ADM1Code'\r\n",
+					",'Actor1GeoID'\r\n",
+					",'Actor1Geo_Long'\r\n",
+					",'Actor1Geo_FeatureID'\r\n",
+					",'Actor2Geo_Type'\r\n",
+					",'Actor2Geo_Fullname'\r\n",
+					",'Actor2Geo_CountryCode'\r\n",
+					",'Actor2Geo_ADM1Code'\r\n",
+					",'Actor2Geo_Lat'\r\n",
+					",'Actor2Geo_Long'\r\n",
+					",'Actor2Geo_FeatureID'\r\n",
+					",'ActionGeo_Type'\r\n",
+					",'ActionGeo_Fullname'\r\n",
+					",'ActionGeo_CountryCode'\r\n",
+					",'ActionGeo_ADM1Code'\r\n",
+					",'ActionGeo_Lat'\r\n",
+					",'ActionGeo_Long'\r\n",
+					",'ActionGeo_FeatureID'\r\n",
+					",'DATEADDED'\r\n",
+					",'SOURCEURL') \"\"\"\r\n",
+					""
+				],
+				"execution_count": 6
+			}
+		]
+	}
+}
