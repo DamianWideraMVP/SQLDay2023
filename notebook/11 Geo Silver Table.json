@@ -1,0 +1,214 @@
+{
+	"name": "11 Geo Silver Table",
+	"properties": {
+		"folder": {
+			"name": "02 Load to Delta"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "smallpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 1,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "true",
+				"spark.dynamicAllocation.minExecutors": "1",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "776ed018-bb15-4431-b836-44788e4e3d5d"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/f173fd35-dfcd-4ef5-902e-a0345aa77c84/resourceGroups/SQLDay2023/providers/Microsoft.Synapse/workspaces/sqlday2023synapse/bigDataPools/smallpool",
+				"name": "smallpool",
+				"type": "Spark",
+				"endpoint": "https://sqlday2023synapse.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/smallpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.3",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": true
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import pandas as pd\r\n",
+					"\r\n",
+					"from pyspark.sql.functions import monotonically_increasing_id, col, upper, trim\r\n",
+					"from delta.tables import DeltaTable"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'\r\n",
+					"##dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdelt2/actor'"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"db = \"gdeltdb\""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _create_gdelt_database(db: str):\r\n",
+					"    str = f\"CREATE DATABASE IF NOT EXISTS {db}\"\r\n",
+					"    spark.sql(str)\r\n",
+					"\r\n",
+					"    str = f\"USE {db}\"\r\n",
+					"    spark.sql(str)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"_create_gdelt_database(db)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _drop_table (folder: str):\r\n",
+					"    \r\n",
+					"    str = f\"DROP TABLE IF EXISTS {folder}; \"\r\n",
+					"    spark.sql(str)\r\n",
+					"    "
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"def _create_table (folder: str, path_to_table:str):\r\n",
+					"    \r\n",
+					"    _drop_table(folder)\r\n",
+					"    \r\n",
+					"    str = f\"CREATE TABLE {folder} \\\r\n",
+					"    USING delta \\\r\n",
+					"    location '{path_to_table}'\"\r\n",
+					"\r\n",
+					"    spark.sql(str)"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"_create_table (\"geo\", dst_location)"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}
