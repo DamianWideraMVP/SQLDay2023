@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "173e7eeb-c9a8-40c6-b487-71d742af5520"
+				"spark.autotune.trackingId": "9961a63f-68df-400a-ad85-c0fc2e66f9f1"
 			}
 		},
 		"metadata": {
@@ -81,11 +81,14 @@
 					"%%pyspark\r\n",
 					"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/20*/*/gdelt_events.parquet'\r\n",
 					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/event'\r\n",
+					"dst_eventa_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventa'\r\n",
+					"dst_eventag_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventag'\r\n",
+					"\r\n",
 					"actor_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'\r\n",
 					"geo_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'\r\n",
 					""
 				],
-				"execution_count": 7
+				"execution_count": 32
 			},
 			{
 				"cell_type": "code",
@@ -254,7 +257,7 @@
 					"df_actor.createOrReplaceTempView('Actor')\r\n",
 					"df_geo.createOrReplaceTempView('Geo')"
 				],
-				"execution_count": 20
+				"execution_count": 23
 			},
 			{
 				"cell_type": "code",
@@ -274,9 +277,9 @@
 				},
 				"source": [
 					"%%pyspark\r\n",
-					"df_event5.createOrReplaceTempView('Geo')"
+					"df_event5.createOrReplaceTempView('EventNoKeys')"
 				],
-				"execution_count": 21
+				"execution_count": 30
 			},
 			{
 				"cell_type": "code",
@@ -298,10 +301,148 @@
 				"source": [
 					"%%sql\r\n",
 					"SELECT *\r\n",
-					"FROM Actor\r\n",
+					"FROM EventNoKeys\r\n",
 					"LIMIT 10"
 				],
-				"execution_count": 22
+				"execution_count": 31
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df_events_wactorkeys = spark.sql(\"\"\"SELECT GlobalEventID\r\n",
+					"        ,Day\r\n",
+					"        ,a1.ActorID AS Actor1ID\r\n",
+					"        ,Actor2Code\r\n",
+					"        ,Actor2Name\r\n",
+					"        ,IsRootEvent\r\n",
+					"        ,EventCode\r\n",
+					"        ,EventBaseCode\r\n",
+					"        ,EventRootCode\r\n",
+					"        ,QuadClass\r\n",
+					"        ,GoldsteinScale\r\n",
+					"        ,NumMentions\r\n",
+					"        ,NumSources\r\n",
+					"        ,NumArticles\r\n",
+					"        ,AvgTone\r\n",
+					"        ,Actor1Geo_ADM1Code\r\n",
+					"        ,Actor1Geo_Lat\r\n",
+					"        ,Actor1Geo_Long\r\n",
+					"        ,Actor1Geo_FeatureID\r\n",
+					"        ,Actor2Geo_ADM1Code\r\n",
+					"        ,Actor2Geo_Lat\r\n",
+					"        ,Actor2Geo_Long\r\n",
+					"        ,Actor2Geo_FeatureID\r\n",
+					"        ,ActionGeo_ADM1Code\r\n",
+					"        ,ActionGeo_Lat\r\n",
+					"        ,ActionGeo_Long\r\n",
+					"        ,ActionGeo_FeatureID\r\n",
+					"        ,DATEADDED\r\n",
+					"        ,SOURCEURL\r\n",
+					"    FROM EventNoKeys e\r\n",
+					"    LEFT JOIN Actor a1\r\n",
+					"        ON e.Actor1Code = a1.ActorCode\r\n",
+					"        AND e.Actor1Name = a1.ActorName\r\n",
+					"    LIMIT 10\r\n",
+					"\"\"\")\r\n",
+					"\r\n",
+					"df_events_wactorkeys.createOrReplaceTempView('EventNoGeoKeys1')\r\n",
+					"\r\n",
+					"display(df_events_wkeys)"
+				],
+				"execution_count": 34
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df_events_wactorkeys = spark.sql(\"\"\"SELECT GlobalEventID\r\n",
+					"        ,Day\r\n",
+					"        ,a1.ActorID AS Actor1ID\r\n",
+					"        ,a2.ActorID AS Actor2ID\r\n",
+					"        ,IsRootEvent\r\n",
+					"        ,EventCode\r\n",
+					"        ,EventBaseCode\r\n",
+					"        ,EventRootCode\r\n",
+					"        ,QuadClass\r\n",
+					"        ,GoldsteinScale\r\n",
+					"        ,NumMentions\r\n",
+					"        ,NumSources\r\n",
+					"        ,NumArticles\r\n",
+					"        ,AvgTone\r\n",
+					"        ,Actor1Geo_ADM1Code\r\n",
+					"        ,Actor1Geo_Lat\r\n",
+					"        ,Actor1Geo_Long\r\n",
+					"        ,Actor1Geo_FeatureID\r\n",
+					"        ,Actor2Geo_ADM1Code\r\n",
+					"        ,Actor2Geo_Lat\r\n",
+					"        ,Actor2Geo_Long\r\n",
+					"        ,Actor2Geo_FeatureID\r\n",
+					"        ,ActionGeo_ADM1Code\r\n",
+					"        ,ActionGeo_Lat\r\n",
+					"        ,ActionGeo_Long\r\n",
+					"        ,ActionGeo_FeatureID\r\n",
+					"        ,DATEADDED\r\n",
+					"        ,SOURCEURL\r\n",
+					"    FROM EventNoKeys e\r\n",
+					"    LEFT JOIN Actor a1\r\n",
+					"        ON e.Actor1Code = a1.ActorCode\r\n",
+					"        AND e.Actor1Name = a1.ActorName\r\n",
+					"    LEFT JOIN Actor a2\r\n",
+					"        ON e.Actor2Code = a2.ActorCode\r\n",
+					"        AND e.Actor2Name = a2.ActorName\r\n",
+					"    LEFT JOIN Geo ga1\r\n",
+					"        ON e.Actor1Geo_Lat = ga1.Geo_Lat\r\n",
+					"        AND e.Actor1Geo_Long = ga1.Geo_Long\r\n",
+					"        AND e.Actor1Geo_ADM1Code = ga1.Geo_ADM1Code\r\n",
+					"        AND e.Actor1Geo_FeatureID = ga1.Geo_FeatureID\r\n",
+					"    LEFT JOIN Geo ga2\r\n",
+					"        ON e.Actor2Geo_Lat = ga2.Geo_Lat\r\n",
+					"        AND e.Actor2Geo_Long = ga2.Geo_Long\r\n",
+					"        AND e.Actor2Geo_ADM1Code = ga2.Geo_ADM1Code\r\n",
+					"        AND e.Actor2Geo_FeatureID = ga2.Geo_FeatureID\r\n",
+					"    LEFT JOIN Geo ga\r\n",
+					"        ON e.ActionGeo_Lat = ga.Geo_Lat\r\n",
+					"        AND e.ActionGeo_Long = ga.Geo_Long\r\n",
+					"        AND e.ActionGeo_ADM1Code = ga.Geo_ADM1Code\r\n",
+					"        AND e.ActionGeo_FeatureID = ga.Geo_FeatureID\r\n",
+					"    LIMIT 10\r\n",
+					"\"\"\")\r\n",
+					"\r\n",
+					"df_events_wactorkeys.createOrReplaceTempView('EventNoGeoKeys')\r\n",
+					"\r\n",
+					"display(df_events_wkeys)"
+				],
+				"execution_count": null
 			}
 		]
 	}
