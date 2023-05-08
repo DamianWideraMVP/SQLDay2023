@@ -927,7 +927,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9961a63f-68df-400a-ad85-c0fc2e66f9f1"
+						"spark.autotune.trackingId": "46024c54-fd22-44b5-bb72-42fa7c037f30"
 					}
 				},
 				"metadata": {
@@ -966,7 +966,7 @@
 							"from delta.tables import DeltaTable"
 						],
 						"outputs": [],
-						"execution_count": 6
+						"execution_count": 43
 					},
 					{
 						"cell_type": "code",
@@ -987,16 +987,17 @@
 						"source": [
 							"%%pyspark\r\n",
 							"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/20*/*/gdelt_events.parquet'\r\n",
-							"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/event'\r\n",
-							"dst_eventa_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventa'\r\n",
-							"dst_eventag_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventag'\r\n",
+							"## dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/event'\r\n",
+							"dst_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/eventnokeys'\r\n",
+							"## dst_eventa_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventa'\r\n",
+							"## dst_eventag_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventag'\r\n",
 							"\r\n",
-							"actor_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'\r\n",
-							"geo_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'\r\n",
+							"## actor_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'\r\n",
+							"## geo_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'\r\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": 32
+						"execution_count": 44
 					},
 					{
 						"cell_type": "code",
@@ -1052,7 +1053,7 @@
 							"df_event1 = df_all_events.select(event_columns)"
 						],
 						"outputs": [],
-						"execution_count": 8
+						"execution_count": 45
 					},
 					{
 						"cell_type": "code",
@@ -1075,7 +1076,7 @@
 							"df_event2 = df_event1.withColumn('Actor1Code', upper(trim(col('Actor1Code')))).withColumn('Actor1Name', trim(col('Actor1Name'))).withColumn('Actor2Code', upper(trim(col('Actor2Code')))).withColumn('Actor2Name', trim(col('Actor2Name')))"
 						],
 						"outputs": [],
-						"execution_count": 9
+						"execution_count": 46
 					},
 					{
 						"cell_type": "code",
@@ -1098,7 +1099,7 @@
 							"df_event3 = df_event2.withColumn('Actor1Geo_Lat', regexp_replace(col('Actor1Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Actor1Geo_Long', regexp_replace(col('Actor1Geo_Long'), '[^0-9\\\\-.]', ''))"
 						],
 						"outputs": [],
-						"execution_count": 13
+						"execution_count": 47
 					},
 					{
 						"cell_type": "code",
@@ -1121,7 +1122,7 @@
 							"df_event4 = df_event3.withColumn('Actor2Geo_Lat', regexp_replace(col('Actor2Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Actor2Geo_Long', regexp_replace(col('Actor2Geo_Long'), '[^0-9\\\\-.]', ''))"
 						],
 						"outputs": [],
-						"execution_count": 14
+						"execution_count": 48
 					},
 					{
 						"cell_type": "code",
@@ -1147,7 +1148,275 @@
 							"display(df_event5.limit(10))"
 						],
 						"outputs": [],
-						"execution_count": 15
+						"execution_count": 49
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"db = \"gdeltdb\""
+						],
+						"outputs": [],
+						"execution_count": 50
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _drop_gdelt_database(db: str):\r\n",
+							"    str = f\"DROP DATABASE IF EXISTS {db} CASCADE\"\r\n",
+							"    spark.sql(str)\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 51
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_drop_gdelt_database(db)"
+						],
+						"outputs": [],
+						"execution_count": 52
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _create_gdelt_database(db: str):\r\n",
+							"    _drop_gdelt_database(db)\r\n",
+							"\r\n",
+							"    str = f\"CREATE DATABASE IF NOT EXISTS {db}\"\r\n",
+							"    spark.sql(str)\r\n",
+							"\r\n",
+							"    str = f\"USE {db}\"\r\n",
+							"    spark.sql(str)"
+						],
+						"outputs": [],
+						"execution_count": 53
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_create_gdelt_database(db)"
+						],
+						"outputs": [],
+						"execution_count": 54
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"df_event5.write.format(\"delta\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(dst_location)\r\n",
+							"display(df_event5.limit(10), True)"
+						],
+						"outputs": [],
+						"execution_count": 56
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _drop_table (folder: str):\r\n",
+							"    \r\n",
+							"    str = f\"DROP TABLE IF EXISTS {folder}; \"\r\n",
+							"    spark.sql(str)\r\n",
+							"    "
+						],
+						"outputs": [],
+						"execution_count": 57
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"def _create_table (folder: str, path_to_table:str):\r\n",
+							"    \r\n",
+							"    _drop_table(folder)\r\n",
+							"    \r\n",
+							"    str = f\"CREATE TABLE {folder} \\\r\n",
+							"    USING delta \\\r\n",
+							"    location '{path_to_table}'\"\r\n",
+							"\r\n",
+							"    spark.sql(str)"
+						],
+						"outputs": [],
+						"execution_count": 58
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"_create_table (\"eventnokeyes\", dst_location)\r\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 59
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"## df_event5.createOrReplaceTempView('EventNoKeysSrc')"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"## full reload\r\n",
+							"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
+							"delta_table.delete()\r\n",
+							"delta_table.vacuum()"
+						],
+						"outputs": [],
+						"execution_count": 40
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
+								"language": "python"
+							}
+						},
+						"source": [
+							"%%pyspark\r\n",
+							"df_event5.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
+						],
+						"outputs": [],
+						"execution_count": 41
 					},
 					{
 						"cell_type": "code",
@@ -1235,6 +1504,65 @@
 								}
 							},
 							"microsoft": {
+								"language": "sparksql"
+							},
+							"collapsed": false
+						},
+						"source": [
+							"%%sql\r\n",
+							"SELECT GlobalEventID\r\n",
+							"        ,Day\r\n",
+							"        ,a1.ActorID AS Actor1ID\r\n",
+							"        ,Actor1Code\r\n",
+							"        ,Actor1Name\r\n",
+							"        ,Actor2Code\r\n",
+							"        ,Actor2Name\r\n",
+							"        ,IsRootEvent\r\n",
+							"        ,EventCode\r\n",
+							"        ,EventBaseCode\r\n",
+							"        ,EventRootCode\r\n",
+							"        ,QuadClass\r\n",
+							"        ,GoldsteinScale\r\n",
+							"        ,NumMentions\r\n",
+							"        ,NumSources\r\n",
+							"        ,NumArticles\r\n",
+							"        ,AvgTone\r\n",
+							"        ,Actor1Geo_ADM1Code\r\n",
+							"        ,Actor1Geo_Lat\r\n",
+							"        ,Actor1Geo_Long\r\n",
+							"        ,Actor1Geo_FeatureID\r\n",
+							"        ,Actor2Geo_ADM1Code\r\n",
+							"        ,Actor2Geo_Lat\r\n",
+							"        ,Actor2Geo_Long\r\n",
+							"        ,Actor2Geo_FeatureID\r\n",
+							"        ,ActionGeo_ADM1Code\r\n",
+							"        ,ActionGeo_Lat\r\n",
+							"        ,ActionGeo_Long\r\n",
+							"        ,ActionGeo_FeatureID\r\n",
+							"        ,DATEADDED\r\n",
+							"        ,SOURCEURL\r\n",
+							"    FROM EventNoKeys e\r\n",
+							"    LEFT JOIN Actor a1\r\n",
+							"        ON e.Actor1Code = a1.ActorCode\r\n",
+							"        AND e.Actor1Name = a1.ActorName\r\n",
+							"    LIMIT 10"
+						],
+						"outputs": [],
+						"execution_count": 36
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"microsoft": {
 								"language": "python"
 							},
 							"collapsed": false
@@ -1277,12 +1605,12 @@
 							"    LIMIT 10\r\n",
 							"\"\"\")\r\n",
 							"\r\n",
-							"df_events_wactorkeys.createOrReplaceTempView('EventNoGeoKeys1')\r\n",
+							"## df_events_wactorkeys.createOrReplaceTempView('EventNoGeoKeys1')\r\n",
 							"\r\n",
-							"display(df_events_wkeys)"
+							"display(df_events_wactorkeys)"
 						],
 						"outputs": [],
-						"execution_count": 34
+						"execution_count": 38
 					},
 					{
 						"cell_type": "code",
@@ -2525,7 +2853,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "2327bd4f-567f-440e-aebe-ebea8c32dfa2"
+						"spark.autotune.trackingId": "c963d38b-e80f-4c05-b296-61dbbf413575"
 					}
 				},
 				"metadata": {
@@ -2550,8 +2878,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -3836,7 +4163,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "fe4e3443-a4b4-44a8-b9ce-de271926764e"
+						"spark.autotune.trackingId": "440f54d0-76fa-4fab-8ab8-916e51bd1530"
 					}
 				},
 				"metadata": {
@@ -3861,13 +4188,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
-					"sessionKeepAliveTimeout": 30
+					"sessionKeepAliveTimeout": 60
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\r\n",
 							"import requests\r\n",
@@ -3893,7 +4222,6 @@
 							}
 						},
 						"source": [
-							"#(bronze)sas_token = f'sp=racwdlmeop&st=2023-05-03T11:20:20Z&se=2023-05-31T19:20:20Z&spr=https&sv=2021-12-02&sr=c&sig=SITj%2FKFPa%2FTLJgawl6TeqABXjTpimz9WcH62TPyxKss%3D'\r\n",
 							"sas_token = f'sp=racwdlmeop&st=2023-05-03T21:02:46Z&se=2023-05-31T05:02:46Z&spr=https&sv=2021-12-02&sr=c&sig=8CY7pN26Rsto5wDJoYUM4RzofvxNaozEwpZWARTqVs0%3D'\r\n",
 							"account = 'https://sqlday2023.blob.core.windows.net'\r\n",
 							"url_base = 'http://data.gdeltproject.org/events/'\r\n",
