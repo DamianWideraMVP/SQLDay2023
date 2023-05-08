@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "aecba653-6436-4706-84b5-8743c052e508"
+				"spark.autotune.trackingId": "11423ae7-6015-4e60-b359-eddfa5c81394"
 			}
 		},
 		"metadata": {
@@ -348,7 +348,8 @@
 						"transient": {
 							"deleting": false
 						}
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"df_event5.write.format(\"delta\").mode(\"overwrite\").option(\"overwriteSchema\", \"true\").save(dst_location)\r\n",
@@ -376,7 +377,7 @@
 					"    spark.sql(str)\r\n",
 					"    "
 				],
-				"execution_count": null
+				"execution_count": 57
 			},
 			{
 				"cell_type": "code",
@@ -402,7 +403,7 @@
 					"\r\n",
 					"    spark.sql(str)"
 				],
-				"execution_count": null
+				"execution_count": 58
 			},
 			{
 				"cell_type": "code",
@@ -421,7 +422,7 @@
 					"_create_table (\"eventnokeyes\", dst_location)\r\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 59
 			},
 			{
 				"cell_type": "code",
