@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "5797b877-8f0c-4775-8302-af5a2cc99217"
+				"spark.autotune.trackingId": "79aad073-410e-41a0-b8c4-d170033a2a0f"
 			}
 		},
 		"metadata": {
@@ -59,7 +59,7 @@
 					"from pyspark.sql.functions import monotonically_increasing_id, col, regexp_replace, upper, trim\r\n",
 					"from delta.tables import DeltaTable"
 				],
-				"execution_count": 42
+				"execution_count": 43
 			},
 			{
 				"cell_type": "code",
@@ -89,7 +89,7 @@
 					"## geo_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'\r\n",
 					""
 				],
-				"execution_count": 39
+				"execution_count": 44
 			},
 			{
 				"cell_type": "code",
@@ -144,7 +144,7 @@
 					"\r\n",
 					"df_event1 = df_all_events.select(event_columns)"
 				],
-				"execution_count": 8
+				"execution_count": 45
 			},
 			{
 				"cell_type": "code",
@@ -166,7 +166,7 @@
 					"%%pyspark\r\n",
 					"df_event2 = df_event1.withColumn('Actor1Code', upper(trim(col('Actor1Code')))).withColumn('Actor1Name', trim(col('Actor1Name'))).withColumn('Actor2Code', upper(trim(col('Actor2Code')))).withColumn('Actor2Name', trim(col('Actor2Name')))"
 				],
-				"execution_count": 9
+				"execution_count": 46
 			},
 			{
 				"cell_type": "code",
@@ -188,7 +188,7 @@
 					"%%pyspark\r\n",
 					"df_event3 = df_event2.withColumn('Actor1Geo_Lat', regexp_replace(col('Actor1Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Actor1Geo_Long', regexp_replace(col('Actor1Geo_Long'), '[^0-9\\\\-.]', ''))"
 				],
-				"execution_count": 13
+				"execution_count": 47
 			},
 			{
 				"cell_type": "code",
@@ -210,7 +210,7 @@
 					"%%pyspark\r\n",
 					"df_event4 = df_event3.withColumn('Actor2Geo_Lat', regexp_replace(col('Actor2Geo_Lat'), '[^0-9\\\\-.]', '')).withColumn('Actor2Geo_Long', regexp_replace(col('Actor2Geo_Long'), '[^0-9\\\\-.]', ''))"
 				],
-				"execution_count": 14
+				"execution_count": 48
 			},
 			{
 				"cell_type": "code",
@@ -235,7 +235,7 @@
 					"\r\n",
 					"display(df_event5.limit(10))"
 				],
-				"execution_count": 15
+				"execution_count": 49
 			},
 			{
 				"cell_type": "code",
@@ -420,6 +420,28 @@
 				"source": [
 					"_create_table (\"eventnokeyes\", dst_location)\r\n",
 					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df_event5.createOrReplaceTempView('EventNoKeysSrc')"
 				],
 				"execution_count": null
 			},
