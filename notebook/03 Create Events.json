@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "9961a63f-68df-400a-ad85-c0fc2e66f9f1"
+				"spark.autotune.trackingId": "90ea6afc-3391-4e29-ab20-cdadae13b4a9"
 			}
 		},
 		"metadata": {
@@ -80,15 +80,16 @@
 				"source": [
 					"%%pyspark\r\n",
 					"src_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/20*/*/gdelt_events.parquet'\r\n",
-					"dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/event'\r\n",
-					"dst_eventa_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventa'\r\n",
-					"dst_eventag_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventag'\r\n",
+					"## dst_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/event'\r\n",
+					"dst_location = 'abfss://bronze@sqlday2023.dfs.core.windows.net/gdeltevents/eventnokeys'\r\n",
+					"## dst_eventa_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventa'\r\n",
+					"## dst_eventag_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/eventag'\r\n",
 					"\r\n",
-					"actor_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'\r\n",
-					"geo_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'\r\n",
+					"## actor_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/actor'\r\n",
+					"## geo_location = 'abfss://silver@sqlday2023.dfs.core.windows.net/gdeltevents/geo'\r\n",
 					""
 				],
-				"execution_count": 32
+				"execution_count": 39
 			},
 			{
 				"cell_type": "code",
@@ -247,6 +248,53 @@
 						"transient": {
 							"deleting": false
 						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"## full reload\r\n",
+					"delta_table = DeltaTable.forPath(spark, dst_location)\r\n",
+					"delta_table.delete()\r\n",
+					"delta_table.vacuum()"
+				],
+				"execution_count": 40
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
+						"language": "python"
+					}
+				},
+				"source": [
+					"%%pyspark\r\n",
+					"df_event5.write.option(\"path\", dst_location).format(\"delta\").mode('overwrite').save()"
+				],
+				"execution_count": 41
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
 					}
 				},
 				"source": [
@@ -319,6 +367,64 @@
 						}
 					},
 					"microsoft": {
+						"language": "sparksql"
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\r\n",
+					"SELECT GlobalEventID\r\n",
+					"        ,Day\r\n",
+					"        ,a1.ActorID AS Actor1ID\r\n",
+					"        ,Actor1Code\r\n",
+					"        ,Actor1Name\r\n",
+					"        ,Actor2Code\r\n",
+					"        ,Actor2Name\r\n",
+					"        ,IsRootEvent\r\n",
+					"        ,EventCode\r\n",
+					"        ,EventBaseCode\r\n",
+					"        ,EventRootCode\r\n",
+					"        ,QuadClass\r\n",
+					"        ,GoldsteinScale\r\n",
+					"        ,NumMentions\r\n",
+					"        ,NumSources\r\n",
+					"        ,NumArticles\r\n",
+					"        ,AvgTone\r\n",
+					"        ,Actor1Geo_ADM1Code\r\n",
+					"        ,Actor1Geo_Lat\r\n",
+					"        ,Actor1Geo_Long\r\n",
+					"        ,Actor1Geo_FeatureID\r\n",
+					"        ,Actor2Geo_ADM1Code\r\n",
+					"        ,Actor2Geo_Lat\r\n",
+					"        ,Actor2Geo_Long\r\n",
+					"        ,Actor2Geo_FeatureID\r\n",
+					"        ,ActionGeo_ADM1Code\r\n",
+					"        ,ActionGeo_Lat\r\n",
+					"        ,ActionGeo_Long\r\n",
+					"        ,ActionGeo_FeatureID\r\n",
+					"        ,DATEADDED\r\n",
+					"        ,SOURCEURL\r\n",
+					"    FROM EventNoKeys e\r\n",
+					"    LEFT JOIN Actor a1\r\n",
+					"        ON e.Actor1Code = a1.ActorCode\r\n",
+					"        AND e.Actor1Name = a1.ActorName\r\n",
+					"    LIMIT 10"
+				],
+				"execution_count": 36
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"microsoft": {
 						"language": "python"
 					},
 					"collapsed": false
@@ -361,11 +467,11 @@
 					"    LIMIT 10\r\n",
 					"\"\"\")\r\n",
 					"\r\n",
-					"df_events_wactorkeys.createOrReplaceTempView('EventNoGeoKeys1')\r\n",
+					"## df_events_wactorkeys.createOrReplaceTempView('EventNoGeoKeys1')\r\n",
 					"\r\n",
-					"display(df_events_wkeys)"
+					"display(df_events_wactorkeys)"
 				],
-				"execution_count": 34
+				"execution_count": 38
 			},
 			{
 				"cell_type": "code",
