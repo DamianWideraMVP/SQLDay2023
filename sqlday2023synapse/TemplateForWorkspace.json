@@ -5630,7 +5630,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "506ec9c5-32b3-4899-8791-f9898e0ac25a"
+						"spark.autotune.trackingId": "17db9744-a7f5-4363-b360-288253060d91"
 					}
 				},
 				"metadata": {
@@ -5670,7 +5670,7 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 1
+						"execution_count": 3
 					},
 					{
 						"cell_type": "code",
@@ -5689,7 +5689,7 @@
 							"%run \"Sesja/configuration/configuration_paramaters\""
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -5710,7 +5710,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
@@ -5734,7 +5734,7 @@
 							"    return account_for_abfss, path_to_blob"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 6
 					},
 					{
 						"cell_type": "code",
@@ -5754,7 +5754,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 7
 					},
 					{
 						"cell_type": "code",
@@ -5774,7 +5774,7 @@
 							"account_for_abfss,  path_to_customer = _prepare_paths_for_data_processing(account, bronze_container, \"customer\")"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 8
 					},
 					{
 						"cell_type": "markdown",
@@ -5806,7 +5806,7 @@
 							"df_ord_sch = spark.read.format(\"parquet\").option(\"header\",True).load(path_to_orders)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 9
 					},
 					{
 						"cell_type": "code",
@@ -5825,7 +5825,7 @@
 							"df_cust_sch= spark.read.format(\"parquet\").option(\"header\",True).load(path_to_customer)"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 10
 					},
 					{
 						"cell_type": "code",
@@ -5844,7 +5844,7 @@
 							"spark.conf.get(\"spark.sql.autoBroadcastJoinThreshold\")"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 11
 					},
 					{
 						"cell_type": "code",
@@ -5863,7 +5863,7 @@
 							"df_ord_sch.join(df_cust_sch, df_ord_sch.O_CUSTKEY == df_cust_sch.C_CUSTKEY, \"inner\").count()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 18
 					},
 					{
 						"cell_type": "code",
@@ -5882,7 +5882,7 @@
 							"df_ord_sch.join(df_cust_sch.hint(\"broadcast\"), df_ord_sch.O_CUSTKEY == df_cust_sch.C_CUSTKEY, \"inner\").count()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 19
 					},
 					{
 						"cell_type": "code",
@@ -5901,7 +5901,7 @@
 							"df_ord_sch.join(df_cust_sch.hint(\"merge\"), df_ord_sch.O_CUSTKEY == df_cust_sch.C_CUSTKEY, \"inner\").count()"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 20
 					},
 					{
 						"cell_type": "code",
@@ -5917,10 +5917,23 @@
 							}
 						},
 						"source": [
-							"spark.conf.set(\"spark.sql.autoBroadcastJoinThreshold\",2194304) #2MB 10485760b"
+							"spark.conf.set(\"spark.sql.autoBroadcastJoinThreshold\",2194304) #2MB 26214400"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 21
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"<mark>**INPUT PARTITION**</mark>"
+						]
 					},
 					{
 						"cell_type": "code",
@@ -5936,10 +5949,197 @@
 							}
 						},
 						"source": [
+							"df= spark.read.format(\"parquet\").option(\"header\",True).load(path_to_customer)"
+						],
+						"outputs": [],
+						"execution_count": 22
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"print(spark.conf.get(\"spark.sql.files.maxPartitionBytes\"))"
+						],
+						"outputs": [],
+						"execution_count": 23
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df.rdd.getNumPartitions()"
+						],
+						"outputs": [],
+						"execution_count": 24
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"spark.conf.set(\"spark.sql.files.maxPartitionBytes\", \"1048576\")  "
+						],
+						"outputs": [],
+						"execution_count": 25
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df= spark.read.format(\"parquet\").option(\"header\",True).load(path_to_customer)"
+						],
+						"outputs": [],
+						"execution_count": 26
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df.rdd.getNumPartitions()"
+						],
+						"outputs": [],
+						"execution_count": 27
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"**<mark>OUTPUT PARTITION</mark>**"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"\n",
+							"spark.conf.set(\"spark.sql.files.maxPartitionBytes\", \"134217728\") # 128 MB"
+						],
+						"outputs": [],
+						"execution_count": 28
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df= spark.read.format(\"parquet\").option(\"header\",True).load(path_to_customer)"
+						],
+						"outputs": [],
+						"execution_count": 29
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"print(f\"Number of partitions = {df.rdd.getNumPartitions()}\")"
+						],
+						"outputs": [],
+						"execution_count": 30
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"path_single_file = path_to_customer + '/customerSingleFile'\n",
+							"df.write.mode(\"overwrite\").option(\"path\", path_single_file).saveAsTable(\"customerSingleFile\")\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 32
 					},
 					{
 						"cell_type": "code",
@@ -5955,111 +6155,145 @@
 							}
 						},
 						"source": [
-							"# MAGIC %md \n",
-							"# MAGIC INPUT Partition\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"display(dbutils.fs.ls(\"/mnt/DemoLearn/Customer/csvFiles\"))\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"df = spark.read.format(\"csv\").option(\"header\",\"true\").load(\"/mnt/DemoLearn/Customer/csvFiles\")\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"print(spark.conf.get(\"spark.sql.files.maxPartitionBytes\"))\n",
-							"\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"df.rdd.getNumPartitions()\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"spark.conf.set(\"spark.sql.files.maxPartitionBytes\", \"1048576\")  \n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"df = spark.read.format(\"csv\").option(\"header\",\"true\").load(\"/mnt/DemoLearn/Customer/csvFiles\")\n",
-							"df.rdd.getNumPartitions()\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"# MAGIC %md\n",
-							"# MAGIC\n",
-							"# MAGIC OUTPUT Partition\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"spark.conf.set(\"spark.sql.files.maxPartitionBytes\", \"134217728\") # 128 MB\n",
-							"\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"df = spark.read.format(\"csv\").option(\"header\",\"true\").load(\"/mnt/DemoLearn/Customer/csvFiles/\")\n",
-							"print(f\"Number of partitions = {df.rdd.getNumPartitions()}\")\n",
-							"\n",
-							"\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"df.write.mode(\"overwrite\").option(\"path\", \"/mnt/DemoLearn/Customer/customerSingleFile/\").saveAsTable(\"customerSingleFile\")\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
 							"repartitionedDF = df.repartition(8)\n",
-							"print('Number of partitions: {}'.format(repartitionedDF.rdd.getNumPartitions()))\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
+							"print('Number of partitions: {}'.format(repartitionedDF.rdd.getNumPartitions()))"
+						],
+						"outputs": [],
+						"execution_count": 33
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
 							"repartitionedDF = df.repartition('C_MKTSEGMENT')\n",
-							"df = spark.read.format(\"csv\").option(\"header\",\"true\").load(\"/mnt/DemoLearn/Customer/csvFiles/\")\n",
-							"print('Number of partitions: {}'.format(repartitionedDF.rdd.getNumPartitions()))\n",
-							"\n",
-							"\n",
-							"# COMMAND ----------\n",
+							"df= spark.read.format(\"parquet\").option(\"header\",True).load(path_to_customer)\n",
+							"print('Number of partitions: {}'.format(repartitionedDF.rdd.getNumPartitions()))"
+						],
+						"outputs": [],
+						"execution_count": 34
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
 							"\n",
 							"coalescedDF = df.coalesce(2)\n",
-							"print('Number of partitions: {}'.format(coalescedDF.rdd.getNumPartitions()))\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"df.write.option(\"maxRecordsPerFile\", 1000).mode(\"overwrite\").partitionBy(\"C_MKTSEGMENT\").option(\"path\", \"/mnt/DemoLearn/Customer/maxfiles/\").saveAsTable(\"customer_maxfiles\")\n",
-							"\n",
-							"\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"# MAGIC %fs ls /mnt/DemoLearn/Customer/maxfiles/C_MKTSEGMENT=BUILDING/\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"df_read = spark.read.format(\"parquet\").option(\"inferSchema\",\"True\").load(\"/mnt/DemoLearn/Customer/maxfiles/C_MKTSEGMENT=BUILDING/part-00000-b971999d-132e-455c-a93d-d616050b27a7.c000.snappy.parquet\")\n",
-							"df_read.count()\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"# MAGIC %md\n",
-							"# MAGIC shuffle\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"df = spark.read.format(\"csv\").option(\"header\",\"true\").load(\"/mnt/DemoLearn/Customer/csvFiles\")\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"spark.conf.set(\"spark.sql.shuffle.partitions\", 200)\n",
-							"mktSegmentDF = df.groupBy(\"C_MKTSEGMENT\").count().collect()\n",
-							"\n",
-							"# COMMAND ----------\n",
-							"\n",
-							"spark.conf.set(\"spark.sql.shuffle.partitions\", 30)\n",
-							"mktSegmentDF = df.groupBy(\"C_MKTSEGMENT\").count().collect()\n",
-							""
+							"print('Number of partitions: {}'.format(coalescedDF.rdd.getNumPartitions()))"
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 35
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"path_single_file_max = path_single_file + '/customer_maxfiles'\n",
+							"df.write.option(\"maxRecordsPerFile\", 1000).mode(\"overwrite\").partitionBy(\"C_MKTSEGMENT\").option(\"path\", path_single_file_max).saveAsTable(\"customer_maxfiles\")"
+						],
+						"outputs": [],
+						"execution_count": 37
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"**<mark>SHUFFLE</mark>**"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"df= spark.read.format(\"parquet\").option(\"header\",True).load(path_to_customer)"
+						],
+						"outputs": [],
+						"execution_count": 40
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"spark.conf.set(\"spark.sql.shuffle.partitions\", 200)\n",
+							"mktSegmentDF = df.groupBy(\"C_MKTSEGMENT\").count().collect()"
+						],
+						"outputs": [],
+						"execution_count": 41
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"spark.conf.set(\"spark.sql.shuffle.partitions\", 30)\n",
+							"mktSegmentDF = df.groupBy(\"C_MKTSEGMENT\").count().collect()"
+						],
+						"outputs": [],
+						"execution_count": 42
 					}
 				]
 			},
