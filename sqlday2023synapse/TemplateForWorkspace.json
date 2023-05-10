@@ -5630,7 +5630,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "5c3b6db5-a6ab-4632-bf56-7549f2c3a9d6"
+						"spark.autotune.trackingId": "506ec9c5-32b3-4899-8791-f9898e0ac25a"
 					}
 				},
 				"metadata": {
@@ -5655,13 +5655,15 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient\n",
 							"import os\n",
@@ -5687,7 +5689,7 @@
 							"%run \"Sesja/configuration/configuration_paramaters\""
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": null
 					},
 					{
 						"cell_type": "code",
@@ -6411,7 +6413,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "c9144599-3890-4f21-8c1a-5b06ced41118"
+						"spark.autotune.trackingId": "0ce1d271-089d-4ac8-a675-2eb36e886d83"
 					}
 				},
 				"metadata": {
@@ -6449,7 +6451,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"@dataclass\n",
 							"class configuration_parameters_raw_bronze:\n",
