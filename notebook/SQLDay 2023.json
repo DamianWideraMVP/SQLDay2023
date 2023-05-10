@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "d43f82c4-f5cd-4194-8943-44bc75414269"
+				"spark.autotune.trackingId": "816e2f78-05cf-45b2-96e6-5d0f0e758deb"
 			}
 		},
 		"metadata": {
@@ -58,7 +58,7 @@
 					"import os\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 1
+				"execution_count": 3
 			},
 			{
 				"cell_type": "code",
@@ -76,7 +76,7 @@
 				"source": [
 					"%run \"Sesja/configuration/configuration_paramaters\""
 				],
-				"execution_count": null
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -96,7 +96,7 @@
 					"    return PARAMETERS.DATALAKE, PARAMETERS.BRONZE_CONTAINER,  PARAMETERS.BRONZE_SASKEY\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -119,7 +119,7 @@
 					"    path_to_blob = \"abfss://\" + container + \"@\" + account_for_abfss+\"/\"+ folder\n",
 					"    return account_for_abfss, path_to_blob"
 				],
-				"execution_count": null
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -138,7 +138,7 @@
 					"account , bronze_container, bronze_sas_token = get_configuration()\n",
 					""
 				],
-				"execution_count": null
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -157,7 +157,7 @@
 					"account_for_abfss,  path_to_orders = _prepare_paths_for_data_processing(account, bronze_container, \"orders\")\n",
 					"account_for_abfss,  path_to_customer = _prepare_paths_for_data_processing(account, bronze_container, \"customer\")"
 				],
-				"execution_count": null
+				"execution_count": 8
 			},
 			{
 				"cell_type": "markdown",
@@ -188,7 +188,7 @@
 				"source": [
 					"df_ord_sch = spark.read.format(\"parquet\").option(\"header\",True).load(path_to_orders)"
 				],
-				"execution_count": null
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -206,7 +206,7 @@
 				"source": [
 					"df_cust_sch= spark.read.format(\"parquet\").option(\"header\",True).load(path_to_customer)"
 				],
-				"execution_count": null
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -224,7 +224,7 @@
 				"source": [
 					"spark.conf.get(\"spark.sql.autoBroadcastJoinThreshold\")"
 				],
-				"execution_count": null
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -242,7 +242,7 @@
 				"source": [
 					"df_ord_sch.join(df_cust_sch, df_ord_sch.O_CUSTKEY == df_cust_sch.C_CUSTKEY, \"inner\").count()"
 				],
-				"execution_count": null
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -260,7 +260,7 @@
 				"source": [
 					"df_ord_sch.join(df_cust_sch.hint(\"broadcast\"), df_ord_sch.O_CUSTKEY == df_cust_sch.C_CUSTKEY, \"inner\").count()"
 				],
-				"execution_count": null
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -278,7 +278,7 @@
 				"source": [
 					"df_ord_sch.join(df_cust_sch.hint(\"merge\"), df_ord_sch.O_CUSTKEY == df_cust_sch.C_CUSTKEY, \"inner\").count()"
 				],
-				"execution_count": null
+				"execution_count": 14
 			},
 			{
 				"cell_type": "code",
@@ -294,9 +294,9 @@
 					}
 				},
 				"source": [
-					"spark.conf.set(\"spark.sql.autoBroadcastJoinThreshold\",2194304) #2MB 10485760b"
+					"spark.conf.set(\"spark.sql.autoBroadcastJoinThreshold\",2194304) #2MB 26214400"
 				],
-				"execution_count": null
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
