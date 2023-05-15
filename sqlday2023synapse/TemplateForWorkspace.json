@@ -7377,7 +7377,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b81be694-8db7-42b8-811c-96f0116875a9"
+						"spark.autotune.trackingId": "18de1d52-d4ee-4bb6-a796-ca3c22c51bfc"
 					}
 				},
 				"metadata": {
@@ -7402,7 +7402,8 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": true
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -7429,6 +7430,7 @@
 					},
 					{
 						"cell_type": "code",
+						"metadata": {},
 						"source": [
 							"\n",
 							"\n",
@@ -7462,10 +7464,10 @@
 							"PARAMETERS = configuration_parameters (\n",
 							"SRC_DATALAKE=\"https://itechdayadla.blob.core.windows.net\",\n",
 							"SRC_CONTAINER=\"demolearn\",\n",
-							"SRC_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','DemoLearn','SQLDay_AKV'),\n",
+							"SRC_SASKEY=f\"sp=racwdlmeop&st=2023-05-15T12:13:24Z&se=2023-05-31T20:13:24Z&spr=https&sv=2022-11-02&sr=c&sig=lk7Ot0Z0ZUF%2BCAAx4y6CsfK0y3nuIeoRSDKkEANQsEI%3D\"\n",
 							"RAW_DATALAKE=\"https://sqlday2023.blob.core.windows.net\",\n",
 							"RAW_CONTAINER=\"raw\",\n",
-							"RAW_SASKEY=mssparkutils.credentials.getSecret('sqlday2023akv','SQLDayRaw','SQLDay_AKV')\n",
+							"RAW_SASKEY=f\"sp=racwdlmeop&st=2023-05-03T21:02:46Z&se=2023-05-31T05:02:46Z&spr=https&sv=2021-12-02&sr=c&sig=8CY7pN26Rsto5wDJoYUM4RzofvxNaozEwpZWARTqVs0%3D\"\n",
 							")"
 						],
 						"outputs": [],
@@ -8103,7 +8105,7 @@
 						"spark.dynamicAllocation.enabled": "true",
 						"spark.dynamicAllocation.minExecutors": "1",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "9d90d3ab-925d-49f9-97bb-e03162bbdb15"
+						"spark.autotune.trackingId": "57dd8a68-0c1d-4655-8375-fb403854bd2e"
 					}
 				},
 				"metadata": {
@@ -8128,8 +8130,7 @@
 						"sparkVersion": "3.3",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": true
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -8156,17 +8157,16 @@
 							"from notebookutils import mssparkutils"
 						],
 						"outputs": [],
-						"execution_count": 67
+						"execution_count": 1
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
-							"%run \"03 Azure Storage/configuration/configuration_parameters\"\n",
+							"%run \"other/configuration_parameters_objectivity\"\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": 68
+						"execution_count": 2
 					},
 					{
 						"cell_type": "code",
@@ -9037,6 +9037,18 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/sqlpool')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "westeurope"
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/smallpool')]",
 			"type": "Microsoft.Synapse/workspaces/bigDataPools",
 			"apiVersion": "2019-06-01-preview",
@@ -9056,18 +9068,6 @@
 				"sparkVersion": "3.3",
 				"isComputeIsolationEnabled": false,
 				"sessionLevelPackagesEnabled": true,
-				"annotations": []
-			},
-			"dependsOn": [],
-			"location": "westeurope"
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/sqlpool')]",
-			"type": "Microsoft.Synapse/workspaces/sqlPools",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"collation": "SQL_Latin1_General_CP1_CI_AS",
-				"maxSizeBytes": 263882790666240,
 				"annotations": []
 			},
 			"dependsOn": [],
