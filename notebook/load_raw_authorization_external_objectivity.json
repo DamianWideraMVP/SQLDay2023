@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "a130f42f-9508-46c7-912b-eab171be9805"
+				"spark.autotune.trackingId": "146616f5-5ce3-4d54-8b0b-6bafdbbb2793"
 			}
 		},
 		"metadata": {
@@ -72,7 +72,7 @@
 					"\n",
 					"from notebookutils import mssparkutils"
 				],
-				"execution_count": 3
+				"execution_count": 6
 			},
 			{
 				"cell_type": "code",
@@ -80,7 +80,7 @@
 					"%run \"other/configuration_parameters_objectivity\"\n",
 					""
 				],
-				"execution_count": 4
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -99,7 +99,7 @@
 					"def _get_configuration():\n",
 					"    return PARAMETERS.SRC_DATALAKE, PARAMETERS.SRC_CONTAINER, PARAMETERS.SRC_SASKEY, PARAMETERS.RAW_DATALAKE, PARAMETERS.RAW_CONTAINER, PARAMETERS.RAW_SASKEY"
 				],
-				"execution_count": 5
+				"execution_count": 8
 			},
 			{
 				"cell_type": "code",
@@ -122,7 +122,7 @@
 					"\n",
 					"    return blob_service_client"
 				],
-				"execution_count": 70
+				"execution_count": 11
 			},
 			{
 				"cell_type": "code",
@@ -146,7 +146,7 @@
 					"    container_client = ContainerClient.from_container_url(url+sas_key)\n",
 					"    return container_client"
 				],
-				"execution_count": 71
+				"execution_count": 12
 			},
 			{
 				"cell_type": "code",
@@ -172,7 +172,7 @@
 					"\n",
 					"    return src_account_for_abfss, raw_account_for_abfss, path_to_blob_src, path_to_blob_raw"
 				],
-				"execution_count": 72
+				"execution_count": 13
 			},
 			{
 				"cell_type": "code",
@@ -190,7 +190,7 @@
 				"source": [
 					"src_account, src_container, src_sas_token, raw_account, raw_container, raw_sas_token = _get_configuration()"
 				],
-				"execution_count": 73
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
@@ -206,9 +206,9 @@
 					}
 				},
 				"source": [
-					"source_bsc = _get_blob_service_client (src_account, src_container)"
+					"src_account, src_container, src_sas_token, raw_account, raw_container, raw_sas_token"
 				],
-				"execution_count": 74
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -224,9 +224,29 @@
 					}
 				},
 				"source": [
-					"raw_bsc = _get_blob_service_client (raw_account, raw_container)"
+					"source_bsc = _get_blob_service_client (src_account, src_sas_token)\r\n",
+					""
 				],
-				"execution_count": 75
+				"execution_count": 15
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"raw_bsc = _get_blob_service_client (raw_account, raw_sas_token)\r\n",
+					""
+				],
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -242,7 +262,7 @@
 					}
 				},
 				"source": [
-					"folder = \"Logfiles\"\n",
+					"folder = \"objec\"\n",
 					"full_path_src = src_account + \"/\" + src_container \n",
 					"full_path_raw = raw_account + \"/\" + raw_container + \"/\" + folder\n",
 					"\n",
