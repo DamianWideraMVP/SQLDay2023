@@ -1,0 +1,124 @@
+{
+	"name": "monitor_pq",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "sqlday2023synapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "bronze"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "ProductKey",
+				"type": "UTF8"
+			},
+			{
+				"name": "OrderDateKey",
+				"type": "UTF8"
+			},
+			{
+				"name": "DueDateKey",
+				"type": "UTF8"
+			},
+			{
+				"name": "ShipDateKey",
+				"type": "UTF8"
+			},
+			{
+				"name": "CustomerKey",
+				"type": "UTF8"
+			},
+			{
+				"name": "PromotionKey",
+				"type": "UTF8"
+			},
+			{
+				"name": "CurrencyKey",
+				"type": "UTF8"
+			},
+			{
+				"name": "SalesTerritoryKey",
+				"type": "UTF8"
+			},
+			{
+				"name": "SalesOrderNumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "SalesOrderLineNumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "RevisionNumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "OrderQuantity",
+				"type": "UTF8"
+			},
+			{
+				"name": "UnitPrice",
+				"type": "UTF8"
+			},
+			{
+				"name": "ExtendedAmount",
+				"type": "UTF8"
+			},
+			{
+				"name": "UnitPriceDiscountPct",
+				"type": "UTF8"
+			},
+			{
+				"name": "DiscountAmount",
+				"type": "UTF8"
+			},
+			{
+				"name": "ProductStandardCost",
+				"type": "UTF8"
+			},
+			{
+				"name": "TotalProductCost",
+				"type": "UTF8"
+			},
+			{
+				"name": "SalesAmount",
+				"type": "UTF8"
+			},
+			{
+				"name": "TaxAmt",
+				"type": "UTF8"
+			},
+			{
+				"name": "Freight",
+				"type": "UTF8"
+			},
+			{
+				"name": "CarrierTrackingNumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "CustomerPONumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "OrderDate",
+				"type": "UTF8"
+			},
+			{
+				"name": "DueDate",
+				"type": "UTF8"
+			},
+			{
+				"name": "ShipDate",
+				"type": "UTF8"
+			}
+		]
+	}
+}
