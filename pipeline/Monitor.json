@@ -89,18 +89,6 @@
 							},
 							{
 								"source": {
-									"name": "Triggered by",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "Triggered by",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
 									"name": "Status",
 									"type": "String",
 									"physicalType": "String"
@@ -131,42 +119,6 @@
 								},
 								"sink": {
 									"name": "Run",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "Parameters",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "Parameters",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "Annotations",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "Annotations",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "Run ID",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "Run ID",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
