@@ -1,0 +1,17 @@
+{
+	"name": "ADF_UAT",
+	"properties": {
+		"content": {
+			"query": "CREATE DATABASE adf_uat\nGO\nuse adf_uat\nGO\n\nDROP VIEW IF EXISTS dbo.Monitor\nGO\nCREATE VIEW dbo.Monitor\nAS\nSELECT\n    *,\n        REPLACE(REPLACE(REPLACE([Run start],',',''),'AM',''),'PM','')as [Start time], \n        REPLACE(REPLACE(REPLACE([Run end],',',''),'AM',''),'PM','') as [End time] \nFROM\n    OPENROWSET(\n        BULK 'https://sqlday2023.dfs.core.windows.net/bronze/monitor/part-00000-13861fd6-b11e-42a4-ac3b-163984640fe5-c000.snappy.parquet',\n        FORMAT = 'PARQUET'\n    ) AS [result]\n\n\ngo\n\nselect top 10 * from dbo.Monitor\nGO\n\n\nSELECT [Pipeline name], COUNT(*)\nFROM dbo.Monitor\nGROUP BY [Pipeline name]\n\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "adf_uat",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
