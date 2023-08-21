@@ -20,7 +20,7 @@
 				"spark.dynamicAllocation.enabled": "true",
 				"spark.dynamicAllocation.minExecutors": "1",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "e901c7a7-e03b-424a-91d1-171528109e9e"
+				"spark.autotune.trackingId": "a018efc9-49e9-481c-9512-e0a9bfd0aa00"
 			}
 		},
 		"metadata": {
@@ -180,6 +180,25 @@
 					"account_for_abfss,  path_to_orders, path_to_customer, path_to_customer_silver, path_to_orders_silver, path_to_mktsegment_silver, path_to_orderpriority_silver"
 				],
 				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					}
+				},
+				"source": [
+					"customer_path = \"abfss://raw@sqlday2023.dfs.core.windows.net/init/Customer\"\n",
+					""
+				],
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
